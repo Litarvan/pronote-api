@@ -1,0 +1,22 @@
+{
+  "name": "pronote",
+  "version": "1.0.0",
+  "description": "Full Pronote API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pronote",
+    "api"
+  ],
+  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "jsdom": "^11.7.0",
+    "node-forge": "0.6.33",
+    "pako": "^1.0.6",
+    "xml2js": "^0.4.19"
+  }
+}
