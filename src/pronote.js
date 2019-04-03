@@ -59,7 +59,7 @@ async function login({ username, password, url, cas })
         noAES: params.sCrA
     });
 
-    await request.pronote({
+    const data = (await request.pronote({
         session,
 
         name: 'FonctionParametres',
@@ -68,7 +68,35 @@ async function login({ username, password, url, cas })
                 Uuid: cipher.getUUID(session)
             }
         }
-    });
+    })).donnees;
+
+    const periods = [];
+    let specialPeriodID = 0;
+
+    for (const period of data.General.ListePeriodes)
+    {
+        const result = {};
+
+        if (period.L.startsWith('Trimestre'))
+        {
+            result.period = true;
+            result.id = util.parsePeriod(period.L);
+        }
+        else
+        {
+            result.id = --specialPeriodID;
+        }
+
+        periods.push({
+            N: period.N,
+            name: period.L,
+            from: util.parseDate(period.dateDebut.V),
+            to: util.parseDate(period.dateFin.V),
+            ...result
+        });
+    }
+
+    session.periods = periods;
 
     let loginData = {
         session,
@@ -213,48 +241,22 @@ async function fetch({ username, password, url, cas })
         }
     }
 
-    let periods;
+    const periods = session.periods;
     let defaultPeriod;
-
-    const tabs = auth.ressource.listeOngletsPourPeriodes.V;
-    let specialPeriodID = 0;
-
-    for (const tab of tabs)
-    {
-        if (tab.listePeriodes && !periods)
-        {
-            periods = [];
-
-            for (const period of tab.listePeriodes.V)
-            {
-                if (period.L.startsWith('Trimestre'))
-                {
-                    period.period = true;
-                    period.id = util.parsePeriod(period.L);
-                }
-                else
-                {
-                    period.id = --specialPeriodID;
-                }
-
-                periods.push(period);
-            }
-        }
-    }
 
     for (const period of periods)
     {
         const res = await marks(session, {
             N: period.N,
             G: 2,
-            L: period.L
+            L: period.name
         });
 
         if (res.marks.length > 0)
         {
             if (period.period)
             {
-                defaultPeriod = util.parsePeriod(period.L);
+                defaultPeriod = util.parsePeriod(period.name);
             }
 
             result['marks'].push({ period: period.id, ...res });
@@ -274,7 +276,7 @@ async function fetch({ username, password, url, cas })
         }
     }
 
-    result['periods'] = periods.map(({ id, L, isDefault }) => ({ id, name: L, isDefault }));
+    result['periods'] = periods.map(({ N, ...period }) => period);
 
     result['timetable'] = await timetable(session, auth.ressource);
 
@@ -389,7 +391,7 @@ async function fetch({ username, password, url, cas })
             periode: {
                 N: period.N,
                 G: 1,
-                L: period.L
+                L: period.name
             }
         });
 
@@ -686,7 +688,7 @@ async function report(session, { N, G, L }, period)
         periode: {
             N: period.N,
             G: 2,
-            L: period.L
+            L: period.name
         }
     })).donnees;
 
