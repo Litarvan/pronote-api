@@ -657,6 +657,7 @@ async function homeworks(url, session, week)
             content: util.decodeHTML(content),
             since: util.parseDate(homework.DonneLe.V),
             until: util.parseDate(homework.PourLe.V),
+            toGive: !!homework.avecRendu,
             files: homework.ListePieceJointe.V.map(f => ({
                 name: f.L,
                 url: file(url, session, f.L, { N: f.N, G: 48 })
