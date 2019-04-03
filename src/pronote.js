@@ -169,11 +169,12 @@ async function fetch({ username, password, url, cas })
         name: auth.donnees.ressource.L,
         studentClass: (auth.donnees.ressource.classeDEleve ? auth.donnees.ressource.classeDEleve.L :
             auth.donnees.ressource.listeRessources[0].classeDEleve.L),
-        marks: {},
+        marks: [],
         timetable: [],
         infos: [],
         files: [],
-        reports: {}
+        reports: [],
+        absences: []
     };
 
     auth = auth.donnees;
@@ -216,6 +217,8 @@ async function fetch({ username, password, url, cas })
     let defaultPeriod;
 
     const tabs = auth.ressource.listeOngletsPourPeriodes.V;
+    let specialPeriodID = 0;
+
     for (const tab of tabs)
     {
         if (tab.listePeriodes && !periods)
@@ -227,15 +230,15 @@ async function fetch({ username, password, url, cas })
                 if (period.L.startsWith('Trimestre'))
                 {
                     period.period = true;
+                    period.id = util.parsePeriod(period.L);
+                }
+                else
+                {
+                    period.id = --specialPeriodID;
                 }
 
                 periods.push(period);
             }
-        }
-
-        if (tab.periodeParDefaut)
-        {
-            defaultPeriod = tab.periodeParDefaut.V.L;
         }
     }
 
@@ -251,16 +254,27 @@ async function fetch({ username, password, url, cas })
         {
             if (period.period)
             {
-                result['defaultPeriod'] = util.parsePeriod(period.L);
+                defaultPeriod = util.parsePeriod(period.L);
             }
 
-            result['marks'][period.L] = res;
+            result['marks'].push({ period: period.id, ...res });
         }
     }
 
-    if (!result['defaultPeriod']) {
-        result['defaultPeriod'] = 1;
+    if (!defaultPeriod) {
+        defaultPeriod = 1;
     }
+
+    for (const period of periods)
+    {
+        if (period.id === defaultPeriod)
+        {
+            period.isDefault = true;
+            break;
+        }
+    }
+
+    result['periods'] = periods.map(({ id, L, isDefault }) => ({ id, name: L, isDefault }));
 
     result['timetable'] = await timetable(session, auth.ressource);
 
@@ -351,6 +365,7 @@ async function fetch({ username, password, url, cas })
         result['files'].push({
             time: util.parseDate(f.date.V),
             subject: subjects[f.matiere.V.N],
+            name: f.ressource.V.L,
             url: file(url, session, f.ressource.V.L, f.ressource.V)
         });
     }
@@ -361,7 +376,7 @@ async function fetch({ username, password, url, cas })
             continue;
         }
 
-        result['reports'][period.L] = await report(session, auth.ressource, period);
+        result['reports'].push({ period: period.id, ...(await report(session, auth.ressource, period)) });
         const absences = await navigate(session, 19, 'PagePresence', {
             DateDebut: {
                 _T: 7,
@@ -381,9 +396,13 @@ async function fetch({ username, password, url, cas })
         result['absences'].push({
             period: period.id,
             absences: absences.donnees.listeAbsences.V.map(absence => ({
-
+                from: util.parseDate(absence.dateDebut.V),
+                to: util.parseDate(absence.dateFin.V),
+                solved: absence.reglee,
+                justified: absence.justifie,
+                reason: absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
             }))
-        })
+        });
     }
 
     try
@@ -422,8 +441,7 @@ async function marks(session, period)
 
     result['averages'] = {
         student: util.parseMark(marks.donnees.moyGenerale.V),
-        studentClass: util.parseMark(marks.donnees.moyGeneraleClasse.V),
-        period: util.parsePeriod(period.L)
+        studentClass: util.parseMark(marks.donnees.moyGeneraleClasse.V)
     };
 
     marks.donnees.listeServices.V.forEach(subject => {
@@ -637,7 +655,10 @@ async function homeworks(url, session, week)
             content: util.decodeHTML(content),
             since: util.parseDate(homework.DonneLe.V),
             until: util.parseDate(homework.PourLe.V),
-            files: homework.ListePieceJointe.V.map(f => file(url, session, f.L, { N: f.N, G: 48 }))
+            files: homework.ListePieceJointe.V.map(f => ({
+                name: f.L,
+                url: file(url, session, f.L, { N: f.N, G: 48 })
+            }))
         });
     });
 
@@ -676,12 +697,17 @@ async function report(session, { N, G, L }, period)
     const result = {
         subjects: [],
         averages: {},
-        comment: []
+        comments: []
     };
 
     for (const comment of report.ObjetListeAppreciations.V.ListeAppreciations.V)
     {
-        result['comment'].push({
+        if (!comment.L)
+        {
+            continue;
+        }
+
+        result['comments'].push({
             title: comment.Intitule,
             value: comment.L
         });
