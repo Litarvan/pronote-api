@@ -58,6 +58,11 @@ async function pronote({ session, name, content })
         method: 'POST'
     });
 
+    if (result.Erreur) {
+        const { Titre, Message } = result.Erreur;
+        throw { title: Titre, message: Message };
+    }
+
     cipher.updateIV(session);
 
     if (!session.disableAES)
@@ -76,6 +81,8 @@ async function pronote({ session, name, content })
 
     return result.donneesSec;
 }
+
+let count = 0;
 
 async function http({ url, body, data, method = 'GET', binary, jar = null, followRedirects = true })
 {

@@ -167,7 +167,7 @@ async function login({ username, password, url, cas })
 
     if (auth.donnees.ressource.listeRessources && auth.donnees.ressource.listeRessources.length > 0)
     {
-        auth.donnees.ressource = auth.donnees.ressource.listeRessources[0]
+        auth.donnees.ressource = auth.donnees.ressource.listeRessources[0];
     }
 
     session.signEleve = {
@@ -378,7 +378,10 @@ async function fetch({ username, password, url, cas })
             continue;
         }
 
-        result['reports'].push({ period: period.id, ...(await report(session, auth.ressource, period)) });
+        if (!auth.listeOngletsInvisibles.includes(13)) {
+            result['reports'].push({ period: period.id, ...(await report(session, auth.ressource, period)) });
+        }
+
         const absences = await navigate(session, 19, 'PagePresence', {
             DateDebut: {
                 _T: 7,
@@ -589,11 +592,32 @@ async function timetable(session, user)
 
             res['away'] = lesson.Statut === 'Prof. absent' || lesson.Statut === 'Conseil de classe';
             res['cancelled'] = lesson.Statut === 'Cours annulé';
+            res['priority'] = lesson.Statut === 'Cours modifié' || lesson.Statut === 'Cours maintenu' || lesson.Statut === 'Remplacement';
 
             result.push(res);
         });
 
-        result.sort((a, b) => {
+        let checked = [];
+
+        main:
+        for (let lesson of result)
+        {
+            for (let i = 0; i < checked.length; i++)
+            {
+                if (lesson.from === checked[i].from || lesson.to === checked[i].to)
+                {
+                    if (lesson.priority) {
+                        checked[i] = lesson;
+                    }
+
+                    continue main;
+                }
+            }
+
+            checked.push(lesson);
+        }
+
+        checked.sort((a, b) => {
             if (a.from < b.from)
             {
                 return -1
@@ -607,21 +631,7 @@ async function timetable(session, user)
             return 0;
         });
 
-        let checked = [];
-
-        main:
-        for (let lesson of result)
-        {
-            for (let i = 0; i < checked.length; i++)
-            {
-                if (lesson.from === checked[i].from || lesson.to === checked[i].to)
-                {
-                    continue main;
-                }
-            }
-
-            checked.push(lesson);
-        }
+        checked.forEach(l => delete l.priority);
 
         return checked;
     }

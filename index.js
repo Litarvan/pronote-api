@@ -31,20 +31,24 @@ const server = http.createServer((req, res) => {
                 endRequest(res, result);
             }).catch(err =>
             {
+                console.error(err);
+
                 endRequest(res, {
-                    error: err.toString()
+                    error: JSON.stringify(err)
                 });
 
-                if (err.stack)
+                /*if (err.stack)
                 {
                     console.error(err.stack);
-                }
+                }*/
             });
         }
         catch (e)
         {
+            console.error(e);
+
             endRequest(res, {
-                error: e.toString()
+                error: JSON.stringify(e)
             });
         }
     });

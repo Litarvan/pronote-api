@@ -73,7 +73,7 @@ function cipher({ session, string, compress, rsaKey })
 
     string = forge.util.encodeUtf8('' + string);
 
-    let original = string;
+    //let original = string;
 
     if (compress && !session.disableCompress)
     {
@@ -93,8 +93,9 @@ function cipher({ session, string, compress, rsaKey })
     });
     cipher.update(new forge.util.ByteBuffer(string));
 
-    let result = cipher.finish() && cipher.output.toHex();
-    return forge.md.md5.create().update(original).update(rsaKey.bytes()).digest().toHex().toUpperCase() + result;
+    return cipher.finish() && cipher.output.toHex();
+    /*let result = cipher.finish() && cipher.output.toHex();
+    return forge.md.md5.create().update(original).update(rsaKey.bytes()).digest().toHex().toUpperCase() + result;*/
 }
 
 function decipher({ session, string, compress, alea, rsaKey, bytes })
@@ -104,8 +105,8 @@ function decipher({ session, string, compress, alea, rsaKey, bytes })
         rsaKey = session.cleAES;
     }
 
-    let md5 = string.substr(0, 32).toUpperCase();
-    string = string.slice(32);
+    /*let md5 = string.substr(0, 32).toUpperCase();
+    string = string.slice(32);*/
 
     let key = forge.md.md5.create().update(rsaKey.bytes()).digest();
     let iv = session.ivAES.length() ? forge.md.md5.create().update(session.ivAES.bytes()).digest() : new forge.util.ByteBuffer();
@@ -125,13 +126,13 @@ function decipher({ session, string, compress, alea, rsaKey, bytes })
         })
     }
 
-    let toCompare = forge.md.md5.create().update(result).update(rsaKey.bytes()).digest().toHex().toUpperCase();
+    /*let toCompare = forge.md.md5.create().update(result).update(rsaKey.bytes()).digest().toHex().toUpperCase();
 
     if (md5 !== toCompare)
     {
         console.error(`MD5 DOESN'T MATCH : ${md5} != ${toCompare}`);
         throw new Error('Bad response');
-    }
+    }*/
 
     result = forge.util.decodeUtf8(result);
 
