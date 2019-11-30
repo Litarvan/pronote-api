@@ -91,7 +91,7 @@ function asJSON(json)
 
 function getTime(date)
 {
-    return date.getTime() + (/*date.getTimezoneOffset()*//*-120*/-120 * 60 * 1000);
+    return date.getTime() + (/*date.getTimezoneOffset()*//*-120*/-60 * 60 * 1000);
 }
 
 module.exports = {
