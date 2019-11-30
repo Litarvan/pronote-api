@@ -511,9 +511,11 @@ async function timetable(session, user)
 
     while (weeks.length < 2)
     {
+        let shifted = false;
         if (week > 44)
         {
             week -= 44;
+            shifted = true;
         }
 
         let content = await readWeek(week);
@@ -521,13 +523,18 @@ async function timetable(session, user)
         if (content.length > 0)
         {
             let realWeek = week - weekAmount;
+            if (shifted) {
+                realWeek += 44;
+            }
             if (realWeek < 0) {
                 realWeek += 52;
+            } else if (realWeek > 52) {
+                realWeek -= 52;
             }
 
             let time = new Date();
             time.setMonth(0);
-            time.setDate(realWeek * 7 - 6);
+            time.setDate((realWeek - 1) * 7);
             time.setHours(6); // In case
             time.setMinutes(0);
             time.setSeconds(0);
