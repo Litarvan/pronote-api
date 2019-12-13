@@ -60,3 +60,5 @@ Requête `POST` sur `http://127.0.0.1:21727/` avec en corps :
 Pour séparer la partie authentification de la partie récupération des données (util pour afficher un message différent),
 il est possible de faire deux fois cette requête une fois avec "type": "login", puis avec "type": "fetch" (dans les deux requêtes
 les autres paramètres doivent être les mêmes). 
+
+La requête fetch renvoie un JSON avec toutes les informations reçues : [**Exemple de sortie de l'application**](https://gist.github.com/Litarvan/ec666fa544f6d036e515867d0f266ca7)
