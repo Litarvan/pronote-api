@@ -119,7 +119,7 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
         },
         maxRedirects: 0,
         validateStatus(status) {
-            return status >= 200 && status <= 302
+            return status === 401 || (status >= 200 && status <= 302)
         }
     };
 
