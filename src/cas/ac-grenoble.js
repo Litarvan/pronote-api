@@ -1,10 +1,9 @@
-const elycee = require('./elycee');
+module.exports = ({ username, password, cas }) => require('./kdecole-wayf')({
+    username,
+    password,
+    cas,
 
-module.exports = function(params)
-{
-    return elycee(params, {
-        name: 'ac-grenoble',
-        base: 'https://cas.elycee.rhonealpes.fr/',
-        idp: 'GRE-ATS_parent_eleve'
-    });
-};
+    acName: 'Grenoble',
+    casUrl: 'https://cas.ent.auvergnerhonealpes.fr/',
+    idp: 'GRE-ATS'
+});

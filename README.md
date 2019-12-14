@@ -23,15 +23,18 @@ et marquage des profs absents et cours annulés
 
 ## Comptes région supportés
 
-Certains établissements nécessitent de se connecter à Pronote via un compte spécifique à l'académie (si vous pouvez vous connecter à Pronote directement dessus, alors ce n'est pas le cas). L'API supporte la connexion aux comptes spécifiques aux
-académies/systèmes suivants :
+**Uniquement dans le cas où vous ne pouvez PAS vous connecter directement par Pronote, mais devez passer par une interface régionale spéciale**
 
-- Académie de Montpellier
+**Si vous pouvez vous connecter directement sur l'interface de Pronote, l'API devrait fonctionner PEU IMPORTE VOTRE ACADÉMIE**
+
+Sinon, l'API propose de se connecter à Pronote avec des comptes des académies suivantes :
+
+- Académie de Lyon
+- Académie de Toulouse
 - Académie de Grenoble
-- Académie de Reims
 - Académie de Rouen
-- Mon Bureau Numérique
-- Toutatice (Bretagne)
+- Académie de Rennes
+- Académie de Clermont-Ferrand
 
 Encore une fois, cette liste peut être agrandie : n'hésitez pas à me contacter, je fais ça rapidement
 

@@ -3,7 +3,7 @@ module.exports = ({ username, password, cas }) => require('./kdecole-wayf')({
     password,
     cas,
 
-    acName: 'Toulouse',
-    casUrl: 'https://cas.mon-ent-occitanie.fr/',
-    idp: 'TOULO-ENT'
+    acName: 'Clermont-Ferrand',
+    casUrl: 'https://cas.ent.auvergnerhonealpes.fr/',
+    idp: 'CLERMONT-ATS'
 });
