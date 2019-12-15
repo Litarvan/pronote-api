@@ -596,6 +596,14 @@ async function timetable(session, user)
                 to
             };
 
+            if (lesson.ListeContenus) {
+                res.subject = lesson.ListeContenus.V[0].L;
+                res.teacher = lesson.ListeContenus.V.length > 1 ? lesson.ListeContenus.V[1].L : 'Aucun prof';
+            } else if (lesson.estSortiePedagogique) {
+                res.subject = "Sortie pédagogique";
+                res.teacher = 'Aucun prof';
+            }
+
             if (lesson.ListeContenus.V.length > 2)
             {
                 let room = lesson.ListeContenus.V[lesson.ListeContenus.V.length - 1].L;
