@@ -35,6 +35,9 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Rouen
 - Académie de Rennes
 - Académie de Clermont-Ferrand
+- Académie de Reims
+- Académie de Nancy-Metz
+- Académie de Strasbourg
 
 Encore une fois, cette liste peut être agrandie : n'hésitez pas à me contacter, je fais ça rapidement
 
