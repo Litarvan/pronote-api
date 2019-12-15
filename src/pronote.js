@@ -742,15 +742,20 @@ async function report(session, { N, G, L }, period)
 
     for (const subject of report.ListeServices.V)
     {
-        result['subjects'].push({
+        const mark = {
             name: subject.L,
             average: util.parseMark(subject.MoyenneEleve.V),
             studentClassAverage: util.parseMark(subject.MoyenneClasse.V),
-            maxAverage: util.parseMark(subject.MoyenneSup.V),
-            minAverage: util.parseMark(subject.MoyenneInf.V),
             comment: subject.ListeAppreciations.V[0].L || '',
             coefficient: parseInt(subject.Coefficient.V)
-        });
+        };
+
+        if (subject.MoyenneSup) {
+            mark.maxAverage = util.parseMark(subject.MoyenneSup.V);
+            mark.minAverage = util.parseMark(subject.MoyenneInf.V);
+        }
+
+        result['subjects'].push(mark);
     }
 
     return result;
