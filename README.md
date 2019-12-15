@@ -70,3 +70,11 @@ il est possible de faire deux fois cette requête une fois avec "type": "login",
 les autres paramètres doivent être les mêmes). 
 
 La requête fetch renvoie un JSON avec toutes les informations reçues : [**Exemple de sortie de l'application**](https://gist.github.com/Litarvan/ec666fa544f6d036e515867d0f266ca7)
+
+## Clients
+
+L'API peut être utilisée depuis n'importe que langage (une simple requête POST et un parser JSON suffisent), ça n'empêche pas qu'il est utile dans
+certains langages d'avoir des objets pour parser ça correctement. Des clients sont donc disponibles dans certains
+langages (n'hésitez pas à en faire pour d'autres langages au besoin).
+
+- [Client Java](https://github.com/Litarvan/pronote-api-client-java)
