@@ -401,8 +401,8 @@ async function fetch({ username, password, url, cas })
         result['absences'].push({
             period: period.id,
             absences: absences.donnees.listeAbsences.V.map(absence => ({
-                from: util.parseDate(absence.dateDebut.V),
-                to: util.parseDate(absence.dateFin.V),
+                from: util.parseDate((absence.dateDebut || absence.date).V),
+                to: util.parseDate((absence.dateFin || absence.date).V),
                 solved: absence.reglee,
                 justified: absence.justifie,
                 reason: absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
