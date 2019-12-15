@@ -198,6 +198,8 @@ async function fetch({ username, password, url, cas })
 
     let { auth, session } = sessions[username];
 
+    delete sessions[username];
+
     let result = {
         name: auth.donnees.ressource.L,
         studentClass: (auth.donnees.ressource.classeDEleve ? auth.donnees.ressource.classeDEleve.L :
