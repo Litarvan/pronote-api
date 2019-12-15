@@ -1,3 +1,6 @@
+const { JSDOM } = require('jsdom');
+const request = require('./request');
+
 Date.prototype.getWeek = function()
 {
     let d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
@@ -74,6 +77,19 @@ function decodeHTML(string)
     });
 }
 
+function tryExtractStart(username, html)
+{
+    if (html.indexOf('PRONOTE') === -1)
+    {
+        console.log(`Wrong IDs for '${username}'`);
+        throw 'Mauvais Identifiants';
+    }
+
+    console.log(`Logged in '${username}'`);
+
+    return extractStart(html);
+}
+
 function extractStart(html)
 {
     html = html.replace(new RegExp(' ', 'g'), '').replace(new RegExp('\n', 'g'), '');
@@ -94,12 +110,86 @@ function getTime(date)
     return date.getTime() + (/*date.getTimezoneOffset()*//*-120*/-60 * 60 * 1000);
 }
 
+function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot })
+{
+    let url = dom.window.document.getElementsByTagName('form')[0].action;
+
+    if (url.startsWith('/'))
+    {
+        url = url.substring(1);
+    }
+
+    if (url.indexOf('/') === -1)
+    {
+        url = actionRoot + url;
+    }
+
+    let params = getParams(dom);
+
+    let data = {
+        url,
+        jar,
+        asIs,
+        followRedirects: true,
+        runScripts,
+        hook,
+        data: params,
+        method
+    };
+
+    return getDOM(data);
+}
+
+function getParams(dom)
+{
+    let params = {};
+
+    Array.prototype.forEach.call(
+        dom.window.document.getElementsByTagName('input'),
+        input => input.name !== '' ? params[input.name] = input.value : ''
+    );
+
+    return params;
+}
+
+async function getDOM({ url, jar, method = 'GET', data = '', runScripts, hook = () => {}, followRedirects, asIs })
+{
+    let result = await request.http({
+        url,
+        method,
+        data,
+        jar,
+        followRedirects
+    });
+
+    if (asIs)
+    {
+        return result;
+    }
+
+    if (result.indexOf('<script>$(function() { startup() });</script>') !== -1)
+    {
+        result = result.replace('<script>$(function() { startup() });</script>', '').replace('console.log(user+" "+pwd);', '');
+    }
+
+    return new JSDOM(result, {
+        runScripts: runScripts ? 'dangerously' : 'outside-only',
+        beforeParse(window) { hook(window) },
+        cookieJar: jar
+    });
+}
+
+
 module.exports = {
     parseDate,
     parsePeriod,
     parseMark,
     decodeHTML,
     extractStart,
+    tryExtractStart,
     asJSON,
-    getTime
+    getTime,
+    submitForm,
+    getParams,
+    getDOM
 };
