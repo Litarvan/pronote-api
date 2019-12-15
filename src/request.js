@@ -82,8 +82,6 @@ async function pronote({ session, name, content })
     return result.donneesSec;
 }
 
-let count = 0;
-
 async function http({ url, body, data, method = 'GET', binary, jar = null, followRedirects = true })
 {
     let cookies = '';

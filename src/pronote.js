@@ -444,10 +444,12 @@ async function marks(session, period)
         Periode: period
     });
 
-    result['averages'] = {
-        student: util.parseMark(marks.donnees.moyGenerale.V),
-        studentClass: util.parseMark(marks.donnees.moyGeneraleClasse.V)
-    };
+    if (marks.donnees.moyGenerale) {
+        result['averages'] = {
+            student: util.parseMark(marks.donnees.moyGenerale.V),
+            studentClass: util.parseMark(marks.donnees.moyGeneraleClasse.V)
+        };
+    }
 
     marks.donnees.listeServices.V.forEach(subject => {
         result['marks'].push({
