@@ -165,6 +165,11 @@ async function login({ username, password, url, cas })
         }
     });
 
+    if (!auth.donnees.ressource)
+    {
+        throw 'Mauvais identifiants';
+    }
+
     if (auth.donnees.ressource.listeRessources && auth.donnees.ressource.listeRessources.length > 0)
     {
         auth.donnees.ressource = auth.donnees.ressource.listeRessources[0];

@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
                 console.error(err);
 
                 endRequest(res, {
-                    error: JSON.stringify(err)
+                    error: err.message || JSON.stringify(err)
                 });
 
                 /*if (err.stack)
