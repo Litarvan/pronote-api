@@ -1,7 +1,7 @@
-module.exports = ({ username, password, cas }) => require('./kdecole-wayf')({
+module.exports = ({ username, password, url }) => require('./kdecole-wayf')({
     username,
     password,
-    cas,
+    url,
 
     acName: 'Toulouse',
     casUrl: 'https://cas.mon-ent-occitanie.fr/',
