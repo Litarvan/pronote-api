@@ -589,9 +589,6 @@ async function timetable(session, user)
             to = to.getTime();
 
             let res = {
-                subject: lesson.ListeContenus.V[0].L,
-                teacher: lesson.ListeContenus.V.length > 1 ? lesson.ListeContenus.V[1].L : 'Aucun prof',
-
                 from,
                 to
             };
