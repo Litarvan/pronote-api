@@ -19,6 +19,10 @@ module.exports = {
             actionRoot: atenURL
         });
 
+        if (result.window.document.getElementById('aten-auth')) {
+            throw 'Mauvais identifiants';
+        }
+
         return util.submitForm({
             dom: result,
             jar,

@@ -1,10 +1,10 @@
-module.exports = ({ username, password, url }) => require('./mbn')({
+module.exports = ({ username, password, url }) => require('./kdecole-wayf')({
     username,
     password,
     url,
 
     acName: 'Reims',
-    baseURL: 'https://cas.monbureaunumerique.fr/',
+    casUrl: 'https://cas.monbureaunumerique.fr/',
     idp: 'REIMS-ATS',
-    atenURL: 'https://services-familles.ac-reims.fr/'
+    atenURL: 'https://services-familles.ac-reims.fr/login/'
 });

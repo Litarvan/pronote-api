@@ -112,7 +112,7 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
         method: method.toLowerCase(),
         headers: {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0',
-            'Content-Type': body !== undefined ? 'application/json' : (params !== '' ? 'application/x-www-form-urlencoded' : ''),
+            'Content-Type': body !== undefined ? 'application/json' : (params !== '' && method !== 'GET' ? 'application/x-www-form-urlencoded' : ''),
             'Cookie': cookies
         },
         maxRedirects: 0,

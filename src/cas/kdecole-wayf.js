@@ -1,7 +1,9 @@
 const jsdom = require('jsdom');
+
+const aten = require('./aten');
 const util = require('../util');
 
-async function login({ username, password, url, acName, casUrl, idp })
+async function login({ username, password, url, acName, casUrl, idp, atenURL })
 {
     console.log(`Logging in '${username}' for '${url}' using ${acName} CAS`);
 
@@ -11,17 +13,28 @@ async function login({ username, password, url, acName, casUrl, idp })
         jar
     });
 
-    dom.window.document.getElementById('username').value = username;
-    dom.window.document.getElementById('password').value = password;
+    if (atenURL) {
+        dom = await util.submitForm({
+            dom,
+            jar,
+            runScripts: !!atenURL,
+            hook: atenURL && aten.hook,
+        });
 
-    const result = await util.submitForm({
-        actionRoot: casUrl,
-        dom,
-        jar,
-        asIs: true
-    });
+        dom = await aten.submit({ dom, jar, username, password, atenURL });
+    } else {
+        dom.window.document.getElementById('username').value = username;
+        dom.window.document.getElementById('password').value = password;
 
-    return util.tryExtractStart(username, result);
+        dom = await util.submitForm({
+            actionRoot: casUrl,
+            dom,
+            jar,
+            asIs: true
+        });
+    }
+
+    return util.tryExtractStart(username, dom);
 }
 
 module.exports = login;

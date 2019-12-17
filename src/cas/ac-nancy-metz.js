@@ -1,10 +1,10 @@
-module.exports = ({ username, password, url }) => require('./mbn')({
+module.exports = ({ username, password, url }) => require('./kdecole-wayf')({
     username,
     password,
     url,
 
     acName: 'Nancy-Metz',
-    baseURL: 'https://cas.monbureaunumerique.fr/',
+    casUrl: 'https://cas.monbureaunumerique.fr/',
     idp: 'NAN-ME-ATS',
-    atenURL: 'https://teleservices.ac-nancy-metz.fr/'
+    atenURL: 'https://teleservices.ac-nancy-metz.fr/login/'
 });
