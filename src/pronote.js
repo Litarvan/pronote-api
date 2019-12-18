@@ -485,6 +485,7 @@ async function marks(session, period)
         const value = util.parseMark(mark.note.V);
 
         result['marks'][subjectID].marks.push({
+            id: mark.N,
             subject: mark.service.V.L,
             title: mark.commentaire,
             value,
