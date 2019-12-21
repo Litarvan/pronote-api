@@ -4,7 +4,7 @@
   "description": "Pronote 2020 API - fork from Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
   "main": "index.js",
   "scripts": {
-    "start": "server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

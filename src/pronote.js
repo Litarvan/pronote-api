@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const request = require('./request');
 const cipher = require('./cipher');
@@ -817,17 +818,20 @@ async function init({ username, password, url, cas })
         cas = 'none';
     }
 
-    if (!fs.existsSync(`./src/cas/${cas}.js`))
-    {
-        throw `Unknown CAS '${cas}'`;
-    }
+    console.log(path.resolve(__dirname, '/cas', cas + '.js'));
 
-    return await require(`./cas/${cas}`)({
-        username,
-        password,
-        url
-    });
+    try {
+      let access = await fs.promises.access(path.resolve(__dirname, 'cas', cas + '.js'), fs.constants.F_OK);
+
+      return await require(path.resolve(__dirname, 'cas', cas + '.js'))({
+          username,
+          password,
+          url
+      });
+    }
+    catch(err) {
+      throw `Unknown CAS '${cas}'`;
+    }
 }
 
 module.exports = { login, fetch };
-
