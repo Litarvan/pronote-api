@@ -62,5 +62,5 @@ function endRequest(res, content)
     res.end(JSON.stringify(content));
 }
 
-server.listen(PORT);
-console.log(`---> Pronote API HTTP Server working on 127.0.0.1:${PORT}`);
+server.listen(PORT, '0.0.0.0');
+console.log(`---> Pronote API HTTP Server working on port ${PORT}`);
