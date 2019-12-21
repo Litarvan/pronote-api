@@ -818,18 +818,20 @@ async function init({ username, password, url, cas })
         cas = 'none';
     }
 
-    console.log(path.resolve(__dirname, '/cas', cas + '.js'));
+    console.log(__dirname);
+    console.log(path.join(__dirname, '/cas/', cas + '.js'));
 
     try {
-      let access = await fs.promises.access(path.resolve(__dirname, 'cas', cas + '.js'), fs.constants.F_OK);
+      let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
 
-      return await require(path.resolve(__dirname, 'cas', cas + '.js'))({
+      return await require(path.join(__dirname, '/cas/', cas + '.js'))({
           username,
           password,
           url
       });
     }
     catch(err) {
+      console.error(err);
       throw `Unknown CAS '${cas}'`;
     }
 }
