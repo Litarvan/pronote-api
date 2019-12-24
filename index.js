@@ -3,7 +3,8 @@ console.log('Starting...');
 const http = require('http');
 const pronote = require('./src/pronote');
 
-const PORT = 21727;
+const HOST = process.env.HOST == null ? '127.0.0.1' : process.env.HOST;
+const PORT = process.env.PORT == null ? 21727 : process.env.PORT;
 
 const server = http.createServer((req, res) => {
     if (req.method !== 'POST')
@@ -62,5 +63,7 @@ function endRequest(res, content)
     res.end(JSON.stringify(content));
 }
 
-server.listen(PORT);
-console.log(`---> Pronote API HTTP Server working on 127.0.0.1:${PORT}`);
+server.listen(PORT, HOST, () => {
+    console.log(`---> Pronote API HTTP Server working on ${HOST}:${PORT}`);
+});
+
