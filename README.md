@@ -30,6 +30,7 @@ et marquage des profs absents et cours annulés
 Sinon, l'API propose de se connecter à Pronote avec des comptes des académies suivantes :
 
 - Académie de Lyon
+- Académie de Montpellier
 - Académie de Toulouse
 - Académie de Grenoble
 - Académie de Rouen
@@ -38,6 +39,8 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Reims
 - Académie de Nancy-Metz
 - Académie de Strasbourg
+- Académie de Caen
+- ENT "Île de France"
 
 Encore une fois, cette liste peut être agrandie : n'hésitez pas à me contacter, je fais ça rapidement
 
