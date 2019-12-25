@@ -412,7 +412,7 @@ async function fetch({ username, password, url, cas })
                 to: util.parseDate((absence.dateFin || absence.date).V),
                 solved: absence.reglee,
                 justified: absence.justifie,
-                reason: absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
+                reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
             }))
         });
     }
