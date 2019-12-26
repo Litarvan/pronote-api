@@ -586,13 +586,15 @@ async function timetable(session, user)
 
         timetable.donnees.ListeCours.forEach(lesson => {
             let from = util.parseDate(lesson.DateDuCours.V);
+            
             let to = new Date(from);
-            to.setMinutes(to.getMinutes() + 30 + (30 * (lesson.duree - 1)));
+            to.setHours(to.getHours() + (lesson.duree * 0.25));
             to = to.getTime();
 
             let res = {
                 from,
-                to
+                to,
+                color: lesson.CouleurFond || '#FFF'
             };
 
             if (lesson.ListeContenus) {
