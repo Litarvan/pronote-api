@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const request = require('./request');
 const cipher = require('./cipher');
@@ -585,13 +586,15 @@ async function timetable(session, user)
 
         timetable.donnees.ListeCours.forEach(lesson => {
             let from = util.parseDate(lesson.DateDuCours.V);
+
             let to = new Date(from);
-            to.setMinutes(to.getMinutes() + 30 + (30 * (lesson.duree - 1)));
+            to.setHours(to.getHours() + (lesson.duree * 0.25));
             to = to.getTime();
 
             let res = {
                 from,
-                to
+                to,
+                color: lesson.CouleurFond || '#FFF'
             };
 
             if (lesson.ListeContenus) {
@@ -817,17 +820,19 @@ async function init({ username, password, url, cas })
         cas = 'none';
     }
 
-    if (!fs.existsSync(`./src/cas/${cas}.js`))
-    {
-        throw `Unknown CAS '${cas}'`;
-    }
+    try {
+      let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
 
-    return await require(`./cas/${cas}`)({
-        username,
-        password,
-        url
-    });
+      return await require(path.join(__dirname, '/cas/', cas + '.js'))({
+          username,
+          password,
+          url
+      });
+    }
+    catch(err) {
+      console.error(err);
+      throw `Unknown CAS '${cas}'`;
+    }
 }
 
 module.exports = { login, fetch };
-

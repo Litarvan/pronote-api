@@ -63,7 +63,11 @@ function endRequest(res, content)
     res.end(JSON.stringify(content));
 }
 
-server.listen(PORT, HOST, () => {
-    console.log(`---> Pronote API HTTP Server working on ${HOST}:${PORT}`);
-});
 
+// Let's not launch the server if the module is required by something else
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+      console.log(`---> Pronote API HTTP Server working on ${HOST}:${PORT}`);
+  });
+}
+else module.exports = require('./src/pronote');

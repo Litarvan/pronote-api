@@ -1,7 +1,7 @@
-const fs = require('fs');
+const fs = require('fs'), path = require('path');
 const util = require('../util');
 
-const hook = fs.readFileSync('./jsencrypt.min.js') + '; window.JSEncrypt = JSEncrypt;';
+const hook = fs.readFileSync(path.join(__dirname, '../../jsencrypt.min.js')) + '; window.JSEncrypt = JSEncrypt;';
 
 module.exports = {
     hook(window) {
