@@ -586,7 +586,7 @@ async function timetable(session, user)
 
         timetable.donnees.ListeCours.forEach(lesson => {
             let from = util.parseDate(lesson.DateDuCours.V);
-            
+
             let to = new Date(from);
             to.setHours(to.getHours() + (lesson.duree * 0.25));
             to = to.getTime();
@@ -819,9 +819,6 @@ async function init({ username, password, url, cas })
     {
         cas = 'none';
     }
-
-    console.log(__dirname);
-    console.log(path.join(__dirname, '/cas/', cas + '.js'));
 
     try {
       let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
