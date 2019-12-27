@@ -107,7 +107,12 @@ function asJSON(json)
 
 function getTime(date)
 {
-    return date.getTime();// + (/*date.getTimezoneOffset()*//*-120*/-60 * 60 * 1000);
+    let offset = 0;
+    if (process.env.OFFSET) {
+        offset = -60 * 60 * 1000;
+    }
+
+    return date.getTime() + offset;
 }
 
 function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot })
