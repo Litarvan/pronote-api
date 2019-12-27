@@ -1,7 +1,7 @@
 {
   "name": "pronote-api",
-  "version": "2.0.0",
-  "description": "Pronote 2020 API - fork from Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
+  "version": "1.2.0",
+  "description": "Pronote 2020 API",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -11,7 +11,7 @@
     "pronote",
     "api"
   ],
-  "author": "Ryzzzen",
+  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
   "license": "GPL-3.0",
   "dependencies": {
     "axios": "^0.18.1",
