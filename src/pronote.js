@@ -453,39 +453,31 @@ async function marks(session, period)
     });
 
     if (marks.donnees.moyGenerale) {
-        result['averages'] = {
+        result.averages = {
             student: util.parseMark(marks.donnees.moyGenerale.V),
             studentClass: util.parseMark(marks.donnees.moyGeneraleClasse.V)
         };
     }
 
-    marks.donnees.listeServices.V.forEach(subject => {
-        result['marks'].push({
+    result.marks = marks.donnees.listeServices.V.map(subject => {
+        return {
             name: subject.L,
+            id: subject.N,
             average: util.parseMark(subject.moyEleve.V),
             studentClassAverage: util.parseMark(subject.moyClasse.V),
             maxAverage: util.parseMark(subject.moyMax.V),
             minAverage: util.parseMark(subject.moyMin.V),
             marks: []
-        });
+        };
     });
 
     marks.donnees.listeDevoirs.V.forEach(mark => {
-        let subjectID = null;
-        let subject = mark.service.V.L;
-
-        for (let i = 0; i < result['marks'].length; i++)
-        {
-            if (result['marks'][i].name === subject)
-            {
-                subjectID = i;
-                break;
-            }
-        }
+        let subjectId = mark.service.V.N;
+        let subjectIndex = result.marks.findIndex(x => x.id === subjectId);
 
         const value = util.parseMark(mark.note.V);
 
-        result['marks'][subjectID].marks.push({
+        result.marks[subjectIndex].marks.push({
             id: mark.N,
             subject: mark.service.V.L,
             title: mark.commentaire,
