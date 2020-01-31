@@ -409,8 +409,8 @@ async function fetch({ username, password, url, cas })
         result['absences'].push({
             period: period.id,
             absences: absences.donnees.listeAbsences.V.map(absence => ({
-                from: util.parseDate((absence.dateDebut || absence.date).V),
-                to: util.parseDate((absence.dateFin || absence.date).V),
+                from: util.parseDate((absence.dateDebut || absence.date || absence.dateDemande).V),
+                to: util.parseDate((absence.dateFin || absence.date || absence.dateDemande).V),
                 solved: absence.reglee,
                 justified: absence.justifie,
                 reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
