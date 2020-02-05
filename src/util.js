@@ -115,7 +115,7 @@ function getTime(date)
     return date.getTime() + offset;
 }
 
-function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot })
+function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot, extraParams })
 {
     let url = dom.window.document.getElementsByTagName('form')[0].action;
 
@@ -124,12 +124,12 @@ function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionR
         url = url.substring(1);
     }
 
-    if (url.indexOf('/') === -1)
+    if (url.indexOf('http') === -1)
     {
         url = actionRoot + url;
     }
 
-    let params = getParams(dom);
+    let params = getParams(dom, extraParams);
 
     let data = {
         url,
@@ -145,9 +145,9 @@ function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionR
     return getDOM(data);
 }
 
-function getParams(dom)
+function getParams(dom, extra = {})
 {
-    let params = {};
+    let params = { ...extra };
 
     Array.prototype.forEach.call(
         dom.window.document.getElementsByTagName('input'),
