@@ -40,6 +40,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Nancy-Metz
 - Académie de Strasbourg
 - Académie de Caen
+- Académie d'Orleans-Tours
 - ENT "Île de France"
 
 Encore une fois, cette liste peut être agrandie : n'hésitez pas à me contacter, je fais ça rapidement
