@@ -9,7 +9,7 @@ async function login({ username, password, url, acName, casUrl, idp, atenURL })
 
     let jar = new jsdom.CookieJar();
     let dom = await util.getDOM({
-        url: `${casUrl}login?selection=${idp}_parent_eleve&service=${encodeURIComponent(url)}`,
+        url: `${casUrl}login?selection=${idp.includes('parent_eleve') ? idp : idp + '_parent_eleve'}&service=${encodeURIComponent(url)}`,
         jar
     });
 
@@ -19,6 +19,7 @@ async function login({ username, password, url, acName, casUrl, idp, atenURL })
             jar,
             runScripts: !!atenURL,
             hook: atenURL && aten.hook,
+            actionRoot: casUrl
         });
 
         dom = await aten.submit({ dom, jar, username, password, atenURL });
