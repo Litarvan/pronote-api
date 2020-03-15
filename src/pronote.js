@@ -577,12 +577,17 @@ async function timetable(session, user)
         });
 
         timetable.donnees.ListeCours.forEach(lesson => {
-            let from = util.parseDate(lesson.DateDuCours.V);
-
-            let to = new Date(from);
-            to.setHours(to.getHours() + (lesson.duree * 0.25));
-            to = to.getTime();
-
+            let from;
+            let to;
+            try { //Patch to prevent crash where informations isn't given.
+                from = util.parseDate(lesson.DateDuCours.V);
+                to = new Date(from);
+                to.setHours(to.getHours() + (lesson.duree * 0.25));
+                to = to.getTime();
+            } catch {
+                let from = undefined;
+                let to = undefined;
+            }
             let res = {
                 from,
                 to,
@@ -597,15 +602,15 @@ async function timetable(session, user)
                 res.teacher = 'Aucun prof';
             }
 
-            if (lesson.ListeContenus.V.length > 2)
-            {
-                let room = lesson.ListeContenus.V[lesson.ListeContenus.V.length - 1].L;
+            try {
+                if (lesson.ListeContenus.V.length > 2) {
+                    let room = lesson.ListeContenus.V[lesson.ListeContenus.V.length - 1].L;
 
-                if (!room.startsWith('[') && !room.startsWith('<'))
-                {
-                    res['room'] = room;
+                    if (!room.startsWith('[') && !room.startsWith('<')) {
+                        res['room'] = room;
+                    }
                 }
-            }
+            } catch (e) {}
 
             res['away'] = lesson.Statut === 'Prof. absent' || lesson.Statut === 'Conseil de classe';
             res['cancelled'] = lesson.Statut === 'Cours annulé';
