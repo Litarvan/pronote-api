@@ -582,7 +582,7 @@ async function timetable(session, user)
             try { //Patch to prevent crash where informations isn't given.
                 from = util.parseDate(lesson.DateDuCours.V);
                 to = new Date(from);
-                to.setHours(to.getHours() + (lesson.duree * 0.25));
+                to.setHours(to.getHours() + (lesson.duree * 0.50));
                 to = to.getTime();
             } catch {
                 let from = undefined;
