@@ -4,9 +4,6 @@
 
 API Pronote **2020** complète et plutôt stable avec intégration de nombreux CAS (connexion avec comptes spéciaux pour les régions).
 
-Pour toute question ou demande d'ajout d'un CAS (n'hésitez pas à demander je fais ça vite), voire si besoin d'explications sur
-le fonctionnement de Pronote : `Litarvan#0420`
-
 _Note :_ La connexion via compte parent est supportée
 
 ## Données renvoyées
@@ -42,9 +39,8 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Caen
 - Académie d'Orleans-Tours
 - Académie de Besançon
+- Académie de Nantes
 - ENT "Île de France"
-
-Encore une fois, cette liste peut être agrandie : n'hésitez pas à me contacter, je fais ça rapidement
 
 ## Utilisation
 
