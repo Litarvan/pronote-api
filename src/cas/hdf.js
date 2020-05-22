@@ -3,11 +3,11 @@ const util = require('../util');
 
 async function login({ username, password, url })
 {
-    console.log(`Logging in '${username}' for '${url}' using Île de France CAS`);
+    console.log(`Logging in '${username}' for '${url}' using HDF CAS`);
 
     let jar = new jsdom.CookieJar();
     let dom = await util.getDOM({
-        url: "https://ent.iledefrance.fr/auth/login",
+        url: "https://enthdf.fr/auth/login",
         jar,
         method: 'POST',
         data: {
@@ -17,7 +17,6 @@ async function login({ username, password, url })
         },
         asIs: true
     });
-
     return util.tryExtractStart(username, dom);
 }
 

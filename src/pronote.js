@@ -7,7 +7,7 @@ const util = require('./util');
 
 const sessions = {};
 
-async function login({ username, password, url, cas })
+async function login({ username, password, url, cas, typecon })
 {
     if (!username || !password || !url)
     {
@@ -25,7 +25,8 @@ async function login({ username, password, url, cas })
         username,
         password,
         url,
-        cas
+        cas,
+        typecon
     });
 
     if (cas === 'parent')
@@ -82,9 +83,10 @@ async function login({ username, password, url, cas })
         {
             result.period = true;
             result.id = util.parsePeriod(period.L);
-        }
-        else
-        {
+        } else if (period.L.startsWith('Semestre')) {
+            result.period = true;
+            result.id = 10+util.parsePeriod(period.L);
+        } else {
             result.id = --specialPeriodID;
         }
 
@@ -189,12 +191,14 @@ async function login({ username, password, url, cas })
     };
 }
 
-async function fetch({ username, password, url, cas })
+async function fetch({ username, password, url, cas, typecon})
 {
     let time = new Date().getTime();
 
+    console.log("typecon = " + typecon);
+
     if (!sessions[username]) {
-        await login({ username, password, url, cas });
+        await login({ username, password, url, cas, typecon});
     }
 
     let { auth, session } = sessions[username];
@@ -206,6 +210,7 @@ async function fetch({ username, password, url, cas })
         studentClass: (auth.donnees.ressource.classeDEleve ? auth.donnees.ressource.classeDEleve.L :
             auth.donnees.ressource.listeRessources[0].classeDEleve.L),
         marks: [],
+        competences:[],
         timetable: [],
         infos: [],
         files: [],
@@ -254,7 +259,7 @@ async function fetch({ username, password, url, cas })
 
     for (const period of periods)
     {
-        const res = await marks(session, {
+        const res = await marks(session, periods, {
             N: period.N,
             G: 2,
             L: period.name
@@ -268,6 +273,25 @@ async function fetch({ username, password, url, cas })
             }
 
             result['marks'].push({ period: period.id, ...res });
+        }
+    }
+
+    for (const period of periods)
+    {
+        const res = await competences(session, periods, {
+            N: period.N,
+            G: 4,
+            L: period.name
+        });
+
+        if (res.competences.length > 0)
+        {
+            if (period.period)
+            {
+                defaultPeriod = util.parsePeriod(period.name);
+            }
+
+            result['competences'].push({ period: period.id, ...res });
         }
     }
 
@@ -390,33 +414,26 @@ async function fetch({ username, password, url, cas })
             result['reports'].push({ period: period.id, ...(await report(session, auth.ressource, period)) });
         }
 
-        const absences = await navigate(session, 19, 'PagePresence', {
-            DateDebut: {
-                _T: 7,
-                V: "1/9/2018 0:0:0"
-            },
-            DateFin: {
-                _T: 7,
-                V: "10/7/2021 0:0:0"
-            },
-            periode: {
-                N: period.N,
-                G: 1,
-                L: period.name
-            }
-        });
-
-        result['absences'].push({
-            period: period.id,
-            absences: absences.donnees.listeAbsences.V.map(absence => ({
-                from: util.parseDate((absence.dateDebut || absence.date || absence.dateDemande).V),
-                to: util.parseDate((absence.dateFin || absence.date || absence.dateDemande).V),
-                solved: absence.reglee,
-                justified: absence.justifie,
-                reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
-            }))
-        });
     }
+
+    const absences = await navigate(session, 19, 'PagePresence', {
+        DateDebut: {
+            _T: 7,
+            V: "1/9/2019 0:0:0"
+        },
+        DateFin: {
+            _T: 7,
+            V: "10/7/2021 0:0:0"
+        }
+    });
+
+    result['absences'] = absences.donnees.listeAbsences.V.map(absence => ({
+        from: util.parseDate((absence.dateDebut || absence.date || absence.dateDemande).V),
+        to: util.parseDate((absence.dateFin || absence.date || absence.dateDemande).V),
+        solved: absence.reglee,
+        justified: absence.justifie,
+        reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
+    }));
 
     try
     {
@@ -441,7 +458,7 @@ function file(url, session, name, { N, G }) {
                /// Yes, it's made like that........
 }
 
-async function marks(session, period)
+async function marks(session, periods, period)
 {
     const result = {
         marks: [],
@@ -489,7 +506,60 @@ async function marks(session, period)
             higher: util.parseMark(mark.noteMax.V),
             lower: util.parseMark(mark.noteMin.V),
             time: util.parseDate(mark.date.V),
-            period: util.parsePeriod(mark.periode.V.L)
+            period: util.parsePeriodBis(periods, mark.periode.V.L)
+        });
+    });
+
+    return result;
+}
+
+async function competences(session, periods, period)
+{
+    const result = {
+        competences: []
+    };
+
+    const competences = await navigate(session, 201, 'DernieresEvaluations', {
+        periode: period
+    });
+
+    //console.log("period debus : "+ JSON.stringify(period, '', 4));
+
+    competences.donnees.listeEvaluations.V.forEach(competences => {
+        let subjectId = competences.matiere.V.N;
+        let subjectIndex = result.competences.findIndex(x => x.id === subjectId);
+
+        if (subjectIndex == -1) {
+                result.competences.push({
+                name: competences.matiere.V.L,
+                id: competences.matiere.V.N,
+                prof: competences.individu.V.L,
+                Evaluations: []
+            });
+        }
+    });
+
+    competences.donnees.listeEvaluations.V.forEach(competence => {
+        let subjectId = competence.matiere.V.N;
+        let subjectIndex = result.competences.findIndex(x => x.id === subjectId);
+
+        const competencesArray = [];
+
+        competence.listeNiveauxDAcquisitions.V.forEach(competence=> {
+            competencesArray.push({
+                id: competence.domaine.V.N,
+                name: competence.domaine.V.L,
+                value: competence.L,
+                abbreviation: competence.abbreviation
+            })
+        })
+        result.competences[subjectIndex].Evaluations.push({
+            id: competence.N,
+            name: competence.L,
+            coefficient: competence.coefficient,
+            time: util.parseDate(competence.date.V),
+            period: util.parsePeriodBis(periods, competence.periode.V.L),
+            competences: competencesArray
         });
     });
 
@@ -810,7 +880,7 @@ async function navigate(session, id, name, data = {})
     });
 }
 
-async function init({ username, password, url, cas })
+async function init({ username, password, url, cas, typecon})
 {
     if (!cas)
     {
@@ -819,6 +889,11 @@ async function init({ username, password, url, cas })
 
     try {
       let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
+
+        if (typeof(typecon) !== "undefined" && typecon !== null) {
+            typecon = "eleve.html";
+        }
+        url = url+typecon;
 
       return await require(path.join(__dirname, '/cas/', cas + '.js'))({
           username,
