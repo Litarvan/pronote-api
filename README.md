@@ -17,6 +17,7 @@ et marquage des profs absents et cours annulés
 - **Menu de la Cantine** (si dispo)
 - **Informations**
 - **Infos de l'élève** (nom + classe + avatar)
+- **Competence de l'élève**
 
 ## Comptes région supportés
 
@@ -31,17 +32,20 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Toulouse
 - Académie de Grenoble
 - Académie de Rouen
+- Académie de Rouen (Arsene76)
+- Académie de Lille
 - Académie de Rennes
 - Académie de Clermont-Ferrand
 - Académie de Reims
-- Académie de Nancy-Metz
+- "Académie de Nancy-Metz" (Non fonctionnel Actuellement)
 - Académie de Strasbourg
 - Académie de Caen
 - Académie d'Orleans-Tours
 - Académie de Besançon
 - Académie de Nantes
 - ENT "Île de France"
-- ENT "Hauts de France"
+- ENT "Hauts-de-France"
+- ENT "Seine Et Marne"
 
 ## Utilisation
 
@@ -63,7 +67,8 @@ Requête `POST` sur `http://127.0.0.1:21727/` avec en corps :
   "username": "Nom d'utilisateur",
   "password": "Mot de passe",
   "url": "Url du serveur Pronote (avec / à la fin, et sans eleve.html)",
-  "cas": "Nom d'un fichier dans src/cas sans .js, exemple 'ac-montpellier', ou 'none' si connexion directe (ou juste ne pas renseigner le field)" 
+  "cas": "Nom d'un fichier dans src/cas sans .js, exemple 'ac-montpellier', ou 'none' si connexion directe (ou juste ne pas renseigner le field)" ,
+  "typecon": "('eleve.html') pour les eleve et ('parent.html') pour les parent"
 }
 ``` 
 

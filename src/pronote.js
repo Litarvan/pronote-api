@@ -7,7 +7,7 @@ const util = require('./util');
 
 const sessions = {};
 
-async function login({ username, password, url, cas })
+async function login({ username, password, url, cas, typecon })
 {
     if (!username || !password || !url)
     {
@@ -25,7 +25,8 @@ async function login({ username, password, url, cas })
         username,
         password,
         url,
-        cas
+        cas,
+        typecon
     });
 
     if (cas === 'parent')
@@ -82,9 +83,10 @@ async function login({ username, password, url, cas })
         {
             result.period = true;
             result.id = util.parsePeriod(period.L);
-        }
-        else
-        {
+        } else if (period.L.startsWith('Semestre')) {
+            result.period = true;
+            result.id = 10+util.parsePeriod(period.L);
+        } else {
             result.id = --specialPeriodID;
         }
 
@@ -189,12 +191,12 @@ async function login({ username, password, url, cas })
     };
 }
 
-async function fetch({ username, password, url, cas })
+async function fetch({ username, password, url, cas, typecon})
 {
     let time = new Date().getTime();
 
     if (!sessions[username]) {
-        await login({ username, password, url, cas });
+        await login({ username, password, url, cas, typecon});
     }
 
     let { auth, session } = sessions[username];
@@ -205,7 +207,15 @@ async function fetch({ username, password, url, cas })
         name: auth.donnees.ressource.L,
         studentClass: (auth.donnees.ressource.classeDEleve ? auth.donnees.ressource.classeDEleve.L :
             auth.donnees.ressource.listeRessources[0].classeDEleve.L),
+        allInfo: {
+            competences_N: 0,
+            marks_N: 0,
+            competences_A: false,
+            homeworks_A: false,
+            reports_A: false
+        },
         marks: [],
+        competences:[],
         timetable: [],
         infos: [],
         files: [],
@@ -254,7 +264,7 @@ async function fetch({ username, password, url, cas })
 
     for (const period of periods)
     {
-        const res = await marks(session, {
+        const res = await marks(session, periods, {
             N: period.N,
             G: 2,
             L: period.name
@@ -266,8 +276,32 @@ async function fetch({ username, password, url, cas })
             {
                 defaultPeriod = util.parsePeriod(period.name);
             }
-
+            result.allInfo.marks_N =  result.allInfo.marks_N + res.marks_N;
             result['marks'].push({ period: period.id, ...res });
+        }
+    }
+
+    if (!auth.listeOngletsInvisibles.includes(201))
+    {
+        result.allInfo.competences_A = true;
+        for (const period of periods)
+        {
+            const res = await competences(session, periods, {
+                N: period.N,
+                G: 4,
+                L: period.name
+            });
+
+            if (res.competences.length > 0)
+            {
+                if (period.period)
+                {
+                    defaultPeriod = util.parsePeriod(period.name);
+                }
+
+                result['competences'].push({ period: period.id, ...res });
+                result.allInfo.competences_N = result.allInfo.competences_N + res.competences.length;
+            }
         }
     }
 
@@ -310,15 +344,8 @@ async function fetch({ username, password, url, cas })
     if (!auth.listeOngletsInvisibles.includes(88))
     {
         result['homeworks'] = (await homeworks(url, session, first)).concat(await homeworks(url, session, second));
+        result.allInfo.homeworks_A = true;
     }
-
-    /*console.log(url + 'FichiersExternes' + '/' + cipher.cipher({
-        session,
-        string: JSON.stringify({
-            N: auth.ressource.N,
-            G: auth.ressource.G
-        })
-    }) + '/photo.jpg?Session=' + session.session);*/
 
     const infos = (await navigate(session, 8, 'PageActualites', {
         estAuteur: false
@@ -388,35 +415,29 @@ async function fetch({ username, password, url, cas })
 
         if (!auth.listeOngletsInvisibles.includes(13)) {
             result['reports'].push({ period: period.id, ...(await report(session, auth.ressource, period)) });
+            result.allInfo.reports_A = true;
         }
 
-        const absences = await navigate(session, 19, 'PagePresence', {
-            DateDebut: {
-                _T: 7,
-                V: "1/9/2018 0:0:0"
-            },
-            DateFin: {
-                _T: 7,
-                V: "10/7/2021 0:0:0"
-            },
-            periode: {
-                N: period.N,
-                G: 1,
-                L: period.name
-            }
-        });
-
-        result['absences'].push({
-            period: period.id,
-            absences: absences.donnees.listeAbsences.V.map(absence => ({
-                from: util.parseDate((absence.dateDebut || absence.date || absence.dateDemande).V),
-                to: util.parseDate((absence.dateFin || absence.date || absence.dateDemande).V),
-                solved: absence.reglee,
-                justified: absence.justifie,
-                reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
-            }))
-        });
     }
+
+    const absences = await navigate(session, 19, 'PagePresence', {
+        DateDebut: {
+            _T: 7,
+            V: "1/9/2019 0:0:0"
+        },
+        DateFin: {
+            _T: 7,
+            V: "10/7/2021 0:0:0"
+        }
+    });
+
+    result['absences'] = absences.donnees.listeAbsences.V.map(absence => ({
+        from: util.parseDate((absence.dateDebut || absence.date || absence.dateDemande).V),
+        to: util.parseDate((absence.dateFin || absence.date || absence.dateDemande).V),
+        solved: absence.reglee,
+        justified: absence.justifie,
+        reason: absence.listeMotifs && absence.listeMotifs.V.length > 0 ? absence.listeMotifs.V[0].L : ''
+    }));
 
     try
     {
@@ -438,14 +459,14 @@ function file(url, session, name, { N, G }) {
         session,
         string: JSON.stringify({ N, G })
     }) + '/' + encodeURIComponent(encodeURIComponent(name)) + '?Session=' + session.session;
-               /// Yes, it's made like that........
 }
 
-async function marks(session, period)
+async function marks(session, periods, period)
 {
     const result = {
         marks: [],
-        averages: {}
+        averages: {}, 
+        marks_N: 0
     };
 
     const marks = await navigate(session, 198, 'DernieresNotes', {
@@ -471,6 +492,8 @@ async function marks(session, period)
         };
     });
 
+    result.marks_N = marks.donnees.listeDevoirs.V.length;
+
     marks.donnees.listeDevoirs.V.forEach(mark => {
         let subjectId = mark.service.V.N;
         let subjectIndex = result.marks.findIndex(x => x.id === subjectId);
@@ -489,7 +512,58 @@ async function marks(session, period)
             higher: util.parseMark(mark.noteMax.V),
             lower: util.parseMark(mark.noteMin.V),
             time: util.parseDate(mark.date.V),
-            period: util.parsePeriod(mark.periode.V.L)
+            period: util.parsePeriodBis(periods, mark.periode.V.L)
+        });
+    });
+
+    return result;
+}
+
+async function competences(session, periods, period)
+{
+    const result = {
+        competences: []
+    };
+
+    const competences = await navigate(session, 201, 'DernieresEvaluations', {
+        periode: period
+    });
+
+    competences.donnees.listeEvaluations.V.forEach(competences => {
+        let subjectId = competences.matiere.V.N;
+        let subjectIndex = result.competences.findIndex(x => x.id === subjectId);
+
+        if (subjectIndex == -1) {
+                result.competences.push({
+                name: competences.matiere.V.L,
+                id: competences.matiere.V.N,
+                prof: competences.individu.V.L,
+                Evaluations: []
+            });
+        }
+    });
+
+    competences.donnees.listeEvaluations.V.forEach(competence => {
+        let subjectId = competence.matiere.V.N;
+        let subjectIndex = result.competences.findIndex(x => x.id === subjectId);
+
+        const competencesArray = [];
+
+        competence.listeNiveauxDAcquisitions.V.forEach(competence=> {
+            competencesArray.push({
+                id: competence.domaine.V.N,
+                name: competence.domaine.V.L,
+                value: competence.L,
+                abbreviation: competence.abbreviation
+            })
+        })
+        result.competences[subjectIndex].Evaluations.push({
+            id: competence.N,
+            name: competence.L,
+            coefficient: competence.coefficient,
+            time: util.parseDate(competence.date.V),
+            period: util.parsePeriodBis(periods, competence.periode.V.L),
+            competences: competencesArray
         });
     });
 
@@ -512,7 +586,7 @@ async function timetable(session, user)
         week++;
     }
 
-    while (weeks.length < 2)
+    while (weeks.length < 4)
     {
         let shifted = false;
         if (week > 44)
@@ -582,7 +656,7 @@ async function timetable(session, user)
             try { //Patch to prevent crash where informations isn't given.
                 from = util.parseDate(lesson.DateDuCours.V);
                 to = new Date(from);
-                to.setHours(to.getHours() + (lesson.duree * 0.25));
+                to.setHours(to.getHours() + (lesson.duree * 0.50));
                 to = to.getTime();
             } catch {
                 let from = undefined;
@@ -810,7 +884,7 @@ async function navigate(session, id, name, data = {})
     });
 }
 
-async function init({ username, password, url, cas })
+async function init({ username, password, url, cas, typecon})
 {
     if (!cas)
     {
@@ -820,6 +894,11 @@ async function init({ username, password, url, cas })
     try {
       let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
 
+        if (typeof(typecon) !== "undefined" && typecon !== null) {
+            typecon = "eleve.html";
+        }
+        url = url+typecon;
+
       return await require(path.join(__dirname, '/cas/', cas + '.js'))({
           username,
           password,
@@ -828,7 +907,7 @@ async function init({ username, password, url, cas })
     }
     catch(err) {
       console.error(err);
-      throw `Unknown CAS '${cas}'`;
+      throw `Unknown CAS`;
     }
 }
 

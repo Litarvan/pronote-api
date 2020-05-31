@@ -51,6 +51,18 @@ function parsePeriod(string)
     return ~~string.substring(string.length - 1);
 }
 
+function parsePeriodBis(periods, string)
+{
+    periodeid = 0;
+    periods.forEach(periode => {
+        if (periode.name == string) {
+            periodeid = periode.id;
+        }
+    });
+
+    return periodeid;
+}
+
 function decodeHTML(string)
 {
     let entities = {
@@ -188,6 +200,7 @@ async function getDOM({ url, jar, method = 'GET', data = '', runScripts, hook = 
 module.exports = {
     parseDate,
     parsePeriod,
+    parsePeriodBis,
     parseMark,
     decodeHTML,
     extractStart,
