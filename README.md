@@ -17,7 +17,7 @@ et marquage des profs absents et cours annulés
 - **Menu de la Cantine** (si dispo)
 - **Informations**
 - **Infos de l'élève** (nom + classe + avatar)
-- **Competence de l'élève** (nom + classe + avatar)
+- **Competence de l'élève**
 
 ## Comptes région supportés
 
