@@ -212,7 +212,8 @@ async function fetch({ username, password, url, cas, typecon})
             marks_N: 0,
             competences_A: false,
             homeworks_A: false,
-            reports_A: false
+            reports_A: false,
+            contenuCours_A: false
         },
         marks: [],
         competences:[],
@@ -345,6 +346,12 @@ async function fetch({ username, password, url, cas, typecon})
     {
         result['homeworks'] = (await homeworks(url, session, first)).concat(await homeworks(url, session, second));
         result.allInfo.homeworks_A = true;
+    }
+
+    if (!auth.listeOngletsInvisibles.includes(89))
+    {
+        result['contenuCours'] = await contenuCours(url, session, first);
+        result.allInfo.contenuCours_A = true;
     }
 
     const infos = (await navigate(session, 8, 'PageActualites', {
@@ -768,6 +775,67 @@ async function homeworks(url, session, week)
                 name: f.L,
                 url: file(url, session, f.L, { N: f.N, G: 48 })
             }))
+        });
+    });
+
+    result.sort((a, b) => {
+        if (a.until < b.until)
+        {
+            return -1
+        }
+
+        if (a.until > b.until)
+        {
+            return 1;
+        }
+
+        return 0;
+    });
+
+    return result;
+}
+
+async function contenuCours(url, session, week)
+{
+    let result = [];
+
+    week1 = week-20 ;
+    week2 = week+10;
+
+    let contenuCours = await navigate(session, 89, 'PageCahierDeTexte', {
+        domaine: {
+            "_T": 8,
+            "V": "[" + week1 + ".." + week2 + "]"
+        }
+    });
+
+    contenuCours = contenuCours.donnees.ListeCahierDeTextes.V;
+
+    if (contenuCours === undefined)
+    {
+        return [];
+    }
+
+    contenuCours.forEach(contenuCours => {
+        let content = "";
+        let files;
+        contenuCours.listeContenus.V.forEach(contenuCours2 => {
+            content = content + contenuCours2.descriptif.V;
+            files = contenuCours2.ListePieceJointe.V.map(f => ({
+                name: f.L,
+                url: file(url, session, f.L, { N: f.N, G: 48 })
+            }))
+        });
+        
+        var regex = /<[^>]*>/g;
+        content = content.replace(regex, "");
+
+        result.push({
+            subject: contenuCours.Matiere.V.L,
+            content: util.decodeHTML(content),
+            since: util.parseDate(contenuCours.Date.V),
+            until: util.parseDate(contenuCours.DateFin.V),
+           file: files
         });
     });
 

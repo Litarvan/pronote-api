@@ -11,6 +11,7 @@ _Note :_ La connexion via compte parent est supportée
 - **Emploi du temps** complet de la semaine en cours + prochaine, ordonné, avec timestamp précis pour chaque cours et semaine,
 et marquage des profs absents et cours annulés
 - **Devoirs** (si dispo) de la semaine en cours + prochaine, ordonnés, avec timestamp précis et fichiers joints
+- **Contenue des cours** (si dispo) ordonnés, avec timestamp précis et fichiers joints
 - **Notes** de tous les trimestres avec moyenne de chaque matière et moyenne générale (de la classe et de l'élève)
 - **Bulletins** (si dispo) de tous les trimestres
 - **Fichiers** partagés
