@@ -33,10 +33,11 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Grenoble
 - Académie de Rouen
 - Académie de Rouen (Arsene76)
+- Académie de Lille
 - Académie de Rennes
 - Académie de Clermont-Ferrand
 - Académie de Reims
-- "Académie de Nancy-Metz" (Non fonctionnel actuellement)
+- "Académie de Nancy-Metz" (Non fonctionnel Actuellement)
 - Académie de Strasbourg
 - Académie de Caen
 - Académie d'Orleans-Tours
@@ -44,6 +45,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Nantes
 - ENT "Île de France"
 - ENT "Hauts-de-France"
+- ENT "Seine Et Marne"
 
 ## Utilisation
 
