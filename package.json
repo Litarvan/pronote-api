@@ -14,7 +14,7 @@
   "author": "Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
   "license": "GPL-3.0",
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.19.2",
     "jsdom": "^11.7.0",
     "node-forge": "0.6.33",
     "pako": "^1.0.6",
