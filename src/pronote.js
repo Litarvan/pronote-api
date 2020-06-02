@@ -962,7 +962,7 @@ async function init({ username, password, url, cas, typecon})
     try {
       let access = await fs.promises.access(path.join(__dirname, '/cas/', cas + '.js'), fs.constants.F_OK);
 
-        if (typeof(typecon) !== "undefined" && typecon !== null) {
+        if (typeof(typecon) == "undefined" && typecon == null) {
             typecon = "eleve.html";
         }
         url = url+typecon;
