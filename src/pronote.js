@@ -187,7 +187,7 @@ async function login({ username, password, url, cas, typecon })
     sessions[realUsername] = { auth, session };
 
     return {
-        success: true
+        success: true,
     };
 }
 
@@ -225,7 +225,7 @@ async function fetch({ username, password, url, cas, typecon})
     };
 
     auth = auth.donnees;
-    let key = /*user.Cle[0]._*/auth.cle;
+    let key = /* user.Cle[0]._ */auth.cle;
 
     cipher.updateKey(session, key);
 
@@ -460,6 +460,177 @@ async function fetch({ username, password, url, cas, typecon})
     console.log(`Successfully fetched user '${username}' in ${(new Date().getTime() - time) / 1000}s`);
     return result;
 }
+async function groups({ username, password, url, cas, typecon})
+{
+    let time = new Date().getTime();
+
+    if (!sessions[username]) {
+        await login({ username, password, url, cas, typecon});
+    }
+
+    let { auth, session } = sessions[username];
+    delete sessions[username];
+
+    const groups = [];
+    for (group of auth.donnees.listeClasses.V){
+    	groups.push({
+    		nom: group.L,
+    		type: group.G
+    	})
+    };
+
+    return groups;
+    
+}
+async function classe({ username, password, url, cas, typecon, nom, periode})
+{
+    let time = new Date().getTime();
+
+    if (!sessions[username]) {
+        await login({ username, password, url, cas, typecon});
+    }
+
+    let { auth, session } = sessions[username];
+
+    delete sessions[username];
+
+    let listes = {
+        professeurs: auth.donnees.ressource.listeProfesseurs.V,
+        classes: auth.donnees.listeClasses.V,
+        periods: session.periods
+     };
+    
+    auth = auth.donnees;
+    let key = auth.cle;
+
+    cipher.updateKey(session, key);
+
+    const today = new Date();
+    today.setHours(today.getHours() + 9);
+
+	const listeProfs = await navigate(session, 123, 'ListeRessources', {
+		classe: null,
+		periode: listes.periods[periode]
+		} );
+	const profs = {};
+	for (const prof of listeProfs.donnees.listeRessources.V){
+		profs[prof.N] = {
+				nom: prof.L,
+				prenom: prof.prenom,
+				civ: prof.civ
+		};
+	};
+	var index = 0;
+	for ( const valeur of listes.classes) {
+		if (valeur.L === nom){
+			break;
+		}
+		index++;
+	}
+	const result = await listeClasse(session, listes.classes[index], listes.periods[periode], profs);
+    console.log(`Successfully fetched classe in ${(new Date().getTime() - time) / 1000}s`);
+    return result;
+}
+
+async function salles({ username, password, url, cas, typecon})
+{
+    let time = new Date().getTime();
+
+    if (!sessions[username]) {
+        await login({ username, password, url, cas, typecon});
+    }
+
+    let { auth, session } = sessions[username];
+
+    delete sessions[username];
+
+    let listes = {
+        professeurs: auth.donnees.ressource.listeProfesseurs.V,
+        classes: auth.donnees.listeClasses.V,
+        periods: session.periods
+     };
+    
+    auth = auth.donnees;
+    let key = auth.cle;
+
+    cipher.updateKey(session, key);
+
+    const today = new Date();
+    today.setHours(today.getHours() + 9);
+
+	const listeSalles = await navigate(session, 81, 'ListeSalles', {
+		} );
+	const salles = {};
+	for (const salle of listeSalles.donnees.liste.V){
+		salles[salle.N] = salle.L;
+	};
+	const date =  {
+			_T: 7,
+		    V: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()} 0:0:0`
+	};
+
+	const edt = await navigate(session, 7, 'PageEmploiDuTemps', {
+		listeRessources: listeSalles.donnees.liste.V,
+		dateDebut: date,
+   		dateFin: date,
+		DateDebut: date,
+   		DateFin: date, 		
+		avecAbsencesEleve:false,
+		avecConseilDeClasse:true,
+		estEDTPermanence:false,
+		avecAbsencesRessource:true,
+		avecDisponibilites:false,
+		avecInfosPrefsGrille:false,
+	} )
+ 
+    const edtSalles = []
+	for (const cours of edt.donnees.ListeCours){
+		   let from;
+		    try { // Patch to prevent crash where informations isn't given.
+		        from = util.parseDate(cours.DateDuCours.V);
+		    } catch {
+		        let from = undefined;
+		    }
+
+    	edtSalles.push({
+    			salle: salles[cours.ressource.V.N],
+    			date: from,
+    			duree: cours.duree / 2
+    	})
+    }
+    console.log(`Successfully fetched salles in ${(new Date().getTime() - time) / 1000}s`);
+    return edtSalles
+}
+
+async function listeClasse(session, classe, period, profs)
+{
+    const result = {
+        equipe: [],
+    	eleves: []
+    };
+	const trombiProf = await navigate(session, 179, 'PageTrombinoscope', {
+		classe: classe,
+		periode: null,
+		trombiEquipePedagogique: true,
+		} )
+
+		for (const prof of  trombiProf.donnees.ListeRessources.V){
+			result.equipe.push(profs[prof.N])
+		}
+	    const listeEleves = await navigate(session, 105, 'ListeRessources', {
+		classe: classe,
+		periode: period
+		} )
+		for (const eleve of listeEleves.donnees.listeRessources.V){
+			result.eleves.push({
+					nom: eleve.nom,
+					prenom: eleve.prenoms,
+					sexe: eleve.sexe,
+					naissance: eleve.neLe.V
+			} )
+		}
+	return result
+}
 
 function file(url, session, name, { N, G }) {
     return url + 'FichiersExternes' + '/' + cipher.cipher({
@@ -602,7 +773,8 @@ async function timetable(session, user)
             shifted = true;
         }
 
-        let content = await readWeek(week);
+        let content = await readWeek(week);//		numeroSemaine:4,
+
 
         if (content.length > 0)
         {
@@ -638,7 +810,9 @@ async function timetable(session, user)
         let result = [];
 
         let timetable = await navigate(session, 16, 'PageEmploiDuTemps', {
-            //xml: `<PageEmploiDuTemps><Ressource G="${user.G}" N="${user.N}" L="${user.L}" E="0"/><NumeroSemaine T="1">${id}</NumeroSemaine></PageEmploiDuTemps>`
+            // xml: `<PageEmploiDuTemps><Ressource G="${user.G}" N="${user.N}"
+			// L="${user.L}" E="0"/><NumeroSemaine
+			// T="1">${id}</NumeroSemaine></PageEmploiDuTemps>`
             ressource: {
                 N: user.N,
                 G: user.G,
@@ -660,7 +834,7 @@ async function timetable(session, user)
         timetable.donnees.ListeCours.forEach(lesson => {
             let from;
             let to;
-            try { //Patch to prevent crash where informations isn't given.
+            try { // Patch to prevent crash where informations isn't given.
                 from = util.parseDate(lesson.DateDuCours.V);
                 to = new Date(from);
                 to.setHours(to.getHours() + (lesson.duree * 0.50));
@@ -753,7 +927,7 @@ async function homeworks(url, session, week)
         }
     });
 
-    //homeworks = await readXML(homeworks.xml);
+    // homeworks = await readXML(homeworks.xml);
     homeworks = homeworks.donnees.ListeTravauxAFaire.V;
 
     if (homeworks === undefined)
@@ -979,4 +1153,4 @@ async function init({ username, password, url, cas, typecon})
     }
 }
 
-module.exports = { login, fetch };
+module.exports = { login, fetch, groups, classe, salles };
