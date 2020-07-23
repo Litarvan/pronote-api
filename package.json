@@ -1,23 +1,35 @@
 {
   "name": "pronote-api",
-  "version": "1.2.0",
-  "description": "Pronote 2020 API",
+  "version": "2.0.0",
+  "description": "Pronote 2020 API (Node.JS library, and HTTP server)",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/server.js"
   },
   "keywords": [
     "pronote",
-    "api"
+    "api",
+    "http",
+    "2020"
   ],
-  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
-  "license": "GPL-3.0",
+  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.fr>",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Litarvan/pronote-api.git",
+    "type": "git"
+  },
+  "bin": {
+    "pronote-api-server": "./bin/server.js",
+    "pronote-fetch": "./bin/fetch.js"
+  },
   "dependencies": {
-    "axios": "^0.18.1",
-    "jsdom": "^11.7.0",
+    "axios": "^0.19",
     "node-forge": "0.6.33",
-    "pako": "^1.0.6",
-    "xml2js": "^0.4.19"
+    "pako": "^1.0"
+  },
+  "devDependencies": {
+    "@types/node-forge": "^0.6",
+    "@types/pako": "^1.0"
   }
 }
