@@ -1,5 +1,7 @@
 # Pronote API - PLEASE READ ME
 
+## [Avancement de la v2](https://github.com/Litarvan/pronote-api/pull/50)
+
 ## Peut être utilisé avec N'IMPORTE QUEL LANGAGE de prog, pas besoin de skills en JS
 
 API Pronote **2020** complète et plutôt stable avec intégration de nombreux CAS (connexion avec comptes spéciaux pour les régions).
