@@ -17,6 +17,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
 
     initCipher(session, keyModulus, keyExponent);
 
+    sessions[session.id] = session;
     return session;
 }
 
@@ -45,15 +46,23 @@ function removeSession(session)
 
 function getTarget(type)
 {
+    let name;
     switch (type)
     {
+        case 3:
+            name = 'eleve';
+            break;
         default:
-            return { name: 'unknown', id: type }
+            name = 'unknown';
     }
+
+    return { name, id: type };
 }
 
 module.exports = {
     createSession,
     getSessions,
-    removeSession
+    removeSession,
+
+    getServer
 };

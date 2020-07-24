@@ -1,7 +1,7 @@
 {
   "name": "pronote-api",
   "version": "2.0.0",
-  "description": "Pronote 2020 API (Node.JS library, and HTTP server)",
+  "description": "Pronote 2020/2021 API (Node.JS/TS library, and HTTP server)",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {

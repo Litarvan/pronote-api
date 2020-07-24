@@ -7,4 +7,12 @@ if (process.argv.length < 5) {
     return;
 }
 
-const [,, url, username, password, cas = 'eleve'] = process.argv;
+const [,, url, username, password, cas = 'none'] = process.argv;
+
+async function fetch()
+{
+    const session = await pronote.login(url, username, password, cas);
+    console.log(session); // TODO
+}
+
+fetch().catch(err => console.error(err));
