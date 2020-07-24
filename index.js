@@ -10,6 +10,8 @@ const { createSession } = require('./src/session');
 const { cipher, decipher } = require('./src/cipher');
 const { getStart, auth } = require('./src/auth');
 
+const fetchParams = require('./src/fetch/params');
+
 const http = require('./src/http');
 const request = require('./src/request');
 
@@ -22,10 +24,11 @@ module.exports = {
     errors,
 
     // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
-
     createSession,
     cipher, decipher,
     getStart, auth,
+
+    fetchParams,
 
     http,
     request

@@ -12,7 +12,7 @@ function initCipher(session, keyModulus, keyExponent)
     );
 }
 
-function cipher(session, data, { key, compress })
+function cipher(session, data, { key, compress } = {})
 {
     data = forge.util.encodeUtf8('' + data);
     if (compress && !session.disableCompress) {
@@ -25,7 +25,7 @@ function cipher(session, data, { key, compress })
     return cipher.finish() && cipher.output.toHex();
 }
 
-function decipher(session, data, { compress, scrambled, key, asBytes })
+function decipher(session, data, { compress, scrambled, key, asBytes } = {})
 {
     const cipher = createCipher(session, key);
     cipher.update(new forge.util.ByteBuffer(forge.util.hexToBytes(data)));
@@ -62,18 +62,23 @@ function decipher(session, data, { compress, scrambled, key, asBytes })
     return result;
 }
 
-function createCipher(session, key)
+function createCipher(session, key, decipher)
 {
     if (!key) {
-        key = session.publicKey;
+        key = session.aesKey;
     }
 
-    const cipher = forge.cipher.createDecipher('AES-CBC', forge.md.md5.create().update(key.bytes()).digest());
-    const iv = session.aesIV.length() ? forge.md.md5.create().update(session.aesIV.bytes()).digest() : new forge.util.ByteBuffer();
+    const cipher = forge.cipher[decipher ? 'createDecipher' : 'createCipher']('AES-CBC', md5(key));
+    const iv = session.aesIV.length() ? md5(session.aesIV) : new forge.util.ByteBuffer();
 
     cipher.start({ iv });
 
     return cipher;
+}
+
+function md5(buffer)
+{
+    return forge.md.md5.create().update(buffer.bytes()).digest();
 }
 
 function deflate(data)
@@ -86,9 +91,15 @@ function inflate(data)
     return pako.inflateRaw(data, { to: 'string' });
 }
 
+function getUUID(session)
+{
+    return forge.util.encode64(session.publicKey.encrypt((session.aesTempIV || session.aesIV).bytes()), 64);
+}
+
 module.exports = {
     initCipher,
 
     cipher,
-    decipher
+    decipher,
+    getUUID
 };

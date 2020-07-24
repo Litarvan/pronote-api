@@ -12,7 +12,7 @@ const [,, url, username, password, cas = 'none'] = process.argv;
 async function fetch()
 {
     const session = await pronote.login(url, username, password, cas);
-    console.log(session); // TODO
+    // TODO
 }
 
 fetch().catch(err => console.error(err));

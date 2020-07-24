@@ -2,7 +2,10 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const errors = require('./errors');
+const request = require('./request');
 const { createSession, getServer } = require('./session');
+
+const fetchParams = require('./fetch/params');
 
 async function login(url, username, password, cas)
 {
@@ -20,7 +23,8 @@ async function login(url, username, password, cas)
         keyExponent: start.ER
     });
 
-    await auth(session);
+    session.params = await fetchParams(session);
+    await auth(session, username, password, cas !== 'none');
 
     return session;
 }
@@ -41,8 +45,23 @@ async function getStart(url, username, password, cas)
     return await require(casPath)(url, username, password);
 }
 
-async function auth(session)
+async function auth(session, username, password, fromCas)
 {
+    const challenge = await request(session, 'Identification', {
+        donnees: {
+            genreConnexion: 0,
+            genreEspace: session.target.id,
+            identifiant: username,
+            pourENT: fromCas,
+            enConnexionAuto: false,
+            demandeConnexionAuto: false,
+            demandeConnexionAppliMobile: false,
+            demandeConnexionAppliMobileJeton: false,
+            uuidAppliMobile: '',
+            loginTokenSAV: ''
+        }
+    });
+
     // TODO
 }
 
