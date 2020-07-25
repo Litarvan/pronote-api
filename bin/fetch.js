@@ -12,7 +12,15 @@ const [,, url, username, password, cas = 'none'] = process.argv;
 async function fetch()
 {
     const session = await pronote.login(url, username, password, cas);
+    console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
+
     // TODO
 }
 
-fetch().catch(err => console.error(err));
+fetch().catch(err => {
+    if (err.code === pronote.errors.WRONG_CREDENTIALS.code) {
+        return console.error('Invalid credentials, did you chose the right CAS ?');
+    }
+
+    console.error(err);
+});

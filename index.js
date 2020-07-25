@@ -11,6 +11,9 @@ const { cipher, decipher } = require('./src/cipher');
 const { getStart, auth } = require('./src/auth');
 
 const fetchParams = require('./src/fetch/params');
+const fetchId = require('./src/fetch/id');
+const fetchAuth = require('./src/fetch/auth');
+const fetchUser = require('./src/fetch/user');
 
 const http = require('./src/http');
 const request = require('./src/request');
@@ -29,6 +32,9 @@ module.exports = {
     getStart, auth,
 
     fetchParams,
+    fetchId,
+    fetchAuth,
+    fetchUser,
 
     http,
     request

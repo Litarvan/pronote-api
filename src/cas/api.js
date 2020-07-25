@@ -3,7 +3,7 @@ const errors = require('../errors');
 function extractStart(html)
 {
     if (html.includes('Votre adresse IP est provisoirement suspendue')) { // Top 10 anime betrayals
-        throw errors.BANNED();
+        throw errors.BANNED.drop();
     }
 
     html = html.replace(new RegExp(' ', 'g'), '').replace(new RegExp('\n', 'g'), '');

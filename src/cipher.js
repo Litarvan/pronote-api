@@ -4,7 +4,6 @@ function initCipher(session, keyModulus, keyExponent)
 {
     session.aesKey = new forge.util.ByteBuffer();
     session.aesIV = new forge.util.ByteBuffer();
-    session.aesTempIV = new forge.util.ByteBuffer(forge.random.generate(16));
 
     session.publicKey = forge.pki.rsa.setPublicKey(
         new forge.jsbn.BigInteger(keyModulus, 16),
@@ -19,7 +18,7 @@ function cipher(session, data, { key, compress } = {})
         data = deflate(data);
     }
 
-    const cipher = createCipher(session, key);
+    const cipher = createCipher(session, key, false);
     cipher.update(new forge.util.ByteBuffer(data));
 
     return cipher.finish() && cipher.output.toHex();
@@ -27,7 +26,7 @@ function cipher(session, data, { key, compress } = {})
 
 function decipher(session, data, { compress, scrambled, key, asBytes } = {})
 {
-    const cipher = createCipher(session, key);
+    const cipher = createCipher(session, key, true);
     cipher.update(new forge.util.ByteBuffer(forge.util.hexToBytes(data)));
 
     let result = cipher.finish() && cipher.output.bytes();
@@ -91,9 +90,20 @@ function inflate(data)
     return pako.inflateRaw(data, { to: 'string' });
 }
 
-function getUUID(session)
+function generateIV()
 {
-    return forge.util.encode64(session.publicKey.encrypt((session.aesTempIV || session.aesIV).bytes()), 64);
+    return new forge.util.ByteBuffer(forge.random.generate(16));
+}
+
+function getUUID(session, iv)
+{
+    return forge.util.encode64(session.publicKey.encrypt(iv.bytes()), 64);
+}
+
+function getLoginKey(username, password, scramble, fromCas)
+{
+    const hash = forge.md.sha256.create().update(scramble || '').update(forge.util.encodeUtf8(password)).digest().toHex();
+    return new forge.util.ByteBuffer(forge.util.encodeUtf8((fromCas ? '' : username.toLowerCase()) + hash.toUpperCase()));
 }
 
 module.exports = {
@@ -101,5 +111,7 @@ module.exports = {
 
     cipher,
     decipher,
-    getUUID
+    generateIV,
+    getUUID,
+    getLoginKey
 };

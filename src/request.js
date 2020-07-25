@@ -2,7 +2,7 @@ const { cipher, decipher } = require('./cipher');
 const errors = require('./errors');
 const http = require('./http');
 
-async function request(session, name, content)
+async function request(session, name, content = {})
 {
     session.request += 2;
 
@@ -30,12 +30,7 @@ async function request(session, name, content)
 
     if (result.Erreur) {
         const { Titre, Message } = result.Erreur;
-        throw errors.PRONOTE({ title: Titre, message: Message });
-    }
-
-    if (!session.aesIV.length()) {
-        session.aesIV = session.aesTempIV;
-        delete session.aesTempIV;
+        throw errors.PRONOTE.drop({ title: Titre, message: Message });
     }
 
     if (!session.disableAES) {

@@ -41,8 +41,12 @@ function parseRange(str)
     return result;
 }
 
-function parse({ _T: type, V: value })
+function parse({ _T: type, V: value } = {})
 {
+    if (!value) {
+        return value;
+    }
+
     switch (type)
     {
         case 7:
@@ -54,7 +58,7 @@ function parse({ _T: type, V: value })
         case 10: // Mark / Number
             return ~~value;
         case 23: // URL
-        case 24: // Array
+        case 24: // Object (includes Array)
         case 25: // Resource
             return value;
     }

@@ -12,7 +12,6 @@ export interface PronoteSession
 
     aesKey: forge.util.ByteBuffer,
     aesIV: forge.util.ByteBuffer,
-    aesTempIV?: forge.util.ByteBuffer,
     publicKey: forge.pki.Key,
 
     disableAES: boolean,
@@ -20,7 +19,8 @@ export interface PronoteSession
 
     signData: any,
 
-    params: PronoteParams
+    params: PronoteParams,
+    user: PronoteUser
 }
 
 export interface PronoteTarget
@@ -34,12 +34,20 @@ export function login(url: string, username: string, password: string, cas?: str
 export namespace errors {
     const PRONOTE: PronoteError;
     const UNKNOWN_CAS: PronoteError;
+    const BANNED: PronoteError;
+    const WRONG_CREDENTIALS: PronoteError;
 }
 
 export interface PronoteError
 {
     code: number,
     message: string
+}
+
+export interface PronoteObject
+{
+    id: string, // N
+    name: string // L
 }
 
 export interface PronoteParams
@@ -137,10 +145,8 @@ export interface PronoteLanguage
     name: string // langue
 }
 
-export interface PronoteAcquisitionLevel
+export interface PronoteAcquisitionLevel extends PronoteObject
 {
-    id: string, // N
-    name: string, // L
     count: number, // G
     positions: Array<PronoteAcquisitionLevelPositions>, // listePositionnements
     triggerPosition: number, // positionJauge
@@ -162,10 +168,8 @@ export interface PronoteAcquisitionLevelPositions
     shortNameWithPrefix?: string // abbreviationAvecPrefixe
 }
 
-export interface PronoteHoliday
+export interface PronoteHoliday extends PronoteObject
 {
-    id: string, // N
-    name: string, // L
     from: Date, // dateDebut
     to: Date // dateFin
 }
@@ -177,10 +181,8 @@ export interface PronoteHour
     round: boolean // A
 }
 
-export interface PronotePeriod
+export interface PronotePeriod extends PronoteObject
 {
-    id: string, // N
-    name: string, // L
     type: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
     notationPeriod: number, // periodeNotation
     from: Date, // dateDebut
@@ -193,6 +195,123 @@ export interface PronoteBreak
     position: number // place
 }
 
+export interface PronoteUser extends PronoteObject
+{
+    establishment: PronoteObject, // ressource.Etablissement
+    hasAvatar: boolean, // ressource.avecPhoto
+    studentClass: PronoteObject, // ressource.classeDEleve
+    classHistory: Array<PronoteClassHistoryElement>, // ressource.listeClassesHistoriques
+    groups: Array<PronoteObject>, // ressource.listeGroupes
+    tabsPillars: Array<PronoteTabPillars>, // ressource.listeOngletsPourPiliers
+    tabsPeriods: Array<PronoteTabPeriods>, // ressource.listeOngletsPourPeriodes
+    establishmentsInfo: Array<PronoteEstablishmentInfo>, // ressource.listeInformationsEtablissements
+    userSettings: PronoteUserSettings, // ressource.parametresUtilisateur
+    sessionAuthorizations: PronoteSessionAuthorizations, // user.autorisationsSession.fonctionnalites
+    authorizations: PronoteUserAuthorizations, // autorisations
+    minPasswordSize: number, // reglesSaisieMDP.min
+    maxPasswordSize: number, // reglesSaisieMDP.max
+    passwordRules: Array<number>, // reglesSaisieMDP.regles
+    kioskAccess: boolean, // autorisationKiosque
+    tabs: Array<PronoteTab>, // listeOnglets
+    hiddenTabs: Array<number>, // listeOngletsInvisibles
+    notifiedTabs: Array<number>, // lisetOngletsNotification
+}
+
+export interface PronoteClassHistoryElement extends PronoteObject
+{
+    hadMarks: boolean, // AvecNote
+    hadOptions: boolean // AvecFiliere
+}
+
+export interface PronoteTabPillars
+{
+    tab: number, // G
+    levels: Array<PronotePillarLevel> // listePaliers
+}
+
+export interface PronotePillarLevel extends PronoteObject
+{
+    pillars: Array<PronotePillar> // listePiliers
+}
+
+export interface PronotePillar extends PronoteObject
+{
+    isForeignLanguage: boolean, // estPilierLVE
+    isCoreSkill: boolean, // estSocleCommun
+    subject: PronoteObject // Service
+}
+
+export interface PronoteTabPeriods
+{
+    tab: number, // G
+    periods: Array<PronoteTabPeriod>, // listePeriodes
+    defaultPeriod: string // periodeParDefault.L
+}
+
+export interface PronoteTabPeriod extends PronoteObject
+{
+    isCorePeriod: boolean // GenreNotation === 1
+}
+
+export interface PronoteEstablishmentInfo extends PronoteObject
+{
+    logoID: number, // Logo
+    address: Array<string>, // Coordonnees.Adresse1, Coordonnees.Adresse2,
+    postalCode: string, // Coordonnees.CodePostal
+    postalLabel: string, // Coordonnees.LibellePostal
+    city: string, // Coordonnees.LibelleVille
+    province: string, // Coordonnees.Province
+    country: string, // Coordonnees.Pays
+    website: string, // Coordonnees.SiteInternet
+}
+
+export interface PronoteUserSettings
+{
+    version: number, // version
+    timetable: PronoteUserTimetableSettings, // EDT
+    theme: number, // theme.theme
+    unreadDiscussions: boolean, // Communication.DiscussionNonLues
+}
+
+export interface PronoteUserTimetableSettings
+{
+    displayCanceledLessons: boolean, // afficherCoursAnnules
+    invertAxis: boolean, // axeInverseEDT
+    invertWeeklyPlanAxis: boolean, // axeInversePlanningHebdo
+    invertDayPlanAxis: boolean, // axeInversePlanningJour
+    invertDay2PlanAxis: boolean, // axeInversePlanningJour2
+    dayCount: number, // nbJours
+    resourceCount: number, // nbRessources
+    daysInTimetable: number, // nbJoursEDT
+    sequenceCount: number // nbSequences
+}
+
+export interface PronoteSessionAuthorizations
+{
+    twitterManagement: boolean, // gestionTwitter
+    expandedAttestation: boolean // attestationEtendue
+}
+
+export interface PronoteUserAuthorizations
+{
+    discussions: boolean, // AvecDiscussion
+    teachersDiscussions: boolean, // AvecDiscussionProfesseurs
+    timetableVisibleWeeks: Array<number>, // cours.domaineConsultationEDT
+    canEditLessons: Array<number>, // cours.domaineModificationCours
+    hideClassParts: boolean, // cours.masquerPartiesDeClasse
+    maxEstablishmentFileSize: number, // tailleMaxDocJointEtablissement
+    maxUserWorkFileSize: number, // tailleMaxRenduTafEleve
+    hasPassword: boolean, // compte.avecSaisieMotDePasse
+    hasPersonalInfo: boolean, // compte.avecInformationsPersonnelles
+    canPrint: boolean // compte.autoriserImpression
+}
+
+export interface PronoteTab
+{
+    id: number, // G
+    subs: Array<PronoteTab> // Onglet
+}
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -201,9 +320,12 @@ export function cipher(session: PronoteSession, data: any, options?: CipherOptio
 export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
 
 export function getStart(url: string, username: string, password: string, cas: string): Promise<PronoteStartParams>;
-export function auth(session: PronoteSession): Promise<void>;
+export function auth(session: PronoteSession): Promise<PronoteUser>;
 
-export function fetchParams(session: PronoteSession): Promise<PronoteParams>;
+export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
+export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
+export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
+export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
 
 export function request(session: PronoteSession, name: string, content: any): Promise<any>;
 
@@ -244,4 +366,10 @@ export interface PronoteStartParams
     ER: string, // Public key exponent (as BigInt string)
 
     // There are more, but undocumented (feel free to open a P.R.!)
+}
+
+export interface PronoteIdResponse
+{
+    scramble: string, // alea
+    challenge: string // challenge
 }
