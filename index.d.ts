@@ -20,7 +20,9 @@ export interface PronoteSession
     signData: any,
 
     params: PronoteParams,
-    user: PronoteUser
+    user: PronoteUser,
+
+    timetable(date?: Date): Promise<Timetable>
 }
 
 export interface PronoteTarget
@@ -312,6 +314,13 @@ export interface PronoteTab
     subs: Array<PronoteTab> // Onglet
 }
 
+export interface Timetable
+{
+    iCal: string, // @server + /ical/Edt.ics?icalsecurise= + ParametreExportiCal + &version= + @params.version
+
+}
+
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -326,6 +335,9 @@ export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer):
 export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
 export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
 export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
+export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Timetable>;
+
+export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
 export function request(session: PronoteSession, name: string, content: any): Promise<any>;
 

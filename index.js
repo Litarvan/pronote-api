@@ -14,6 +14,9 @@ const fetchParams = require('./src/fetch/params');
 const fetchId = require('./src/fetch/id');
 const fetchAuth = require('./src/fetch/auth');
 const fetchUser = require('./src/fetch/user');
+const fetchTimetable = require('./src/fetch/timetable');
+
+const navigate = require('./src/fetch/navigate');
 
 const http = require('./src/http');
 const request = require('./src/request');
@@ -35,6 +38,9 @@ module.exports = {
     fetchId,
     fetchAuth,
     fetchUser,
+    fetchTimetable,
+
+    navigate,
 
     http,
     request

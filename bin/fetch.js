@@ -14,6 +14,8 @@ async function fetch()
     const session = await pronote.login(url, username, password, cas);
     console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
 
+    const timetable = await session.timetable(new Date(2020, 8, 1));
+
     // TODO
 }
 
