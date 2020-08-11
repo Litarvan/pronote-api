@@ -9,13 +9,13 @@ async function timetable(session, from = Date.now(), to = null)
         to = from;
     }
 
-    const { filledWeeks, filledDays } = getFilledDaysAndWeeks(session);
+    const { filledWeeks, filledDays } = await getFilledDaysAndWeeks(session);
 
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
     const weeks = [];
-    for (let i = fromWeek; i < toWeek; i++) {
+    for (let i = fromWeek; i <= toWeek; i++) {
         for (let j = 0; j < filledWeeks.length; j++) {
             if (filledWeeks[j] === i) {
                 weeks.push(i);
@@ -26,7 +26,7 @@ async function timetable(session, from = Date.now(), to = null)
 
     const result = [];
     for (const week of weeks) {
-        const timetable = getTimetable(session, week);
+        const timetable = await getTimetable(session, week);
         result.push(getTimetableWeek(session, timetable));
 
         // TODO: Filter days based on filledDays
