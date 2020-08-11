@@ -320,7 +320,6 @@ export interface Timetable
 
 }
 
-
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -336,6 +335,7 @@ export function fetchId(session: PronoteSession, username: string, fromCas: bool
 export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
 export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
 export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Timetable>;
+export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<TimetableDaysAndWeeks>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
@@ -384,4 +384,10 @@ export interface PronoteIdResponse
 {
     scramble: string, // alea
     challenge: string // challenge
+}
+
+export interface TimetableDaysAndWeeks
+{
+    filledWeeks: Array<number>, // Domaine
+    filledDays: Array<number> // joursPresence
 }

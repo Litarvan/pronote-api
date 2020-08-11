@@ -6,10 +6,9 @@ const errors = require('./errors');
 const { decipher, getLoginKey, generateIV } = require('./cipher');
 const { createSession, getServer } = require('./session');
 
-const fetchParams = require('./fetch/params');
-const fetchId = require('./fetch/id');
-const fetchAuth = require('./fetch/auth');
-const fetchUser = require('./fetch/user');
+const getParams = require('./fetch/params');
+const { getId, getAuthKey } = require('./fetch/auth');
+const getUser = require('./fetch/user');
 
 async function login(url, username, password, cas)
 {
@@ -28,12 +27,12 @@ async function login(url, username, password, cas)
     });
 
     const iv = generateIV();
-    session.params = await fetchParams(session, iv);
+    session.params = await getParams(session, iv);
     session.aesIV = iv;
 
     await auth(session, username, password, cas !== 'none');
 
-    session.user = await fetchUser(session);
+    session.user = await getUser(session);
 
     return session;
 }
@@ -56,7 +55,7 @@ async function getStart(url, username, password, cas)
 
 async function auth(session, username, password, fromCas)
 {
-    const id = await fetchId(session, username, fromCas);
+    const id = await getId(session, username, fromCas);
     const key = getLoginKey(username, password, id.scramble, fromCas);
 
     let challenge;
@@ -66,7 +65,7 @@ async function auth(session, username, password, fromCas)
         throw errors.WRONG_CREDENTIALS.drop();
     }
 
-    const userKey = await fetchAuth(session, challenge, key);
+    const userKey = await getAuthKey(session, challenge, key);
     if (!userKey) {
         throw errors.WRONG_CREDENTIALS.drop();
     }

@@ -1,7 +1,30 @@
 const request = require('../request');
 const { cipher } = require('../cipher');
 
-async function fetchAuth(session, challenge, key)
+async function getId(session, username, fromCas)
+{
+    const { donnees: id } = await request(session, 'Identification', {
+        donnees: {
+            genreConnexion: 0,
+            genreEspace: session.target.id,
+            identifiant: username,
+            pourENT: fromCas,
+            enConnexionAuto: false,
+            demandeConnexionAuto: false,
+            demandeConnexionAppliMobile: false,
+            demandeConnexionAppliMobileJeton: false,
+            uuidAppliMobile: '',
+            loginTokenSAV: ''
+        }
+    });
+
+    return {
+        scramble: id.alea,
+        challenge: id.challenge
+    };
+}
+
+async function getAuthKey(session, challenge, key)
 {
     const { donnees: auth } = await request(session, 'Authentification', {
         donnees: {
@@ -14,4 +37,7 @@ async function fetchAuth(session, challenge, key)
     return auth.cle;
 }
 
-module.exports = fetchAuth;
+module.exports = {
+    getId,
+    getAuthKey
+};

@@ -1,8 +1,7 @@
 const { initCipher } = require('./cipher');
+const timetable = require('./timetable');
 
-const fetchTimetable = require('./fetch/timetable');
-
-const sessions = {};
+const sessions = {}; // TODO: Keep alive sessions
 
 function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent })
 {
@@ -19,7 +18,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
 
     initCipher(session, keyModulus, keyExponent);
 
-    session.timetable = date => fetchTimetable(session, date);
+    session.timetable = date => timetable(session, date);
 
     sessions[session.id] = session;
     return session;

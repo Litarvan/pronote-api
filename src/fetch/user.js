@@ -1,5 +1,5 @@
 const request = require('../request');
-const parse = require('../types');
+const parse = require('../data/types');
 
 async function getUser(session)
 {
