@@ -22,7 +22,7 @@ export interface PronoteSession
     params: PronoteParams,
     user: PronoteUser,
 
-    timetable(date?: Date): Promise<Timetable>
+    timetable(from?: Date, to?: Date): Promise<Timetable>
 }
 
 export interface PronoteTarget
