@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: off */
+
 const request = require('../request');
 
 const parse = require('../data/types');
@@ -18,7 +20,7 @@ async function getTimetable(session, week) {
         avecInfosPrefsGrille: true,
         avecRessourceLibrePiedHoraire: false,
         estEDTPermanence: false,
-        numeroSemaine: week, // *clown emoji*
+        numeroSemaine: week, // *Clown emoji*
         NumeroSemaine: week,
         ressource: student,
         Ressource: student

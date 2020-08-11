@@ -52,11 +52,11 @@ function getTarget(type)
     let name;
     switch (type)
     {
-        case 3:
-            name = 'eleve';
-            break;
-        default:
-            name = 'unknown';
+    case 3:
+        name = 'eleve';
+        break;
+    default:
+        name = 'unknown';
     }
 
     return { name, id: type };

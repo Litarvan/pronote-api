@@ -30,7 +30,7 @@ function parseRange(str)
 
     for (const val of content) {
         if (val.includes('..')) {
-            let index = val.indexOf('..');
+            const index = val.indexOf('..');
             for (let i = ~~val.substring(0, index); i <= ~~val.substring(index + 2); i++) {
                 result.push(i);
             }
@@ -48,20 +48,20 @@ function parse({ _T: type, V: value } = {})
         return value;
     }
 
-    switch (type)
-    {
-        case 7:
-            return parseDate(value);
-        case 8: // ?
-        case 11: // ?
-        case 26: // ?
-            return parseRange(value);
-        case 10: // Mark / Number
-            return ~~value;
-        case 23: // URL
-        case 24: // Object (includes Array)
-        case 25: // Resource
-            return value;
+    switch (type) {
+    case 7:
+        return parseDate(value);
+    case 8: // ?
+    case 11: // ?
+    case 26: // ?
+        return parseRange(value);
+    case 10: // Mark / Number
+        return ~~value;
+    case 23: // URL
+    case 24: // Object (includes Array)
+    case 25: // Resource
+    default:
+        return value;
     }
 }
 

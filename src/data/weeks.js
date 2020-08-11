@@ -1,7 +1,7 @@
 function toPronoteWeek(session, date)
 {
-    const firstWeek = getUTCWeek(session.params.firstDay);
-    const week = getUTCWeek(date);
+    const firstWeek = toUTCWeek(session.params.firstDay);
+    const week = toUTCWeek(date);
 
     if (week >= firstWeek) {
         return week - firstWeek + 1;
@@ -13,7 +13,7 @@ function toPronoteWeek(session, date)
 function toUTCWeek(date)
 {
     const firstDay = new Date((new Date()).getFullYear(), 0, 1);
-    return Math.ceil( (((date - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
+    return Math.ceil((((date - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
 }
 
 module.exports = {

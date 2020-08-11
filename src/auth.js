@@ -50,6 +50,7 @@ async function getStart(url, username, password, cas)
         throw errors.UNKNOWN_CAS.drop(cas);
     }
 
+    // eslint-disable-next-line node/global-require
     return await require(casPath)(url, username, password);
 }
 

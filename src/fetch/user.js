@@ -50,7 +50,7 @@ async function getUser(session)
             })),
             defaultPeriod: parse(periodeParDefaut).L
         })),
-        establishmentsInfo: parse(user.listeInformationsEtablissements).map(({ L, N, Logo, Coordonnees, avecInformations }) => ({
+        establishmentsInfo: parse(user.listeInformationsEtablissements).map(({ L, N, Logo, Coordonnees }) => ({
             id: N,
             name: L,
             logoID: parse(Logo),

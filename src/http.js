@@ -2,13 +2,15 @@ const axios = require('axios');
 
 async function http({ url, body, data, method = 'GET', binary, jar = null, followRedirects = true })
 {
-    let params = encodeParams(data);
-    let content = {
+    const params = encodeParams(data);
+    const content = {
         url,
         method: method.toLowerCase(),
         headers: {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0',
-            'Content-Type': body !== undefined ? 'application/json' : (params !== '' && method !== 'GET' ? 'application/x-www-form-urlencoded' : ''),
+            'Content-Type': body !== undefined
+                ? 'application/json'
+                : (params !== '' && method !== 'GET' ? 'application/x-www-form-urlencoded' : ''),
             'Cookie': encodeCookies(jar)
         },
         maxRedirects: 0,
@@ -18,7 +20,7 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
     };
 
     if (binary) {
-        content['responseType'] = 'arraybuffer';
+        content.responseType = 'arraybuffer';
     }
 
     if (params) {
@@ -34,11 +36,11 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
     const response = await axios(content);
     if (response.headers['set-cookie'] && jar !== null)
     {
-        await updateCookies(response, jar);
+        await updateCookies(response, jar, url);
     }
 
-    if (response.headers['location'] && followRedirects) {
-        let location = response.headers['location'];
+    if (response.headers.location && followRedirects) {
+        let location = response.headers.location;
         if (!location.startsWith('http')) {
             location = getOrigin(url) + location;
         }
@@ -76,18 +78,18 @@ function encodeParams(data)
 
     let params = '';
     for (const k in Object.keys(data)) {
-        let v = data[k];
+        const v = data[k];
         params += `${k}=${encodeURIComponent(v)}&`
     }
 
     return params.substring(0, params.length - 1)
 }
 
-function updateCookies(response, jar)
+function updateCookies(response, jar, url)
 {
     return new Promise((accept, reject) => {
         response.headers['set-cookie'].forEach(cookie => {
-            jar.setCookie(cookie, url, (err, _) => err ? reject(err) : accept());
+            jar.setCookie(cookie, url, err => (err ? reject(err) : accept()));
         });
     });
 }

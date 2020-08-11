@@ -27,7 +27,10 @@ async function getParams(session, iv)
         versionFull: general.version,
         year: ~~general.millesime,
         language: { id: general.langID, name: general.langue },
-        supportedLanguages: parse(general.listeLangues).map(({ langID, description }) => ({ id: langID, name: description })),
+        supportedLanguages: parse(general.listeLangues).map(({ langID, description }) => ({
+            id: langID,
+            name: description
+        })),
         infoPage: general.lienMentions,
         hasForum: general.avecForum,
         helpURL: parse(general.UrlAide),
@@ -62,30 +65,29 @@ async function getParams(session, iv)
         frequenciesLabels: general.LibellesFrequences,
         defaultMarkMax: parse(general.BaremeNotation),
         allowedAnnotations: parse(general.listeAnnotationsAutorisees),
-        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions).map(
-            ({ L, N, G, listePositionnements, positionJauge, actifPour, abbreviation, raccourci,
-                 couleur, ponderation, nombrePointsBrevet, estAcqui, estNotantPourTxReussite }) => ({
-                id: N,
+        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions).map(({ L, N, G,
+            listePositionnements, positionJauge, actifPour, abbreviation, raccourci,
+            couleur, ponderation, nombrePointsBrevet, estAcqui, estNotantPourTxReussite }) => ({
+            id: N,
+            name: L,
+            count: G,
+
+            positions: parse(listePositionnements).map(({ G, L, abbreviation, abbreviationAvecPrefixe }) => ({
                 name: L,
                 count: G,
-
-                positions: parse(listePositionnements).map(({ G, L, abbreviation, abbreviationAvecPrefixe }) => ({
-                    name: L,
-                    count: G,
-                    shortName: abbreviation,
-                    shortNameWithPrefix: abbreviationAvecPrefixe
-                })),
-                triggerPosition: positionJauge,
-                activeFor: parse(actifPour),
                 shortName: abbreviation,
-                shortPath: raccourci,
-                color: couleur,
-                weighting: parse(ponderation),
-                brevetPoints: parse(nombrePointsBrevet),
-                acquired: estAcqui,
-                countsForSuccess: estNotantPourTxReussite
-            })
-        ),
+                shortNameWithPrefix: abbreviationAvecPrefixe
+            })),
+            triggerPosition: positionJauge,
+            activeFor: parse(actifPour),
+            shortName: abbreviation,
+            shortPath: raccourci,
+            color: couleur,
+            weighting: parse(ponderation),
+            brevetPoints: parse(nombrePointsBrevet),
+            acquired: estAcqui,
+            countsForSuccess: estNotantPourTxReussite
+        })),
         displayAcquisitionShortLabel: general.AfficherAbbreviationNiveauDAcquisition,
         withEvaluationHistory: general.AvecEvaluationHistorique,
         withoutIntermediaryLevelAutoValidation: general.SansValidationNivIntermediairesDsValidAuto,

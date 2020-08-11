@@ -1,4 +1,5 @@
 const forge = require('node-forge');
+const pako = require('pako');
 
 function initCipher(session, keyModulus, keyExponent)
 {
@@ -102,8 +103,10 @@ function getUUID(session, iv)
 
 function getLoginKey(username, password, scramble, fromCas)
 {
-    const hash = forge.md.sha256.create().update(scramble || '').update(forge.util.encodeUtf8(password)).digest().toHex();
-    return new forge.util.ByteBuffer(forge.util.encodeUtf8((fromCas ? '' : username.toLowerCase()) + hash.toUpperCase()));
+    const hash = forge.md.sha256.create().update(scramble || '').update(forge.util.encodeUtf8(password)).digest();
+    const key = (fromCas ? '' : username.toLowerCase()) + hash.toHex().toUpperCase();
+
+    return new forge.util.ByteBuffer(forge.util.encodeUtf8(key));
 }
 
 module.exports = {

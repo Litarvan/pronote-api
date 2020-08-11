@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+/* eslint no-console: off */
+/* eslint no-unused-vars: off */
+
 const pronote = require('..');
 
 if (process.argv.length < 5) {

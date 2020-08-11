@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: off */
+
 const { toPronoteWeek } = require('./data/weeks');
 const { getFilledDaysAndWeeks, getTimetable } = require('./fetch/timetable');
 

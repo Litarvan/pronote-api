@@ -1,35 +1,43 @@
 {
-  "name": "pronote-api",
-  "version": "2.0.0",
-  "description": "Pronote 2020/2021 API (Node.JS/TS library, and HTTP server)",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "start": "node ./bin/server.js"
-  },
-  "keywords": [
-    "pronote",
-    "api",
-    "http",
-    "2020"
-  ],
-  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.fr>",
-  "license": "MIT",
-  "repository": {
-    "url": "https://github.com/Litarvan/pronote-api.git",
-    "type": "git"
-  },
-  "bin": {
-    "pronote-api-server": "./bin/server.js",
-    "pronote-fetch": "./bin/fetch.js"
-  },
-  "dependencies": {
-    "axios": "^0.19",
-    "node-forge": "0.6.33",
-    "pako": "^1.0"
-  },
-  "devDependencies": {
-    "@types/node-forge": "^0.6",
-    "@types/pako": "^1.0"
-  }
+    "name": "pronote-api",
+    "version": "2.0.0",
+    "description": "Pronote 2020/2021 API (Node.JS/TS library, and HTTP server)",
+    "main": "index.js",
+    "types": "index.d.ts",
+    "type": "commonjs",
+    "engines": {
+        "node": ">=11.14.0"
+    },
+    "scripts": {
+        "start": "node ./bin/server.js",
+        "lint": "eslint src/* bin/* index.js",
+        "check": "eslint --fix src/* bin/* index.js"
+    },
+    "keywords": [
+        "pronote",
+        "api",
+        "http",
+        "2020"
+    ],
+    "author": "Adrien 'Litarvan' Navratil <adrien1975@live.fr>",
+    "license": "MIT",
+    "repository": {
+        "url": "https://github.com/Litarvan/pronote-api.git",
+        "type": "git"
+    },
+    "bin": {
+        "pronote-api-server": "./bin/server.js",
+        "pronote-fetch": "./bin/fetch.js"
+    },
+    "dependencies": {
+        "axios": "^0.19",
+        "node-forge": "0.6.33",
+        "pako": "^1.0"
+    },
+    "devDependencies": {
+        "@types/node-forge": "^0.6",
+        "@types/pako": "^1.0",
+        "eslint": "^7.6.0",
+        "eslint-plugin-node": "^11.1.0"
+    }
 }

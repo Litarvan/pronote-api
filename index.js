@@ -8,7 +8,7 @@ const { cipher, decipher } = require('./src/cipher');
 const { getStart, auth } = require('./src/auth');
 
 const getParams = require('./src/fetch/params');
-const { getId, getAuthKey }  = require('./src/fetch/auth');
+const { getId, getAuthKey } = require('./src/fetch/auth');
 const getUser = require('./src/fetch/user');
 const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable');
 
@@ -22,7 +22,7 @@ module.exports = {
     login,
     errors,
 
-    // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
+    // Low-level API (you can use this if you need, but it may mean I've forgotten a use case, please open an issue!)
     createSession,
     cipher, decipher,
     getStart, auth,
