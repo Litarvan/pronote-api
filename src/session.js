@@ -18,7 +18,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
 
     initCipher(session, keyModulus, keyExponent);
 
-    session.timetable = date => timetable(session, date);
+    session.timetable = (...args) => timetable(session, ...args);
 
     sessions[session.id] = session;
     return session;
