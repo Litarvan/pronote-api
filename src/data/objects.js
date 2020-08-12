@@ -1,7 +1,24 @@
-function fromPronote({ N, L }) {
+function fromPronote({ N, L, G, ...obj }, fn, gName = 'type') {
+    const result = {};
+
+    if (typeof fn === 'string') {
+        gName = fn;
+        fn = null;
+    }
+
+    if (N) {
+        result.id = N;
+    }
+    if (L) {
+        result.name = L;
+    }
+    if (G && gName) {
+        result[gName] = G;
+    }
+
     return {
-        id: N,
-        name: L
+        ...result,
+        ...(fn ? fn(G && gName ? obj : { G, ...obj }) : {})
     };
 }
 

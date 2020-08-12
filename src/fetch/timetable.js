@@ -1,9 +1,7 @@
-/* eslint no-unused-vars: off */
-
 const request = require('../request');
 
 const parse = require('../data/types');
-const { toPronote } = require('../data/objects');
+const { toPronote, fromPronote } = require('../data/objects');
 
 const navigate = require('./navigate');
 
@@ -27,7 +25,22 @@ async function getTimetable(session, week) {
     });
 
     return {
-
+        hasCanceledLessons: timetable.avecCoursAnnule,
+        iCalId: timetable.ParametreExportiCal || null,
+        lessons: timetable.ListeCours.map(o => fromPronote(o, ({
+            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie
+        }) => ({
+            position: place,
+            duration: duree,
+            date: parse(DateDuCours),
+            color: CouleurFond,
+            content: parse(ListeContenus).pronoteMap(),
+            hasHomework: AvecTafPublie
+        }))),
+        // I was unable to witness a filled "absences.joursCycle", so didn't include it
+        breaks: parse(timetable.recreations).pronoteMap(({ place }) => ({
+            position: place
+        }))
     };
 }
 

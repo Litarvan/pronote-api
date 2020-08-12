@@ -1,5 +1,7 @@
 const request = require('../request');
+
 const parse = require('../data/types');
+const { fromPronote } = require('../data/objects');
 
 async function getUser(session)
 {
@@ -11,48 +13,30 @@ async function getUser(session)
     return {
         id: res.N,
         name: res.L,
-        establishment: {
-            id: establishment.N,
-            name: establishment.L
-        },
+        establishment: fromPronote(establishment),
         hasAvatar: res.avecPhoto,
-        studentClass: {
-            id: res.classeDEleve.N,
-            name: res.classeDEleve.L
-        },
-        classHistory: parse(res.listeClassesHistoriques).map(({ L, N, AvecNote, AvecFiliere }) => ({
-            id: N,
-            name: L,
+        studentClass: fromPronote(res.classeDEleve),
+        classHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
             hadMarks: AvecNote,
             hadOptions: AvecFiliere
         })),
-        groups: parse(res.listeGroupes).map(({ L, N }) => ({ id: N, name: L })),
-        tabsPillars: parse(res.listeOngletsPourPiliers).map(({ G, listePaliers }) => ({
-            tab: G,
-            levels: parse(listePaliers).map(({ L, N, listePiliers }) => ({
-                id: N,
-                name: L,
-                pillars: parse(listePiliers).map(({ L, N, estPilierLVE, estSocleCommun, Service }) => ({
-                    id: L,
-                    name: N,
+        groups: parse(res.listeGroupes).pronoteMap(),
+        tabsPillars: parse(res.listeOngletsPourPiliers).pronoteMap(({ listePaliers }) => ({
+            levels: parse(listePaliers).pronoteMap(({ listePiliers }) => ({
+                pillars: parse(listePiliers).pronoteMap(({ estPilierLVE, estSocleCommun, Service }) => ({
                     isForeignLanguage: estPilierLVE,
                     isCoreSkill: estSocleCommun,
-                    subject: Service && (({ N, L }) => ({ id: N, name: L }))(parse(Service))
+                    subject: Service && fromPronote(parse(Service))
                 }))
             }))
-        })),
-        tabsPeriods: parse(res.listeOngletsPourPeriodes).map(({ G, listePeriodes, periodeParDefaut }) => ({
-            tab: G,
-            periods: parse(listePeriodes).map(({ L, N, GenreNotation }) => ({
-                id: N,
-                name: L,
+        }), 'tab'),
+        tabsPeriods: parse(res.listeOngletsPourPeriodes).pronoteMap(({ listePeriodes, periodeParDefaut }) => ({
+            periods: parse(listePeriodes).pronoteMap(({ GenreNotation }) => ({
                 isCorePeriod: GenreNotation === 1
             })),
             defaultPeriod: parse(periodeParDefaut).L
-        })),
-        establishmentsInfo: parse(user.listeInformationsEtablissements).map(({ L, N, Logo, Coordonnees }) => ({
-            id: N,
-            name: L,
+        }), 'tab'),
+        establishmentsInfo: parse(user.listeInformationsEtablissements).pronoteMap(({ Logo, Coordonnees }) => ({
             logoID: parse(Logo),
             address: [Coordonnees.Adresse1, Coordonnees.Adresse2],
             postalCode: Coordonnees.CodePostal,

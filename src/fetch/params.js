@@ -1,5 +1,6 @@
 const request = require('../request');
 const parse = require('../data/types');
+const { fromPronote } = require('../data/objects');
 const { getUUID } = require('../cipher');
 
 async function getParams(session, iv)
@@ -60,24 +61,19 @@ async function getParams(session, iv)
         firstDayOfWeek: general.premierJourSemaine,
         timetableGridsInCycle: general.grillesEDTEnCycle,
         workingDaysCycle: parse(general.setOfJoursCycleOuvre),
-        halfWorkingDays: general.DemiJourneesOuvrees.map(o => parse(o)),
-        frequenciesRanges: general.DomainesFrequences.map(o => parse(o)),
+        halfWorkingDays: general.DemiJourneesOuvrees.map(parse),
+        frequenciesRanges: general.DomainesFrequences.map(parse),
         frequenciesLabels: general.LibellesFrequences,
         defaultMarkMax: parse(general.BaremeNotation),
         allowedAnnotations: parse(general.listeAnnotationsAutorisees),
-        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions).map(({ L, N, G,
+        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions).pronoteMap(({
             listePositionnements, positionJauge, actifPour, abbreviation, raccourci,
-            couleur, ponderation, nombrePointsBrevet, estAcqui, estNotantPourTxReussite }) => ({
-            id: N,
-            name: L,
-            count: G,
-
-            positions: parse(listePositionnements).map(({ G, L, abbreviation, abbreviationAvecPrefixe }) => ({
-                name: L,
-                count: G,
+            couleur, ponderation, nombrePointsBrevet, estAcqui, estNotantPourTxReussite
+        }) => ({
+            positions: parse(listePositionnements).pronoteMap(({ abbreviation, abbreviationAvecPrefixe }) => ({
                 shortName: abbreviation,
                 shortNameWithPrefix: abbreviationAvecPrefixe
-            })),
+            }), 'count'),
             triggerPosition: positionJauge,
             activeFor: parse(actifPour),
             shortName: abbreviation,
@@ -87,7 +83,7 @@ async function getParams(session, iv)
             brevetPoints: parse(nombrePointsBrevet),
             acquired: estAcqui,
             countsForSuccess: estNotantPourTxReussite
-        })),
+        }), 'count'),
         displayAcquisitionShortLabel: general.AfficherAbbreviationNiveauDAcquisition,
         withEvaluationHistory: general.AvecEvaluationHistorique,
         withoutIntermediaryLevelAutoValidation: general.SansValidationNivIntermediairesDsValidAuto,
@@ -110,30 +106,28 @@ async function getParams(session, iv)
         phoneMask: general.maskTelephone,
         maxECTS: general.maxECTS,
         maxAppreciationSizes: general.TailleMaxAppreciation,
-        publicHolidays: parse(general.listeJoursFeries).map(({ L, N, dateDebut, dateFin }) => ({
-            id: N, name: L,
-            from: parse(dateDebut), to: parse(dateFin)
+        publicHolidays: parse(general.listeJoursFeries).pronoteMap(({ dateDebut, dateFin }) => ({
+            from: parse(dateDebut),
+            to: parse(dateFin)
         })),
         displaySequences: general.afficherSequences,
         firstHour: parse(general.PremiereHeure),
-        hours: parse(general.ListeHeures).map(({ G, L, A }) => ({
-            name: L, count: G, round: A === undefined
-        })),
-        endHours: parse(general.ListeHeuresFin).map(({ G, L, A }) => ({
-            name: L, count: G, round: A === undefined
-        })),
+        hours: parse(general.ListeHeures).pronoteMap(({ A }) => ({
+            round: A === undefined
+        }), 'count'),
+        endHours: parse(general.ListeHeuresFin).pronoteMap(({ A }) => ({
+            round: A === undefined
+        }), 'count'),
         sequences: general.sequences,
-        periods: general.ListePeriodes.map(({ L, N, G, periodeNotation, dateDebut, dateFin }) => ({
-            id: N,
-            name: L,
+        periods: general.ListePeriodes.map(p => fromPronote(p, ({ G, periodeNotation, dateDebut, dateFin }) => ({
             type: G === 1 ? 'trimester' : (G === 2 ? 'semester' : (G === 3 ? 'year' : 'other')),
             notationPeriod: periodeNotation,
             from: parse(dateDebut),
             to: parse(dateFin)
-        })),
+        }), false)),
         logo: parse(general.logo),
-        breaks: parse(general.recreations).map(({ L, place }) => ({
-            name: L, position: place
+        breaks: parse(general.recreations).pronoteMap(({ place }) => ({
+            position: place
         })),
         appCookieName: general.nomCookieAppli
     };

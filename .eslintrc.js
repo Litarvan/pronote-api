@@ -247,7 +247,7 @@ module.exports = {
         ],
         'node/prefer-promises/fs': 'error',
         'nonblock-statement-body-position': 'error',
-        'object-curly-newline': 'error',
+        'object-curly-newline': 'off',
         'object-curly-spacing': [
             'error',
             'always'

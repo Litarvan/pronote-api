@@ -1,3 +1,5 @@
+const { fromPronote } = require('./objects');
+
 function parseDate(str)
 {
     const date = new Date();
@@ -61,6 +63,10 @@ function parse({ _T: type, V: value } = {})
     case 24: // Object (includes Array)
     case 25: // Resource
     default:
+        if (value.map) {
+            value.pronoteMap = (f, g) => value.map(o => fromPronote(o, f, g));
+        }
+
         return value;
     }
 }
