@@ -18,7 +18,7 @@ async function fetch()
     console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
 
     const timetable = await session.timetable(new Date(2020, 8, 1));
-    const marks = await session.marks();
+    const marks = await session.marks('Trimestre 1');
 
     // TODO
 
