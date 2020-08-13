@@ -23,6 +23,7 @@ export interface PronoteSession
     user: PronoteUser,
 
     timetable(from?: Date, to?: Date): Promise<Timetable>
+    marks(period?: String): Promise<Marks>
 }
 
 export interface PronoteTarget
@@ -320,6 +321,12 @@ export interface Timetable
 
 }
 
+export interface Marks
+{
+    iCal: [],
+
+}
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -336,6 +343,7 @@ export function fetchAuth(session: PronoteSession, challenge: string, key: forge
 export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
 export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Timetable>;
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<TimetableDaysAndWeeks>;
+export function fetchMarks(session: PronoteSession, period?: String): Promise<Marks>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
