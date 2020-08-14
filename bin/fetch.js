@@ -23,9 +23,7 @@ async function fetch()
 
     // TODO
 
-    console.log("Timetable : "+timetable);
-    console.log("Marks : "+marks);
-    console.log("Skill : "+skill)
+    console.log('Done');
 }
 
 fetch().catch(err => {

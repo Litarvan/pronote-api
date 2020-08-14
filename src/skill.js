@@ -14,21 +14,21 @@ async function skill(session, periodString = null)
     for (const period of periods) {
 
         if (periodString) {
-            if (period.name != periodString) continue;
+            if (period.name != periodString) { continue; }
         }
 
         const periodPronote = toPronote({
             id: period.id,
             name: period.name,
-            G: 2
+            type: 2
         });
 
         const skill = await getSkill(session, periodPronote);
 
         if (skill.skill.length > 0)
         {
-            result.skill_N =  result.skill_N + skill.skill_N;
-            result['skill'].push({ period: period.id, ...skill });
+            result.skill_N += skill.skill_N;
+            result.skill.push({ period: period.id, ...skill });
         }
     }
 
