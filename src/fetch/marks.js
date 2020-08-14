@@ -15,8 +15,10 @@ async function getMarks(session, period) {
     };
 
     const marks = await navigate(session, PAGE_NAME, TAB_ID, {
-        Periode: period
+        periode: period
     });
+
+    if (marks == null) return result;
 
     if (marks.moyGenerale) {
         result.averages = {

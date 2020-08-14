@@ -17,7 +17,6 @@ async function marks(session, periodString = null)
             if (period.name != periodString) continue;
         }
 
-        //TODO Period Bug (Pas de prise en compte des choix)
         const periodPronote = toPronote({
             id: period.id,
             name: period.name
