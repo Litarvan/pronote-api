@@ -24,18 +24,27 @@ async function getTimetable(session, week) {
         Ressource: student
     });
 
+    let iCalURL = null;
+    if (timetable.avecExportICal) {
+        const id = timetable.ParametreExportiCal;
+        iCalURL = `${session.server}ical/Edt.ics?icalsecurise=${id}&version=${session.params.version}`;
+    }
+
     return {
         hasCanceledLessons: timetable.avecCoursAnnule,
-        iCalId: timetable.ParametreExportiCal || null,
+        iCalURL,
         lessons: timetable.ListeCours.map(o => fromPronote(o, ({
-            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie
+            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue
         }) => ({
             position: place,
             duration: duree,
             date: parse(DateDuCours),
+            status: Statut,
             color: CouleurFond,
             content: parse(ListeContenus).pronoteMap(),
-            hasHomework: AvecTafPublie
+            hasHomework: AvecTafPublie,
+            isCancelled: !!estAnnule,
+            isDetention: !!estRetenue
         }))),
         // I was unable to witness a filled "absences.joursCycle", so didn't include it
         breaks: parse(timetable.recreations).pronoteMap(({ place }) => ({

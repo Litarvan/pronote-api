@@ -16,7 +16,13 @@ function toUTCWeek(date)
     return Math.ceil((((date - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
 }
 
+function toPronoteDay(session, date)
+{
+    return Math.ceil((date - session.params.firstDay) / 86400000);
+}
+
 module.exports = {
     toPronoteWeek,
-    toUTCWeek
+    toUTCWeek,
+    toPronoteDay
 };
