@@ -31,7 +31,7 @@ async function getTimetable(session, week) {
     }
 
     return {
-        hasCanceledLessons: timetable.avecCoursAnnule,
+        hasCancelledLessons: timetable.avecCoursAnnule,
         iCalURL,
         lessons: timetable.ListeCours.map(o => fromPronote(o, ({
             place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue

@@ -22,7 +22,7 @@ export interface PronoteSession
     params: PronoteParams,
     user: PronoteUser,
 
-    timetable(from?: Date, to?: Date): Promise<Timetable>
+    timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
 }
 
 export interface PronoteTarget
@@ -49,7 +49,9 @@ export interface PronoteError
 export interface PronoteObject
 {
     id: string, // N
-    name: string // L
+    name: string, // L
+    // May have 'type' from 'G' field, but sometimes it has another name
+    type?: number, // G
 }
 
 export interface PronoteParams
@@ -314,10 +316,18 @@ export interface PronoteTab
     subs: Array<PronoteTab> // Onglet
 }
 
-export interface Timetable
+export interface Lesson
 {
-    iCal: string, // @server + /ical/Edt.ics?icalsecurise= + ParametreExportiCal + &version= + @params.version
-
+    from: Date,
+    to: Date,
+    isDetention: boolean,
+    hasDuplicate: boolean,
+    subject?: string,
+    teacher?: string,
+    room?: string,
+    isAway: boolean,
+    isCancelled: boolean,
+    color?: string
 }
 
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
@@ -334,10 +344,15 @@ export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer):
 export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
 export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
 export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
-export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Timetable>;
-export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<TimetableDaysAndWeeks>;
+export function fetchTimetable(session: PronoteSession, date?: Date): Promise<PronoteTimetable>;
+export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
+
+export function toPronoteWeek(session: PronoteSession, date: Date): number;
+export function toUTCWeek(date: Date): number;
+export function toPronoteDay(session: PronoteSession, date: Date): number;
+export function fromPronoteDay(session: PronoteSession, date: number): Date;
 
 export function request(session: PronoteSession, name: string, content: any): Promise<any>;
 
@@ -386,7 +401,28 @@ export interface PronoteIdResponse
     challenge: string // challenge
 }
 
-export interface TimetableDaysAndWeeks
+export interface PronoteTimetable
+{
+    hasCancelledLessons: boolean, // avecCoursAnnule
+    iCalURL: string, // @params.server + ical/Edt.ics?icalsecurise= + ParametreExportiCal + &version= + @params.version
+    lessons: Array<PronoteLesson>,
+    breaks: Array<PronoteBreak>
+}
+
+export interface PronoteLesson extends PronoteObject
+{
+    position: number, // place
+    duration: number, // duree
+    date: Date, // DateDuCours
+    status?: string, // Statut
+    color?: string, // CouleurFond
+    content: Array<PronoteObject>,
+    hasHomework: boolean, // AvecTafPublie
+    isCancelled: boolean, // estAnnule
+    isDetention: boolean // estRetenue
+}
+
+export interface PronoteTimetableDaysAndWeeks
 {
     filledWeeks: Array<number>, // Domaine
     filledDays: Array<number> // joursPresence

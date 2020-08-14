@@ -26,12 +26,12 @@ async function timetable(session, from = Date.now(), to = null)
             if (!filledWeeks.includes(week)) {
                 lesson.isCancelled = true;
             }
-        });
 
-        result.push(lessons.sort((a, b) => a.from - b.from));
+            result.push(lesson);
+        });
     }
 
-    return result;
+    return result.sort((a, b) => a.from - b.from);
 }
 
 function getTimetableWeek(session, table) {

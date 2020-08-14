@@ -14,6 +14,8 @@ const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable')
 
 const navigate = require('./src/fetch/navigate');
 
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay } = require('./src/data/weeks');
+
 const http = require('./src/http');
 const request = require('./src/request');
 
@@ -35,6 +37,8 @@ module.exports = {
     fetchTimetable: getTimetable,
 
     navigate,
+
+    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay,
 
     http,
     request

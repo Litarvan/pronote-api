@@ -21,8 +21,17 @@ function toPronoteDay(session, date)
     return Math.ceil((date - session.params.firstDay) / 86400000);
 }
 
+function fromPronoteDay(session, day)
+{
+    const date = new Date(session.params.firstDay.getTime());
+    date.setDate(date.getDate() + day - 1);
+
+    return date;
+}
+
 module.exports = {
     toPronoteWeek,
     toUTCWeek,
-    toPronoteDay
+    toPronoteDay,
+    fromPronoteDay
 };
