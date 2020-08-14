@@ -4,6 +4,9 @@ let previousTab;
 
 async function navigate(session, page, tab, data)
 {
+
+    if (session.user.hiddenTabs.includes(tab)) return null;
+
     await request(session, 'Navigation', {
         _Signature_: {
             onglet: tab
