@@ -23,6 +23,8 @@ export interface PronoteSession
     user: PronoteUser,
 
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
+    marks(period?: String): Promise<Marks>
+    skill(period?: String): Promise<Skill>
 }
 
 export interface PronoteTarget
@@ -330,6 +332,18 @@ export interface Lesson
     color?: string
 }
 
+export interface Marks
+{
+    marks: [],
+
+}
+
+export interface Skill
+{
+    skill: [],
+
+}
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -346,6 +360,8 @@ export function fetchAuth(session: PronoteSession, challenge: string, key: forge
 export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
 export function fetchTimetable(session: PronoteSession, date?: Date): Promise<PronoteTimetable>;
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
+export function fetchMarks(session: PronoteSession, period?: String): Promise<Marks>;
+export function fetchSkill(session: PronoteSession, period?: String): Promise<Skill>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
