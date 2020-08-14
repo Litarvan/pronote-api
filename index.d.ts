@@ -24,6 +24,7 @@ export interface PronoteSession
 
     timetable(from?: Date, to?: Date): Promise<Timetable>
     marks(period?: String): Promise<Marks>
+    skill(period?: String): Promise<Skill>
 }
 
 export interface PronoteTarget
@@ -323,7 +324,13 @@ export interface Timetable
 
 export interface Marks
 {
-    iCal: [],
+    marks: [],
+
+}
+
+export interface Skill
+{
+    skill: [],
 
 }
 
@@ -344,6 +351,7 @@ export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
 export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Timetable>;
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<TimetableDaysAndWeeks>;
 export function fetchMarks(session: PronoteSession, period?: String): Promise<Marks>;
+export function fetchSkill(session: PronoteSession, period?: String): Promise<Skill>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 

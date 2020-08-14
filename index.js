@@ -11,6 +11,7 @@ const getParams = require('./src/fetch/params');
 const { getId, getAuthKey } = require('./src/fetch/auth');
 const getUser = require('./src/fetch/user');
 const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable');
+const { getMarks } = require('./src/fetch/marks');
 
 const navigate = require('./src/fetch/navigate');
 
@@ -33,6 +34,7 @@ module.exports = {
     fetchUser: getUser,
     fetchTimetableDaysAndWeeks: getFilledDaysAndWeeks,
     fetchTimetable: getTimetable,
+    fetchMarks: getMarks,
 
     navigate,
 
