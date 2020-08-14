@@ -1,6 +1,8 @@
 const request = require('../request');
+
 const parse = require('../data/types');
 const { fromPronote } = require('../data/objects');
+
 const { getUUID } = require('../cipher');
 
 async function getParams(session, iv)

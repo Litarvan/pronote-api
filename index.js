@@ -15,6 +15,8 @@ const { getMarks } = require('./src/fetch/marks');
 
 const navigate = require('./src/fetch/navigate');
 
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay } = require('./src/data/weeks');
+
 const http = require('./src/http');
 const request = require('./src/request');
 
@@ -37,6 +39,8 @@ module.exports = {
     fetchMarks: getMarks,
 
     navigate,
+
+    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay,
 
     http,
     request
