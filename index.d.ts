@@ -187,7 +187,7 @@ export interface PronoteHour
 
 export interface PronotePeriod extends PronoteObject
 {
-    type: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
+    kind: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
     notationPeriod: number, // periodeNotation
     from: Date, // dateDebut
     to: Date // dateFin
