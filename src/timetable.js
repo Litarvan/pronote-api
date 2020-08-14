@@ -7,7 +7,10 @@ async function timetable(session, from = Date.now(), to = null)
         to = from;
     }
 
-    const { filledWeeks } = await getFilledDaysAndWeeks(session);
+    const filled = await getFilledDaysAndWeeks(session);
+    if (!filled) {
+        return [];
+    }
 
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
@@ -23,7 +26,7 @@ async function timetable(session, from = Date.now(), to = null)
         const lessons = getTimetableWeek(session, timetable);
 
         lessons.forEach(lesson => {
-            if (!filledWeeks.includes(week)) {
+            if (!filled.filledWeeks.includes(week)) {
                 lesson.isCancelled = true;
             }
 

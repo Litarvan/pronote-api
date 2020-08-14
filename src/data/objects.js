@@ -32,7 +32,7 @@ function toPronote({ id, name, type }) {
         result.L = name;
     }
     if (type) {
-        result.G = G;
+        result.G = type;
     }
 
     return result;

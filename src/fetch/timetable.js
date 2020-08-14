@@ -23,7 +23,7 @@ async function getTimetable(session, week) {
     });
 
     if (!timetable) {
-        return [];
+        return null;
     }
 
     let iCalURL = null;
@@ -60,9 +60,13 @@ async function getFilledDaysAndWeeks(session) {
         Ressource: toPronote(session.user)
     });
 
+    if (!daysData) {
+        return null;
+    }
+
     return {
-        filledWeeks: parse(daysData.Domaine) || [],
-        filledDays: parse(daysData.joursPresence) || []
+        filledWeeks: parse(daysData.Domaine),
+        filledDays: parse(daysData.joursPresence)
     }
 }
 

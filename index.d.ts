@@ -23,8 +23,8 @@ export interface PronoteSession
     user: PronoteUser,
 
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
-    marks(period?: String): Promise<Marks>
-    skill(period?: String): Promise<Skill>
+    marks(period?: PronotePeriod | String): Promise<Marks>
+    evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
 }
 
 export interface PronoteTarget
@@ -46,6 +46,160 @@ export interface PronoteError
 {
     code: number,
     message: string
+}
+
+export interface Lesson
+{
+    from: Date,
+    to: Date,
+    isDetention: boolean,
+    hasDuplicate: boolean,
+    subject?: string,
+    teacher?: string,
+    room?: string,
+    isAway: boolean,
+    isCancelled: boolean,
+    color?: string
+}
+
+export interface Marks
+{
+    subjects: Array<MarksSubject>,
+    averages: MarksAverages
+}
+
+export interface MarksSubject
+{
+    name: string,
+    averages: MarksSubjectAverages,
+    color: string,
+    marks: Array<Mark>
+}
+
+export interface MarksAverages
+{
+    student: number,
+    studentClass: number
+}
+
+export interface MarksSubjectAverages extends MarksAverages
+{
+    min: number,
+    max: number
+}
+
+export interface Mark
+{
+    title: string,
+    value?: number,
+    scale: number,
+    average: number,
+    coefficient: number,
+    min: number,
+    max: number,
+    date: Date,
+    isAway: boolean
+}
+
+export interface EvaluationsSubject
+{
+    name: string,
+    teacher: string,
+    color: string,
+    evaluations: Array<Evaluation>
+}
+
+export interface Evaluation
+{
+    name: string,
+    date: Date
+    levels: Array<EvaluationLevel>,
+}
+
+export interface EvaluationLevel
+{
+    name: string,
+    value: EvaluationLevelValue,
+    prefixes: Array<string>
+}
+
+export interface EvaluationLevelValue
+{
+    short: string,
+    long: string
+}
+
+// Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
+
+export function createSession(options: CreateSessionOptions): PronoteSession;
+
+export function cipher(session: PronoteSession, data: any, options?: CipherOptions): string;
+export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
+
+export function getStart(url: string, username: string, password: string, cas: string): Promise<PronoteStartParams>;
+export function auth(session: PronoteSession): Promise<PronoteUser>;
+
+export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
+export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
+export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
+export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
+export function fetchTimetable(session: PronoteSession, date?: Date): Promise<PronoteTimetable>;
+export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
+export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
+export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
+
+export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
+
+export function toPronoteWeek(session: PronoteSession, date: Date): number;
+export function toUTCWeek(date: Date): number;
+export function toPronoteDay(session: PronoteSession, date: Date): number;
+export function fromPronoteDay(session: PronoteSession, date: number): Date;
+
+export function request(session: PronoteSession, name: string, content: any): Promise<any>;
+
+export interface CreateSessionOptions
+{
+    serverURL: string,
+    sessionID: number,
+    type: number,
+
+    disableAES: boolean,
+    disableCompress: boolean,
+
+    keyModulus: string,
+    keyExponent: string
+}
+
+export interface CipherOptions
+{
+    key?: forge.pki.Key,
+    compress?: boolean
+}
+
+export interface DecipherOptions extends CipherOptions
+{
+    scrambled?: boolean,
+    asBytes?: boolean
+}
+
+export interface PronoteStartParams
+{
+    h: string, // Session ID (number)
+    a: number, // Session type (3 = student, ...)
+
+    sCrA: boolean, // Disable AES
+    sCoA: boolean, // Disable compression
+
+    MR: string, // Public key modulus (as BigInt string)
+    ER: string, // Public key exponent (as BigInt string)
+
+    // There are more, but undocumented (feel free to open a P.R.!)
+}
+
+export interface PronoteIdResponse
+{
+    scramble: string, // alea
+    challenge: string // challenge
 }
 
 export interface PronoteObject
@@ -318,105 +472,6 @@ export interface PronoteTab
     subs: Array<PronoteTab> // Onglet
 }
 
-export interface Lesson
-{
-    from: Date,
-    to: Date,
-    isDetention: boolean,
-    hasDuplicate: boolean,
-    subject?: string,
-    teacher?: string,
-    room?: string,
-    isAway: boolean,
-    isCancelled: boolean,
-    color?: string
-}
-
-export interface Marks
-{
-    marks: [],
-
-}
-
-export interface Skill
-{
-    skill: [],
-
-}
-
-// Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
-
-export function createSession(options: CreateSessionOptions): PronoteSession;
-
-export function cipher(session: PronoteSession, data: any, options?: CipherOptions): string;
-export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
-
-export function getStart(url: string, username: string, password: string, cas: string): Promise<PronoteStartParams>;
-export function auth(session: PronoteSession): Promise<PronoteUser>;
-
-export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
-export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
-export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
-export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
-export function fetchTimetable(session: PronoteSession, date?: Date): Promise<PronoteTimetable>;
-export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
-export function fetchMarks(session: PronoteSession, period?: String): Promise<Marks>;
-export function fetchSkill(session: PronoteSession, period?: String): Promise<Skill>;
-
-export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
-
-export function toPronoteWeek(session: PronoteSession, date: Date): number;
-export function toUTCWeek(date: Date): number;
-export function toPronoteDay(session: PronoteSession, date: Date): number;
-export function fromPronoteDay(session: PronoteSession, date: number): Date;
-
-export function request(session: PronoteSession, name: string, content: any): Promise<any>;
-
-export interface CreateSessionOptions
-{
-    serverURL: string,
-    sessionID: number,
-    type: number,
-
-    disableAES: boolean,
-    disableCompress: boolean,
-
-    keyModulus: string,
-    keyExponent: string
-}
-
-export interface CipherOptions
-{
-    key?: forge.pki.Key,
-    compress?: boolean
-}
-
-export interface DecipherOptions extends CipherOptions
-{
-    scrambled?: boolean,
-    asBytes?: boolean
-}
-
-export interface PronoteStartParams
-{
-    h: string, // Session ID (number)
-    a: number, // Session type (3 = student, ...)
-
-    sCrA: boolean, // Disable AES
-    sCoA: boolean, // Disable compression
-
-    MR: string, // Public key modulus (as BigInt string)
-    ER: string, // Public key exponent (as BigInt string)
-
-    // There are more, but undocumented (feel free to open a P.R.!)
-}
-
-export interface PronoteIdResponse
-{
-    scramble: string, // alea
-    challenge: string // challenge
-}
-
 export interface PronoteTimetable
 {
     hasCancelledLessons: boolean, // avecCoursAnnule
@@ -442,4 +497,78 @@ export interface PronoteTimetableDaysAndWeeks
 {
     filledWeeks: Array<number>, // Domaine
     filledDays: Array<number> // joursPresence
+}
+
+export interface PronoteMarks
+{
+    studentAverage?: number, // moyGenerale
+    studentAverageScale?: number, // baremeMoyGenerale
+    defaultStudentAvergeScale?: number, // baremeMoyGeneraleParDefaut
+    studentClassAverage?: number, // moyGeneraleClasse
+    subjects: Array<PronoteMarksSubject>, // listeServices
+    marks: Array<PronoteMark> // listeDevoirs
+}
+
+export interface PronoteMarksSubject extends PronoteObject
+{
+    position: number, // ordre
+    isGroupSubject: boolean, // estServiceEnGroupe
+    studentAverage: number, // moyEleve
+    studentAverageScale: number, // baremeMoyEleve
+    defaultStudentAverageScale: number, // baremeMoyEleveParDefaut
+    studentClassAverage: number, // moyClasse
+    maxAverage: number, // moyMax
+    minAverage: number, // moyMin
+    color: string // couleur
+}
+
+export interface PronoteMark extends PronoteObject
+{
+    subject: PronoteObject, // service
+    title: string, // commentaire
+    value: number, // note
+    average: number, // moyenne
+    scale: number, // bareme
+    defaultScale: number, // baremeParDefaut
+    coefficient: number, // coefficient
+    max: number, // noteMax
+    min: number, // noteMin
+    date: number, // date
+    period: PronoteObject, // periode
+    isAway: boolean, // note == '|1'
+    isGroupMark: boolean // estEnGroupe
+}
+
+export interface PronoteEvaluation extends PronoteObject
+{
+    title: string, // descriptif
+    acquisitionLevels: Array<PronoteEvaluationAcquisitionLevel>, // listeNiveauxDAcquisitions
+    levels: Array<PronoteObject>, // listePaliers
+    subject: PronoteEvaluationSubject, // matiere
+    teacher: PronoteObject, // individu
+    coefficient: number, // coefficient
+    date: Date, // date
+    period: PronoteObject // periode
+}
+
+export interface PronoteEvaluationAcquisitionLevel extends PronoteObject
+{
+    position: number, // order
+    value: string, // abbreviation
+    pillar: PronoteEvaluationPillar, // pilier
+    coefficient: number, // coefficient
+    domain: PronoteObject, // domaine
+    item: PronoteObject // item
+}
+
+export interface PronoteEvaluationPillar extends PronoteObject
+{
+    prefixes: Array<string> // strPrefixes
+}
+
+export interface PronoteEvaluationSubject extends PronoteObject
+{
+    position: number, // order
+    service: PronoteObject, // serviceConcerne
+    color: string // couleur
 }
