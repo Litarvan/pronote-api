@@ -20,6 +20,7 @@ async function fetch()
     const timetable = await session.timetable(new Date(2020, 8, 1));
     const marks = await session.marks('Trimestre 1');
     const evaluations = await session.evaluations();
+    const homeworks = await session.homeworks(new Date(2020, 8, 15));
 
     // TODO
 

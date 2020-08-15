@@ -13,6 +13,7 @@ const getUser = require('./src/fetch/user');
 const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable');
 const getMarks = require('./src/fetch/marks');
 const getEvaluations = require('./src/fetch/evaluations');
+const getHomeworks = require('./src/fetch/homeworks');
 
 const navigate = require('./src/fetch/navigate');
 
@@ -39,6 +40,7 @@ module.exports = {
     fetchTimetable: getTimetable,
     fetchMarks: getMarks,
     fetchEvaluations: getEvaluations,
+    fetchHomeworks: getHomeworks,
 
     navigate,
 

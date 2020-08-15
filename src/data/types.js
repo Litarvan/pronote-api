@@ -44,7 +44,7 @@ function parseRange(str)
     return result;
 }
 
-function parse({ _T: type, V: value } = {})
+function parse({ _T: type, V: value } = {}, helpers = true)
 {
     if (!value) {
         return value;
@@ -69,8 +69,10 @@ function parse({ _T: type, V: value } = {})
     case 24: // Object (includes Array)
     case 25: // Resource
     default:
-        if (value.map) {
+        if (helpers && value.map) {
             value.pronoteMap = (f, g) => value.map(o => fromPronote(o, f, g));
+        } else if (helpers && (value.N || value.L)) {
+            value.pronote = (f, g) => fromPronote(value, f, g);
         }
 
         return value;
