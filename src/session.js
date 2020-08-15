@@ -1,7 +1,8 @@
 const { initCipher } = require('./cipher');
 const timetable = require('./timetable');
 const marks = require('./marks');
-const skill = require('./skill');
+const evaluations = require('./evaluations');
+const absence = require('./absence');
 
 const sessions = {}; // TODO: Keep alive sessions
 
