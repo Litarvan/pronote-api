@@ -26,6 +26,7 @@ export interface PronoteSession
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
     absences(period?: String): Promise<Absences>
+    infos(period?: String): Promise<Infos>
 }
 
 export interface PronoteTarget
@@ -575,5 +576,9 @@ export interface PronoteEvaluationSubject extends PronoteObject
 export interface Absences
 {
     absences: [],
+}
 
+export interface Infos
+{
+    infos: [],
 }
