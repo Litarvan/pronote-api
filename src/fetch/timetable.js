@@ -1,5 +1,3 @@
-const request = require('../request');
-
 const parse = require('../data/types');
 const { toPronote, fromPronote } = require('../data/objects');
 
@@ -23,6 +21,10 @@ async function getTimetable(session, week) {
         ressource: student,
         Ressource: student
     });
+
+    if (!timetable) {
+        return null;
+    }
 
     let iCalURL = null;
     if (timetable.avecExportICal) {
@@ -54,14 +56,13 @@ async function getTimetable(session, week) {
 }
 
 async function getFilledDaysAndWeeks(session) {
-    const { donnees: daysData } = await request(session, PAGE_NAME + '_DomainePresence', {
-        _Signature_: {
-            onglet: TAB_ID
-        },
-        donnees: {
-            Ressource: toPronote(session.user)
-        }
+    const daysData = await navigate(session, PAGE_NAME + '_DomainePresence', TAB_ID, {
+        Ressource: toPronote(session.user)
     });
+
+    if (!daysData) {
+        return null;
+    }
 
     return {
         filledWeeks: parse(daysData.Domaine),

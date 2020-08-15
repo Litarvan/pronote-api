@@ -1,7 +1,8 @@
 const { initCipher } = require('./cipher');
+
 const timetable = require('./timetable');
 const marks = require('./marks');
-const skill = require('./skill');
+const evaluations = require('./evaluations');
 
 const sessions = {}; // TODO: Keep alive sessions
 
@@ -22,7 +23,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
 
     session.timetable = (...args) => timetable(session, ...args);
     session.marks = (...args) => marks(session, ...args);
-    session.skill = (...args) => skill(session, ...args);
+    session.evaluations = (...args) => evaluations(session, ...args);
 
     sessions[session.id] = session;
     return session;

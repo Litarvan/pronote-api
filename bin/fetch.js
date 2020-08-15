@@ -19,13 +19,11 @@ async function fetch()
 
     const timetable = await session.timetable(new Date(2020, 8, 1));
     const marks = await session.marks('Trimestre 1');
-    const skill = await session.skill();
+    const evaluations = await session.evaluations();
 
     // TODO
 
-    console.log("Timetable : "+timetable);
-    console.log("Marks : "+marks);
-    console.log("Skill : "+skill)
+    console.log('Done');
 }
 
 fetch().catch(err => {
