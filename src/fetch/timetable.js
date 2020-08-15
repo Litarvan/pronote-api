@@ -1,5 +1,3 @@
-const request = require('../request');
-
 const parse = require('../data/types');
 const { toPronote, fromPronote } = require('../data/objects');
 
@@ -24,18 +22,31 @@ async function getTimetable(session, week) {
         Ressource: student
     });
 
+    if (!timetable) {
+        return null;
+    }
+
+    let iCalURL = null;
+    if (timetable.avecExportICal) {
+        const id = timetable.ParametreExportiCal;
+        iCalURL = `${session.server}ical/Edt.ics?icalsecurise=${id}&version=${session.params.version}`;
+    }
+
     return {
-        hasCanceledLessons: timetable.avecCoursAnnule,
-        iCalId: timetable.ParametreExportiCal || null,
+        hasCancelledLessons: timetable.avecCoursAnnule,
+        iCalURL,
         lessons: timetable.ListeCours.map(o => fromPronote(o, ({
-            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie
+            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue
         }) => ({
             position: place,
             duration: duree,
             date: parse(DateDuCours),
+            status: Statut,
             color: CouleurFond,
             content: parse(ListeContenus).pronoteMap(),
-            hasHomework: AvecTafPublie
+            hasHomework: AvecTafPublie,
+            isCancelled: !!estAnnule,
+            isDetention: !!estRetenue
         }))),
         // I was unable to witness a filled "absences.joursCycle", so didn't include it
         breaks: parse(timetable.recreations).pronoteMap(({ place }) => ({
@@ -45,14 +56,13 @@ async function getTimetable(session, week) {
 }
 
 async function getFilledDaysAndWeeks(session) {
-    const { donnees: daysData } = await request(session, PAGE_NAME + '_DomainePresence', {
-        _Signature_: {
-            onglet: TAB_ID
-        },
-        donnees: {
-            Ressource: toPronote(session.user)
-        }
+    const daysData = await navigate(session, PAGE_NAME + '_DomainePresence', TAB_ID, {
+        Ressource: toPronote(session.user)
     });
+
+    if (!daysData) {
+        return null;
+    }
 
     return {
         filledWeeks: parse(daysData.Domaine),

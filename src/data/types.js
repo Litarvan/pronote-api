@@ -51,13 +51,19 @@ function parse({ _T: type, V: value } = {})
     }
 
     switch (type) {
-    case 7:
+    case 7: // Date
         return parseDate(value);
-    case 8: // ?
-    case 11: // ?
-    case 26: // ?
+    case 8: // ? (Range)
+    case 11: // ? (Range)
+    case 26: // ? (Range)
         return parseRange(value);
     case 10: // Mark / Number
+        value = value.replace('|', '-');
+
+        if (value.indexOf(',') !== -1) {
+            return parseFloat(value.replace(',', '.'));
+        }
+
         return ~~value;
     case 23: // URL
     case 24: // Object (includes Array)

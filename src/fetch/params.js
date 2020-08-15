@@ -1,6 +1,8 @@
 const request = require('../request');
+
 const parse = require('../data/types');
 const { fromPronote } = require('../data/objects');
+
 const { getUUID } = require('../cipher');
 
 async function getParams(session, iv)
@@ -120,7 +122,7 @@ async function getParams(session, iv)
         }), 'count'),
         sequences: general.sequences,
         periods: general.ListePeriodes.map(p => fromPronote(p, ({ G, periodeNotation, dateDebut, dateFin }) => ({
-            type: G === 1 ? 'trimester' : (G === 2 ? 'semester' : (G === 3 ? 'year' : 'other')),
+            kind: G === 1 ? 'trimester' : (G === 2 ? 'semester' : (G === 3 ? 'year' : 'other')),
             notationPeriod: periodeNotation,
             from: parse(dateDebut),
             to: parse(dateFin)

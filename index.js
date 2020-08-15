@@ -11,9 +11,12 @@ const getParams = require('./src/fetch/params');
 const { getId, getAuthKey } = require('./src/fetch/auth');
 const getUser = require('./src/fetch/user');
 const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable');
-const { getMarks } = require('./src/fetch/marks');
+const getMarks = require('./src/fetch/marks');
+const getEvaluations = require('./src/fetch/evaluations');
 
 const navigate = require('./src/fetch/navigate');
+
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay } = require('./src/data/weeks');
 
 const http = require('./src/http');
 const request = require('./src/request');
@@ -35,8 +38,11 @@ module.exports = {
     fetchTimetableDaysAndWeeks: getFilledDaysAndWeeks,
     fetchTimetable: getTimetable,
     fetchMarks: getMarks,
+    fetchEvaluations: getEvaluations,
 
     navigate,
+
+    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay,
 
     http,
     request

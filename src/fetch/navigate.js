@@ -1,23 +1,10 @@
 const request = require('../request');
 
-let previousTab;
-
 async function navigate(session, page, tab, data)
 {
-
-    if (session.user.hiddenTabs.includes(tab)) return null;
-
-    await request(session, 'Navigation', {
-        _Signature_: {
-            onglet: tab
-        },
-        donnees: {
-            onglet: tab,
-            ongletPrec: previousTab || tab
-        }
-    });
-
-    previousTab = tab;
+    if (session.user.hiddenTabs.includes(tab)) {
+        return null;
+    }
 
     const content = {
         _Signature_: {
@@ -28,8 +15,7 @@ async function navigate(session, page, tab, data)
         content.donnees = data;
     }
 
-    const { donnees: result } = await request(session, page, content);
-    return result;
+    return (await request(session, page, content)).donnees;
 }
 
 module.exports = navigate;

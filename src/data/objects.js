@@ -22,7 +22,7 @@ function fromPronote({ N, L, G, ...obj }, fn, gName = 'type') {
     };
 }
 
-function toPronote({ id, name, G}) {
+function toPronote({ id, name, type }) {
     const result = {};
 
     if (id) {
@@ -31,8 +31,8 @@ function toPronote({ id, name, G}) {
     if (name) {
         result.L = name;
     }
-    if (G) {
-        result.G = G;
+    if (type) {
+        result.G = type;
     }
 
     return result;
