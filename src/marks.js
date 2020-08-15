@@ -3,7 +3,7 @@
 const { getMarks } = require('./fetch/marks');
 const { toPronote } = require('./data/objects');
 
-async function marks(session, periodString = null)
+async function Absence(session, periodString = null)
 {
     const result = {
         marks_N: 0,
@@ -34,4 +34,4 @@ async function marks(session, periodString = null)
     return result;
 }
 
-module.exports = marks;
+module.exports = Absence;
