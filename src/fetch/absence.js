@@ -1,5 +1,4 @@
-const request = require('../request');
-
+// eslint-disable-file camelcase
 const parse = require('../data/types');
 const navigate = require('./navigate');
 
@@ -15,12 +14,12 @@ async function getAbsence(session, period, from, to) {
         Punishment: [],
         Delay: [],
         Absence: [],
-
-        OtherEvent_N: 0,
-        Punishment_N: 0,
-        Delay_N: 0,
-        Absence_N: 0
+        OtherEventN: 0,
+        PunishmentN: 0,
+        DelayN: 0,
+        AbsenceN: 0
     };
+
 
     const absences = await navigate(session, PAGE_NAME, TAB_ID, {
         DateDebut: {
@@ -34,49 +33,52 @@ async function getAbsence(session, period, from, to) {
         periode: period
     });
 
-    if (absences == null) return result;
+    if (absences === null) {
+        return result;
+    }
 
     for (const absence of absences.listeAbsences.V) {
         const returnAbsence = getType(absence);
         result[returnAbsence.name].push(returnAbsence.data);
     }
 
-    result.OtherEvent_N = result.OtherEvent.length;
-    result.Punishment_N = result.Punishment.length;
-    result.Delay_N = result.Delay.length;
-    result.Absence_N = result.Absence.length;
+    result.OtherEventN = result.OtherEvent.length;
+    result.PunishmentN = result.Punishment.length;
+    result.DelayN = result.Delay.length;
+    result.AbsenceN = result.Absence.length;
 
     return result;
 }
 
 function getType(absence) {
 
-    const absenceType = absence.page.Absence ;
+    const absenceType = absence.page.Absence;
 
-    data = {
-        name: "",
+    const data = {
+        name: '',
         data: []
     }
 
     switch (absenceType) {
-        case 45:
-            data.name = "OtherEvent";
-            data.data = getType45(absence);
-            break;
-        case 41:
-            data.name = "Punishment";
-            data.data = getType41(absence);
-            break;
-        case 14:
-            data.name = ("Delay");
-            data.data = (getType14(absence));
-            break;
-        case 13:
-            data.name = "Absence";
-            data.data = getType13(absence);
-            break;
-        default:
-           console.log(absence)
+    case 45:
+        data.name = 'OtherEvent';
+        data.data = getType45(absence);
+        break;
+    case 41:
+        data.name = 'Punishment';
+        data.data = getType41(absence);
+        break;
+    case 14:
+        data.name = ('Delay');
+        data.data = (getType14(absence));
+        break;
+    case 13:
+        data.name = 'Absence';
+        data.data = getType13(absence);
+        break;
+    default:
+        // eslint-disable-next-line no-console
+        console.log(absence)
     }
 
     return data;
@@ -87,7 +89,7 @@ function getType45(absence) {
         name: absence.L,
         id: absence.N,
         date: parse(absence.date),
-        giver : {
+        giver: {
             name: absence.demandeur.V.L,
             headTeacher: absence.demandeur.V.estProfPrincipal,
             mail: absence.demandeur.V.mail
@@ -101,9 +103,11 @@ function getType45(absence) {
 function getType13(absence) {
     const reasons = [];
     for (const reason of absence.listeMotifs.V) {
-        if (reason == null) continue;
+        if (reason === null) {
+            continue;
+        }
         reasons.push(fromPronote(reason));
-    };
+    }
 
     return {
         from: parse(absence.dateDebut),
@@ -123,14 +127,18 @@ function getType41(absence) {
     const programmations = [];
 
     for (const reason of absence.listeMotifs.V) {
-        if (reason == null) continue;
+        if (reason === null) {
+            continue;
+        }
         reasons.push(fromPronote(reason));
-    };
+    }
 
     for (const programmation of absence.programmation.V) {
-        if (programmation == null) continue;
+        if (programmation === null) {
+            continue;
+        }
         programmations.push(fromPronote(programmation));
-    };
+    }
 
     return {
         date: parse(absence.dateDemande),
@@ -141,7 +149,7 @@ function getType41(absence) {
         circumstances: absence.circonstances,
         duration: absence.duree,
         giver: {
-            name: absence.demandeur.V.L,
+            name: absence.demandeur.V.L
         },
         isSchedulable: absence.estProgrammable,
         reason: reasons,
@@ -159,9 +167,11 @@ function getType14(absence) {
 
     const reasons = [];
     for (const reason of absence.listeMotifs.V) {
-        if (reason == null) continue;
+        if (reason === null) {
+            continue;
+        }
         reasons.push(fromPronote(reason));
-    };
+    }
 
     return {
         date: parse(absence.date),
