@@ -1,5 +1,5 @@
 const parse = require('../data/types');
-const { fromPronote, toPronote } = require('../data/objects');
+const { toPronote } = require('../data/objects');
 
 const navigate = require('./navigate');
 
@@ -49,7 +49,7 @@ async function getMarks(session, period)
             note, bareme, baremeParDefaut, date, service, periode, moyenne, estEnGroupe, noteMax, noteMin,
             commentaire, coefficient
         }) => ({
-            subject: fromPronote(parse(service), ({ couleur }) => ({
+            subject: parse(service).pronote(({ couleur }) => ({
                 color: couleur
             })),
             title: commentaire,
@@ -61,7 +61,7 @@ async function getMarks(session, period)
             min: parse(noteMin),
             max: parse(noteMax),
             date: parse(date),
-            period: fromPronote(parse(periode)),
+            period: parse(periode).pronote(),
             isAway: parse(note) === -1,
             isGroupMark: estEnGroupe
         })) || []
