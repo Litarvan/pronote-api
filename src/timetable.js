@@ -1,10 +1,11 @@
 const { toPronoteWeek } = require('./data/weeks');
 const { getFilledDaysAndWeeks, getTimetable } = require('./fetch/timetable');
 
-async function timetable(session, from = Date.now(), to = null)
+async function timetable(session, from = new Date(), to = null)
 {
-    if (!to) {
-        to = from;
+    if (!to || to > from) {
+        to = new Date(from.getTime());
+        to.setDate(to.getDate() + 1);
     }
 
     const filled = await getFilledDaysAndWeeks(session);
@@ -25,7 +26,7 @@ async function timetable(session, from = Date.now(), to = null)
         const timetable = await getTimetable(session, week);
         const lessons = getTimetableWeek(session, timetable);
 
-        lessons.forEach(lesson => {
+        lessons.filter(l => l.from >= from && l.from <= to).forEach(lesson => {
             if (!filled.filledWeeks.includes(week)) {
                 lesson.isCancelled = true;
             }
