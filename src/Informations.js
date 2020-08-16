@@ -1,7 +1,6 @@
-const { getPeriodBy } = require('./data/periods');
 const getinfos = require('./fetch/Informations');
 
-async function infos(session, period = null)
+async function infos(session)
 {
     const infos = await getinfos(session);
     const result = [];
