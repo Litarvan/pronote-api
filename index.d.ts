@@ -168,6 +168,7 @@ export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<Pro
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
 export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
+export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
@@ -175,6 +176,7 @@ export function toPronoteWeek(session: PronoteSession, date: Date): number;
 export function toUTCWeek(date: Date): number;
 export function toPronoteDay(session: PronoteSession, date: Date): number;
 export function fromPronoteDay(session: PronoteSession, date: number): Date;
+export function toPronoteDate(date: Date): string;
 
 export function getFileURL(session: PronoteSession, file: PronoteObject): string;
 
@@ -631,3 +633,38 @@ export interface PronoteHomeworksResources
     resources: Array<PronoteObject>, // listeRessources
     subjects: Array<PronoteObject> // listeMatieres
 }
+
+export interface PronoteMenu
+{
+    hasLunch: boolean, // AvecRepasMidi
+    hasDiner: boolean, // AvecRepasSoir
+    filledWeeks: Array<number>, // DomaineDePresence
+    menus: Array<PronoteMenuDay>, // ListeJours
+}
+
+export interface PronoteMenuDay
+{
+    date: Date, // Date
+    meals: Array<PronoteMenuMeal> // ListeRepas
+}
+
+export interface PronoteMenuMeal extends PronoteObject
+{
+    content: Array<PronoteMenuMealContent> // ListePlats
+}
+
+export interface PronoteMenuMealContent extends PronoteObject
+{
+    lines: Array<PronoteMenuMealLine> // ListeAliments
+}
+
+export interface PronoteMenuMealLine extends PronoteObject
+{
+    labels: Array<PronoteMenuLabel> // listeLabelsAlimentaires
+}
+
+export interface PronoteMenuLabel extends PronoteObject
+{
+    color: string // couleur
+}
+

@@ -29,9 +29,18 @@ function fromPronoteDay(session, day)
     return date;
 }
 
+function toPronoteDate(date)
+{
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ` +
+           `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
+
 module.exports = {
     toPronoteWeek,
     toUTCWeek,
+
     toPronoteDay,
-    fromPronoteDay
+    fromPronoteDay,
+
+    toPronoteDate
 };

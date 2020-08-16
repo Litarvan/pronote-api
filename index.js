@@ -14,10 +14,11 @@ const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable')
 const getMarks = require('./src/fetch/marks');
 const getEvaluations = require('./src/fetch/evaluations');
 const getHomeworks = require('./src/fetch/homeworks');
+const getMenu = require('./src/fetch/menu');
 
 const navigate = require('./src/fetch/navigate');
 
-const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay } = require('./src/data/weeks');
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/weeks');
 const { getFileURL } = require('./src/data/files');
 
 const http = require('./src/http');
@@ -42,10 +43,11 @@ module.exports = {
     fetchMarks: getMarks,
     fetchEvaluations: getEvaluations,
     fetchHomeworks: getHomeworks,
+    fetchMenu: getMenu,
 
     navigate,
 
-    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay,
+    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate,
     getFileURL,
 
     http,
