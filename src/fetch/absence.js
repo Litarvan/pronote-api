@@ -14,10 +14,10 @@ async function getAbsence(session, period, from, to) {
         Punishment: [],
         Delay: [],
         Absence: [],
-        OtherEvent_N: 0,
-        Punishment_N: 0,
-        Delay_N: 0,
-        Absence_N: 0
+        OtherEventN: 0,
+        PunishmentN: 0,
+        DelayN: 0,
+        AbsenceN: 0
     };
 
 
@@ -42,10 +42,10 @@ async function getAbsence(session, period, from, to) {
         result[returnAbsence.name].push(returnAbsence.data);
     }
 
-    result.OtherEvent_N = result.OtherEvent.length;
-    result.Punishment_N = result.Punishment.length;
-    result.Delay_N = result.Delay.length;
-    result.Absence_N = result.Absence.length;
+    result.OtherEventN = result.OtherEvent.length;
+    result.PunishmentN = result.Punishment.length;
+    result.DelayN = result.Delay.length;
+    result.AbsenceN = result.Absence.length;
 
     return result;
 }
