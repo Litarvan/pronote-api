@@ -1,5 +1,5 @@
 const parse = require('../data/types');
-const { fromPronote, toPronote } = require('../data/objects');
+const { toPronote } = require('../data/objects');
 
 const navigate = require('./navigate');
 
@@ -25,23 +25,23 @@ async function getEvaluations(session, period)
         }) => ({
             position: ordre,
             value: abbreviation,
-            pillar: fromPronote(parse(pilier), ({ strPrefixes }) => ({
+            pillar: parse(pilier).pronote(({ strPrefixes }) => ({
                 prefixes: strPrefixes.split(', ')
             })),
             coefficient,
-            domain: fromPronote(parse(domaine)),
-            item: item && fromPronote(parse(item)) || null
+            domain: parse(domaine).pronote(),
+            item: item && parse(item).pronote() || null
         })),
         levels: parse(listePaliers).pronoteMap(),
-        subject: fromPronote(parse(matiere), ({ couleur, ordre, serviceConcerne }) => ({
+        subject: parse(matiere).pronote(({ couleur, ordre, serviceConcerne }) => ({
             position: ordre,
-            service: fromPronote(parse(serviceConcerne)),
+            service: parse(serviceConcerne).pronote(),
             color: couleur
         })),
-        teacher: fromPronote(parse(individu)),
+        teacher: parse(individu).pronote(),
         coefficient,
         date: parse(date),
-        period: fromPronote(parse(periode))
+        period: parse(periode).pronote()
     }));
 }
 

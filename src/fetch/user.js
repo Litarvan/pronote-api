@@ -26,7 +26,7 @@ async function getUser(session)
                 pillars: parse(listePiliers).pronoteMap(({ estPilierLVE, estSocleCommun, Service }) => ({
                     isForeignLanguage: estPilierLVE,
                     isCoreSkill: estSocleCommun,
-                    subject: Service && fromPronote(parse(Service))
+                    subject: Service && parse(Service).pronote()
                 }))
             }))
         }), 'tab'),
