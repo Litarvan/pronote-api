@@ -25,6 +25,7 @@ export interface PronoteSession
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
+    homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
 }
 
 export interface PronoteTarget
@@ -129,6 +130,25 @@ export interface EvaluationLevelValue
     long: string
 }
 
+export interface Homework
+{
+    subject: string,
+    teachers: Array<string>,
+    from: Date,
+    to: Date,
+    color: string,
+    title: string,
+    description: string,
+    files: Array<File>,
+    category: string
+}
+
+export interface File
+{
+    name: string,
+    url: string
+}
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -147,6 +167,7 @@ export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Pr
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
+export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
@@ -154,6 +175,8 @@ export function toPronoteWeek(session: PronoteSession, date: Date): number;
 export function toUTCWeek(date: Date): number;
 export function toPronoteDay(session: PronoteSession, date: Date): number;
 export function fromPronoteDay(session: PronoteSession, date: number): Date;
+
+export function getFileURL(session: PronoteSession, file: PronoteObject): string;
 
 export function request(session: PronoteSession, name: string, content: any): Promise<any>;
 
@@ -571,4 +594,40 @@ export interface PronoteEvaluationSubject extends PronoteObject
     position: number, // order
     service: PronoteObject, // serviceConcerne
     color: string // couleur
+}
+
+export interface PronoteHomeworks
+{
+    homeworks: Array<PronoteHomework>, // ListeCahierDeTextes
+    resources: PronoteHomeworksResources, // ListeRessourcesPedagogiques
+    numericalResources: Array<PronoteObject> // ListeRessourcesNumeriques
+}
+
+export interface PronoteHomework extends PronoteObject
+{
+    lesson: PronoteObject, // cours
+    locked: boolean, // verrouille
+    groups: Array<PronoteObject>, // listeGroupes
+    subject: PronoteObject, // Matiere
+    color: string, // CouleurFond
+    teachers: Array<PronoteObject>, // listeProfesseurs
+    from: Date, // Date
+    to: Date, // DateFin
+    content: Array<PronoteHomeworkContent>, // listeContenus
+    skills: Array<PronoteObject> // listeElementsProgrammeCDT
+}
+
+export interface PronoteHomeworkContent extends PronoteObject
+{
+    description: string, // descriptif
+    category: PronoteObject, // categorie
+    path: number, // parcoursEducatif
+    files: Array<PronoteObject>, // ListePieceJointe
+    training: Array<PronoteObject> // training.V.ListeExecutionsQCM
+}
+
+export interface PronoteHomeworksResources
+{
+    resources: Array<PronoteObject>, // listeRessources
+    subjects: Array<PronoteObject> // listeMatieres
 }
