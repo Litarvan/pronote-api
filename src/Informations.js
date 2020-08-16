@@ -1,4 +1,5 @@
 const getinfos = require('./fetch/Informations');
+const parse = require('./data/types');
 
 async function infos(session)
 {
@@ -26,6 +27,7 @@ async function infos(session)
             title: info.L,
             teacher: info.elmauteur.V.L,
             content: info.listeQuestions.V[0].texte.V,
+            // eslint-disable-next-line no-undef,no-loop-func
             files: info.listeQuestions.V[0].listePiecesJointes.V.map(f => file(url, session, f.L, { N: f.N, G: 50 }))
         });
     }

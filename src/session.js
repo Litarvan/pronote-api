@@ -29,7 +29,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     session.absences = (...args) => absence(session, ...args);
     session.infos = (...args) => infos(session, ...args);
     session.homeworks = (...args) => homeworks(session, ...args);
-  
+
     sessions[session.id] = session;
     return session;
 }
