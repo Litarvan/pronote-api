@@ -11,7 +11,8 @@
     "scripts": {
         "start": "node ./bin/server.js",
         "lint": "eslint src/* bin/* index.js",
-        "check": "eslint --fix src/* bin/* index.js"
+        "check": "eslint --fix src/* bin/* index.js",
+        "test":  "eslint src/* bin* index.js && node ./bin/fetch.js https://demo.index-education.net/pronote/ demonstration pronotevs"
     },
     "keywords": [
         "pronote",
