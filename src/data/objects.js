@@ -1,4 +1,4 @@
-function fromPronote({ N, L, G, ...obj }, fn, gName = 'type') {
+function fromPronote({ N, L, G, ...obj } = {}, fn = null, gName = 'type') {
     const result = {};
 
     if (typeof fn === 'string') {
@@ -22,7 +22,7 @@ function fromPronote({ N, L, G, ...obj }, fn, gName = 'type') {
     };
 }
 
-function toPronote({ id, name, type }) {
+function toPronote({ id, name, type } = {}) {
     const result = {};
 
     if (id) {
