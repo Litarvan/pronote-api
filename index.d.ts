@@ -34,7 +34,7 @@ export interface PronoteTarget
     id: number
 }
 
-export function login(url: string, username: string, password: string, cas?: string): Promise<PronoteSession>;
+export function login(url: string, username: string, password: string, cas?: string, accountType?: string): Promise<PronoteSession>;
 
 export namespace errors {
     const PRONOTE: PronoteError;

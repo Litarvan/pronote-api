@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const errors = require('./errors');
+const accountTypes = require('./accountType');
 
 const { decipher, getLoginKey, generateIV } = require('./cipher');
 const { createSession, getServer } = require('./session');
@@ -10,9 +11,9 @@ const getParams = require('./fetch/params');
 const { getId, getAuthKey } = require('./fetch/auth');
 const getUser = require('./fetch/user');
 
-async function login(url, username, password, cas)
+async function login(url, username, password, cas, accountType)
 {
-    const start = await getStart(getServer(url), username, password, cas || 'none');
+    const start = await getStart(getServer(url), username, password, cas || 'none', accountType || 'Student');
     const session = createSession({
         serverURL: url,
         sessionID: start.h,
@@ -23,7 +24,9 @@ async function login(url, username, password, cas)
         disableCompress: !!start.sCoA,
 
         keyModulus: start.MR,
-        keyExponent: start.ER
+        keyExponent: start.ER,
+
+        accountType: accountTypes.getAccountType(accountType)
     });
 
     const iv = generateIV();
@@ -37,11 +40,17 @@ async function login(url, username, password, cas)
     return session;
 }
 
-async function getStart(url, username, password, cas)
+async function getStart(url, username, password, cas, accountType)
 {
     if (cas.toLowerCase() === 'api') {
         throw errors.UNKNOWN_CAS.drop(cas);
     }
+
+    if (!accountType || !accountTypes.ACCOUNTTYPE.includes(accountType)) {
+        throw errors.UNKONWN_ACCOUNT.drop(accountType)
+    }
+
+    const accountPage = accountTypes.getAccountType(accountType).accountPage;
 
     const casPath = `./cas/${cas}.js`;
     try {
@@ -51,7 +60,7 @@ async function getStart(url, username, password, cas)
     }
 
     // eslint-disable-next-line node/global-require
-    return await require(casPath)(url, username, password);
+    return await require(casPath)(url, accountPage, username, password);
 }
 
 async function auth(session, username, password, fromCas)
