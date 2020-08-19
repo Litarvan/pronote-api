@@ -2,6 +2,7 @@ const PRONOTE = error(-1, ({ title, message }) => title + (title && message ? ' 
 const UNKNOWN_CAS = error(1, cas => `Unknown CAS '${cas}' (use 'none' for no CAS)`);
 const BANNED = error(2, 'Your IP address is temporarily banned because of too many failed authentication attempts');
 const WRONG_CREDENTIALS = error(3, 'Wrong user credentials');
+const UNKONWN_ACCOUNT = error(4, typeAccount => `Unknown ACCOUNT TYPE '${typeAccount}' (use 'Student' for default)`);
 
 function error(code, message)
 {
@@ -18,5 +19,6 @@ module.exports = {
     PRONOTE,
     UNKNOWN_CAS,
     BANNED,
-    WRONG_CREDENTIALS
+    WRONG_CREDENTIALS,
+    UNKONWN_ACCOUNT
 };

@@ -8,7 +8,8 @@ const homeworks = require('./homeworks');
 
 const sessions = {}; // TODO: Keep alive sessions
 
-function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent })
+function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent,
+    accountType })
 {
     const session = {
         id: ~~sessionID,
@@ -22,6 +23,8 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     };
 
     initCipher(session, keyModulus, keyExponent);
+
+    session.accountType = accountType;
 
     session.timetable = (...args) => timetable(session, ...args);
     session.marks = (...args) => marks(session, ...args);

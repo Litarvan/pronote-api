@@ -6,15 +6,15 @@
 const pronote = require('..');
 
 if (process.argv.length < 5) {
-    console.log('Syntax: pronote-fetch <URL> <username> <password> [cas/type(ex: parent)]');
+    console.log('Syntax: pronote-fetch <URL> <username> <password> [cas(ex: none)] [AccountType (ex: Student)]');
     return;
 }
 
-const [,, url, username, password, cas = 'none'] = process.argv;
+const [,, url, username, password, cas = 'none', accountType] = process.argv;
 
 async function fetch()
 {
-    const session = await pronote.login(url, username, password, cas);
+    const session = await pronote.login(url, username, password, cas, accountType);
     console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
 
     const timetable = await session.timetable(new Date(2020, 8, 1));

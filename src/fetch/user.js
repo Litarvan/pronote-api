@@ -16,7 +16,7 @@ async function getUser(session)
         establishment: fromPronote(establishment),
         hasAvatar: res.avecPhoto,
         studentClass: fromPronote(res.classeDEleve),
-        classHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
+        ClassHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
             hadMarks: AvecNote,
             hadOptions: AvecFiliere
         })),
