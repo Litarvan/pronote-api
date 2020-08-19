@@ -600,11 +600,10 @@ export interface Absences
 {
     absences: [],
 }
-
 export interface Infos
 {
     infos: [],
-}
+
 export interface PronoteHomeworks
 {
     homeworks: Array<PronoteHomework>, // ListeCahierDeTextes
