@@ -26,7 +26,7 @@ async function login(url, username, password, cas, accountType)
         keyModulus: start.MR,
         keyExponent: start.ER,
 
-        accountType: accountTypes.getAccountType(accountType)
+        accountType: accountTypes.getAccountType(accountType || 'Student')
     });
 
     const iv = generateIV();
