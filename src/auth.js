@@ -46,7 +46,7 @@ async function getStart(url, username, password, cas, accountType)
         throw errors.UNKNOWN_CAS.drop(cas);
     }
 
-    if (!accountType || !accountTypes.ACCOUNTTYPE.includes(accountType)) {
+    if (!accountType || !accountTypes.ACCOUNTTYPE.includes(accountType.toLowerCase())) {
         throw errors.UNKONWN_ACCOUNT.drop(accountType)
     }
 
