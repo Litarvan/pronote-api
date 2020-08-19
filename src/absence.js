@@ -1,8 +1,14 @@
 const { getAbsence } = require('./fetch/absence');
 const { toPronote } = require('./data/objects');
 
+const validateAccount = ['STUDENT'];
+
 async function Absence(session, periodString = null)
 {
+    if (!validateAccount.includes(session.accountType.type)) {
+        return;
+    }
+    
     const result = [];
     const periods = session.params.periods;
 
