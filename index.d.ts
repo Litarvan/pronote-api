@@ -25,6 +25,7 @@ export interface PronoteSession
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
+    absences(period?: String): Promise<Absences>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
 }
 
@@ -228,9 +229,7 @@ export interface PronoteIdResponse
 export interface PronoteObject
 {
     id: string, // N
-    name: string, // L
-    // May have 'type' from 'G' field, but sometimes it has another name
-    type?: number, // G
+    name: string // L
 }
 
 export interface PronoteParams
@@ -366,7 +365,7 @@ export interface PronoteHour
 
 export interface PronotePeriod extends PronoteObject
 {
-    kind: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
+    type: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
     notationPeriod: number, // periodeNotation
     from: Date, // dateDebut
     to: Date // dateFin
@@ -596,6 +595,10 @@ export interface PronoteEvaluationSubject extends PronoteObject
     color: string // couleur
 }
 
+export interface Absences
+{
+    absences: [],
+}
 export interface PronoteHomeworks
 {
     homeworks: Array<PronoteHomework>, // ListeCahierDeTextes
