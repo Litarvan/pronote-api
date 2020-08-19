@@ -5,11 +5,11 @@ const validateAccount = ['STUDENT'];
 
 async function infos(session)
 {
-    
+
     if (!validateAccount.includes(session.accountType.type)) {
         return;
     }
-    
+
     const infos = await getinfos(session);
     const result = [];
 
