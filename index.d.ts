@@ -25,6 +25,8 @@ export interface PronoteSession
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
+    absences(period?: String): Promise<Absences>
+    infos(period?: String): Promise<Infos>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
@@ -35,7 +37,7 @@ export interface PronoteTarget
     id: number
 }
 
-export function login(url: string, username: string, password: string, cas?: string): Promise<PronoteSession>;
+export function login(url: string, username: string, password: string, cas?: string, accountType?: string): Promise<PronoteSession>;
 
 export namespace errors {
     const PRONOTE: PronoteError;
@@ -249,9 +251,7 @@ export interface PronoteIdResponse
 export interface PronoteObject
 {
     id: string, // N
-    name: string, // L
-    // May have 'type' from 'G' field, but sometimes it has another name
-    type?: number, // G
+    name: string // L
 }
 
 export interface PronoteParams
@@ -387,7 +387,7 @@ export interface PronoteHour
 
 export interface PronotePeriod extends PronoteObject
 {
-    kind: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
+    type: 'trimester' | 'semester' | 'year' | 'other', // G (1, 2, 3, *)
     notationPeriod: number, // periodeNotation
     from: Date, // dateDebut
     to: Date // dateFin
@@ -616,6 +616,14 @@ export interface PronoteEvaluationSubject extends PronoteObject
     service: PronoteObject, // serviceConcerne
     color: string // couleur
 }
+
+export interface Absences
+{
+    absences: [],
+}
+export interface Infos
+{
+    infos: [],
 
 export interface PronoteHomeworks
 {
