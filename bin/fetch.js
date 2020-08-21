@@ -21,7 +21,7 @@ async function fetch()
     const marks = await session.marks('Trimestre 1');
     const evaluations = await session.evaluations();
     const homeworks = await session.homeworks(new Date(2020, 8, 15));
-    const menu = await pronote.fetchMenu(session, new Date(2020, 8, 15));
+    const menu = await session.menu(new Date(2020, 8, 15));
 
     // TODO
 

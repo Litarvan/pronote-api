@@ -26,6 +26,7 @@ export interface PronoteSession
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
+    menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
 
 export interface PronoteTarget
@@ -147,6 +148,24 @@ export interface File
 {
     name: string,
     url: string
+}
+
+export interface MenuDay
+{
+    date: Date,
+    meals: Array<Array<Array<MenuMealEntry>>>
+}
+
+export interface MenuMealEntry
+{
+    name: string,
+    labels: Array<MenuMealLabel>
+}
+
+export interface MenuMealLabel
+{
+    name: string,
+    color: string
 }
 
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
