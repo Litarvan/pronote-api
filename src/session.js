@@ -5,6 +5,7 @@ const evaluations = require('./evaluations');
 const absence = require('./absence');
 const infos = require('./Informations');
 const homeworks = require('./homeworks');
+const menu = require('./menu');
 
 const sessions = {}; // TODO: Keep alive sessions
 
@@ -32,6 +33,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     session.absences = (...args) => absence(session, ...args);
     session.infos = (...args) => infos(session, ...args);
     session.homeworks = (...args) => homeworks(session, ...args);
+    session.menu = (...args) => menu(session, ...args);
 
 
     sessions[session.id] = session;

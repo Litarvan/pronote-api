@@ -23,6 +23,7 @@ async function fetch()
     const absences = await session.absences();
     const infos = await session.infos();
     const homeworks = await session.homeworks(new Date(2020, 8, 15));
+    const menu = await session.menu(new Date(2020, 8, 15));
 
     // TODO
 

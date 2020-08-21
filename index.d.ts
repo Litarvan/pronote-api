@@ -28,6 +28,7 @@ export interface PronoteSession
     absences(period?: String): Promise<Absences>
     infos(period?: String): Promise<Infos>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
+    menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
 
 export interface PronoteTarget
@@ -151,6 +152,24 @@ export interface File
     url: string
 }
 
+export interface MenuDay
+{
+    date: Date,
+    meals: Array<Array<Array<MenuMealEntry>>>
+}
+
+export interface MenuMealEntry
+{
+    name: string,
+    labels: Array<MenuMealLabel>
+}
+
+export interface MenuMealLabel
+{
+    name: string,
+    color: string
+}
+
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
 export function createSession(options: CreateSessionOptions): PronoteSession;
@@ -170,6 +189,7 @@ export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<Pro
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
 export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
+export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 
@@ -177,6 +197,7 @@ export function toPronoteWeek(session: PronoteSession, date: Date): number;
 export function toUTCWeek(date: Date): number;
 export function toPronoteDay(session: PronoteSession, date: Date): number;
 export function fromPronoteDay(session: PronoteSession, date: number): Date;
+export function toPronoteDate(date: Date): string;
 
 export function getFileURL(session: PronoteSession, file: PronoteObject): string;
 
@@ -639,3 +660,38 @@ export interface PronoteHomeworksResources
     resources: Array<PronoteObject>, // listeRessources
     subjects: Array<PronoteObject> // listeMatieres
 }
+
+export interface PronoteMenu
+{
+    hasLunch: boolean, // AvecRepasMidi
+    hasDiner: boolean, // AvecRepasSoir
+    filledWeeks: Array<number>, // DomaineDePresence
+    menus: Array<PronoteMenuDay>, // ListeJours
+}
+
+export interface PronoteMenuDay
+{
+    date: Date, // Date
+    meals: Array<PronoteMenuMeal> // ListeRepas
+}
+
+export interface PronoteMenuMeal extends PronoteObject
+{
+    content: Array<PronoteMenuMealContent> // ListePlats
+}
+
+export interface PronoteMenuMealContent extends PronoteObject
+{
+    lines: Array<PronoteMenuMealLine> // ListeAliments
+}
+
+export interface PronoteMenuMealLine extends PronoteObject
+{
+    labels: Array<PronoteMenuLabel> // listeLabelsAlimentaires
+}
+
+export interface PronoteMenuLabel extends PronoteObject
+{
+    color: string // couleur
+}
+
