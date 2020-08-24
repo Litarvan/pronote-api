@@ -17,7 +17,7 @@ function getAccountType(type = 'student')
         }
     }
 
-    throw errors.UNKONWN_ACCOUNT.drop(type);
+    throw errors.UNKNOWN_ACCOUNT.drop(type);
 }
 
 module.exports = getAccountType;
