@@ -1,7 +1,7 @@
-const request = require('../request');
+const request = require('../../request');
 
-const parse = require('../data/types');
-const { fromPronote } = require('../data/objects');
+const parse = require('../../data/types');
+const { fromPronote } = require('../../data/objects');
 
 async function getUser(session)
 {

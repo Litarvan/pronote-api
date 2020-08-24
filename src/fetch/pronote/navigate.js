@@ -1,4 +1,4 @@
-const request = require('../request');
+const request = require('../../request');
 
 async function navigate(session, page, tab, accounts, data)
 {

@@ -1,42 +1,37 @@
-const { toPronoteDate } = require('../data/dates');
-const parse = require('../data/types');
+const getMenu = require('./pronote/menu');
 
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'PageMenus';
-const TAB_ID = 10;
-const ACCOUNTS = ['student'];
-
-async function getMenu(session, day = new Date())
+async function menu(session, from = new Date(), to = null)
 {
-    const menu = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
-        date: {
-            _T: 7,
-            V: toPronoteDate(day)
-        }
-    });
-
-    if (!menu) {
-        return null;
+    if (!to || to > from) {
+        to = new Date(from.getTime());
+        to.setDate(to.getDate() + 1);
+        to.setHours(to.getHours() - 1);
     }
 
-    return {
-        hasLunch: menu.AvecRepasMidi,
-        hasDiner: menu.AvecRepasSoir,
-        filledWeeks: parse(menu.DomaineDePresence),
-        menus: parse(menu.ListeJours).map(({ Date, ListeRepas }) => ({
-            date: parse(Date),
-            meals: parse(ListeRepas).pronoteMap(({ ListePlats }) => ({
-                content: parse(ListePlats).pronoteMap(({ ListeAliments }) => ({
-                    lines: parse(ListeAliments).pronoteMap(({ listeLabelsAlimentaires }) => ({
-                        labels: parse(listeLabelsAlimentaires).pronoteMap(({ couleur }) => ({
-                            color: couleur
-                        }))
-                    }))
-                }))
-            }))
-        }))
-    };
+    const result = [];
+    const date = new Date(from.getTime());
+
+    // eslint-disable-next-line no-unmodified-loop-condition
+    while (date < to) {
+        const menus = await getMenu(session, date);
+        for (const menu of menus.menus) {
+            if (menu.date < from || menu.date > to) {
+                continue;
+            }
+
+            result.push({
+                date: menu.date,
+                meals: menu.meals.map(m => m.content.map(c => c.lines.map(({ name, labels }) => ({
+                    name,
+                    labels: labels.map(({ name, color }) => ({ name, color }))
+                }))))
+            });
+        }
+
+        date.setDate(date.getDate() + 7);
+    }
+
+    return result;
 }
 
-module.exports = getMenu;
+module.exports = menu;

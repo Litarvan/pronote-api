@@ -1,164 +1,104 @@
-const parse = require('../data/types');
-const { toPronote } = require('../data/objects');
-const { toPronoteDate } = require('../data/dates');
-const { fromPronoteHours } = require('../data/dates');
+const { getPeriodBy } = require('../data/periods');
+const getAbsences = require('./pronote/absences');
 
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'PagePresence';
-const TAB_ID = 19;
-const ACCOUNTS = ['student'];
-
-async function getAbsences(session, period, from, to)
+async function absences(session, period = null)
 {
-    const absences = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
-        DateDebut: {
-            _T: 7,
-            V: toPronoteDate(from)
-        },
-        DateFin: {
-            _T: 7,
-            V: toPronoteDate(to)
-        },
-        periode: period.name ? toPronote(period) : period
-    });
+    const result = {
+        absences: [],
+        delays: [],
+        punishments: [],
+        other: [],
+        totals: []
+    };
 
-    if (!absences) {
-        return null;
+    const p = getPeriodBy(session, period);
+    const absences = await getAbsences(session, p, p.from, p.to);
+
+    for (const event of absences.events) {
+        // eslint-disable-next-line default-case
+        switch (event.type) {
+        case 'absence':
+            result.absences.push({
+                from: event.from,
+                to: event.to,
+                justified: event.justified,
+                solved: event.solved,
+                hours: event.hours,
+                reason: event.reasons.length && event.reasons[0].name || ''
+            });
+            break;
+        case 'delay':
+            result.delays.push({
+                date: event.date,
+                justified: event.justified,
+                solved: event.solved,
+                justification: event.justification,
+                minutesMissed: event.duration,
+                reason: event.reasons.length && event.reasons[0].name || ''
+            });
+            break;
+        case 'punishment':
+            // eslint-disable-next-line no-case-declarations
+            let detention = null;
+            if (event.nature.type === 1) {
+                const schedule = event.schedule[0];
+                const hour = session.params.firstHour.getHours() + schedule.position / session.params.ticksPerHour;
+
+                const from = new Date(schedule.date.getTime());
+                const to = new Date(schedule.date.getTime());
+
+                from.setHours(from.getHours() + hour);
+                to.setHours(to.getHours() + hour);
+                to.setMinutes(to.getMinutes() + schedule.duration);
+
+                detention = { from, to };
+            }
+
+            result.punishments.push({
+                date: event.date,
+                isExclusion: event.isExclusion,
+                isDuringLesson: !event.isNotDuringLesson,
+                homework: event.homework,
+                circumstances: event.circumstances,
+                giver: event.giver.name,
+                reason: event.reasons.length && event.reasons[0].name || '',
+                detention
+            });
+            break;
+        case 'other':
+            result.other.push({
+                kind: event.name,
+                date: event.date,
+                giver: event.giver.name,
+                comment: event.comment,
+                subject: event.subject && event.subject.name || null
+            });
+            break;
+        }
     }
 
+    for (const subject of absences.subjects) {
+        if (subject.inGroup) {
+            continue;
+        }
+
+        const res = parseSubject(subject);
+        if (subject.group) {
+            res.subs = absences.subjects.filter(s => s.inGroup === subject.group).map(s => parseSubject(s));
+        }
+
+        result.totals.push(res);
+    }
+
+    return result;
+}
+
+function parseSubject(subject) {
     return {
-        authorizations: (a => ({
-            absences: a.absence,
-            fillAbsenceReason: a.saisieMotifAbsence,
-            delays: a.retard,
-            fillDelayReason: a.saisieMotifRetard,
-            punishments: a.punition,
-            exclusions: a.exclusion,
-            sanctions: a.sanction,
-            conservatoryMesures: a.mesureConservatoire,
-            infirmary: a.infirmerie,
-            mealAbsences: a.absenceRepas,
-            internshipAbsences: a.absenceInternat,
-            observations: a.observation,
-            incidents: a.incident,
-            totalHoursMissed: a.totalHeuresManquees
-        }))(absences.autorisations),
-        events: parse(absences.listeAbsences).pronoteMap(a => parseEvent(a), false),
-        subjects: parse(absences.Matieres).pronoteMap(({
-            P, regroupement, dansRegroupement, suivi, absence, excluCours, excluEtab
-        }) => ({
-            position: P,
-            group: regroupement,
-            inGroup: dansRegroupement,
-            hoursAssisted: suivi / 3600,
-            hoursMissed: absence / 3600,
-            lessonExclusions: excluCours,
-            establishmentExclusions: excluEtab
-        })),
-        recaps: parse(absences.listeRecapitulatifs).pronoteMap(({ NombreTotal, NbrHeures, NombreNonJustifie }) => ({
-            count: NombreTotal,
-            unjustifiedCount: NombreNonJustifie,
-            hours: fromPronoteHours(NbrHeures)
-        })),
-        sanctions: parse(absences.listeSanctionUtilisateur).pronoteMap() // TODO: Check values
+        subject: subject.name,
+        hoursAssisted: subject.hoursAssisted,
+        hoursMissed: subject.hoursMissed
     };
 }
 
-function parseEvent(a)
-{
-    switch (a.page.Absence) {
-    case 13:
-        return {
-            type: 'absence',
-            ...parseAbsence(a)
-        };
-    case 14:
-        return {
-            type: 'delay',
-            ...parseDelay(a)
-        };
-    case 41:
-        return {
-            type: 'punishment',
-            ...parsePunishment(a)
-        };
-    case 45:
-        return {
-            type: 'other',
-            ...parseOther(a)
-        };
-    default:
-        return {
-            type: 'unknown',
-            ...a
-        };
-    }
-}
-
-function parseAbsence(a)
-{
-    return {
-        from: parse(a.dateDebut),
-        to: parse(a.dateFin),
-        opened: a.ouverte,
-        solved: a.reglee,
-        justified: a.justifie,
-        hours: fromPronoteHours(a.NbrHeures),
-        days: a.NbrJours,
-        reasons: parse(a.listeMotifs).pronoteMap()
-    }
-}
-
-function parseDelay(a)
-{
-    return {
-        date: parse(a.date),
-        solved: a.reglee,
-        justified: a.justifie,
-        justification: a.justification,
-        duration: a.duree,
-        reasons: parse(a.listeMotifs).pronoteMap()
-    };
-}
-
-function parsePunishment(a)
-{
-    return {
-        date: parse(a.dateDemande),
-        isExclusion: a.estUneExclusion,
-        isNotDuringLesson: a.horsCours,
-        homework: a.travailAFaire,
-        isBoundToIncident: a.estLieAUnIncident,
-        circumstances: a.circonstances,
-        duration: a.duree,
-        giver: parse(a.demandeur).pronote(),
-        isSchedulable: a.estProgrammable,
-        reasons: parse(a.listeMotifs).pronoteMap(),
-        schedule: parse(a.programmation).pronoteMap(({ date, placeExecution, duree }) => ({
-            date: parse(date),
-            position: placeExecution,
-            duration: duree
-        })),
-        nature: a.nature && parse(a.nature).pronote(({ estProgrammable, estAvecARParent }) => ({
-            isSchedulable: estProgrammable,
-            requiresParentsMeeting: estAvecARParent
-        }))
-    }
-}
-
-function parseOther(a)
-{
-    return {
-        date: parse(a.date),
-        giver: parse(a.demandeur).pronote(({ estProfPrincipal, mail }) => ({
-            isHeadTeacher: estProfPrincipal,
-            mail
-        })),
-        comment: a.commentaire,
-        read: a.estLue,
-        subject: parse(a.matiere).pronote()
-    };
-}
-
-module.exports = getAbsences;
+module.exports = absences;

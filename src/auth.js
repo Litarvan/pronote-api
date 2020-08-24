@@ -6,9 +6,9 @@ const { decipher, getLoginKey, generateIV } = require('./cipher');
 const getAccountType = require('./accounts');
 const { createSession, getServer } = require('./session');
 
-const getParams = require('./fetch/params');
-const { getId, getAuthKey } = require('./fetch/auth');
-const getUser = require('./fetch/user');
+const getParams = require('./fetch/pronote/params');
+const { getId, getAuthKey } = require('./fetch/pronote/auth');
+const getUser = require('./fetch/pronote/user');
 
 async function login(url, username, password, cas, account)
 {

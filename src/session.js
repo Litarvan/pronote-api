@@ -1,13 +1,13 @@
 const { initCipher } = require('./cipher');
 const getAccountType = require('./accounts');
 
-const timetable = require('./timetable');
-const marks = require('./marks');
-const evaluations = require('./evaluations');
-const absences = require('./absences');
-const infos = require('./infos');
-const homeworks = require('./homeworks');
-const menu = require('./menu');
+const timetable = require('./fetch/timetable');
+const marks = require('./fetch/marks');
+const evaluations = require('./fetch/evaluations');
+const absences = require('./fetch/absences');
+const infos = require('./fetch/infos');
+const homeworks = require('./fetch/homeworks');
+const menu = require('./fetch/menu');
 
 const sessions = {}; // TODO: Keep alive sessions
 

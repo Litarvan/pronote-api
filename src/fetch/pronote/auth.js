@@ -1,5 +1,5 @@
-const request = require('../request');
-const { cipher } = require('../cipher');
+const request = require('../../request');
+const { cipher } = require('../../cipher');
 
 async function getId(session, username, fromCas)
 {

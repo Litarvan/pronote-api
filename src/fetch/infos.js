@@ -1,35 +1,31 @@
-const parse = require('../data/types');
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'PageActualites';
-const TAB_ID = 8;
-const ACCOUNTS = ['student'];
+const { getFileURL } = require('../data/files');
+const getInfos = require('./pronote/infos');
 
 /* This was not tested in Pronote 2020 */
 
-async function getInfos(session)
+async function infos(session)
 {
-    const infos = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
-        estAuteur: false
-    });
+    const infos = await getInfos(session);
+    const result = [];
 
     if (!infos) {
-        return null;
+        return result;
     }
 
-    return {
-        categories: parse(infos.listeCategories).pronoteMap(({ estDefaut }) => ({
-            isDefault: estDefaut
-        })),
-        infos: parse(infos.listeActualites).pronoteMap(({ dateDebut, elmauteur, listeQuestions }) => ({
-            date: parse(dateDebut),
-            author: parse(elmauteur).pronote(),
-            content: parse(listeQuestions).pronoteMap(({ texte, listePiecesJointes }) => ({
-                text: parse(texte).pronote(),
-                files: parse(listePiecesJointes).pronoteMap()
-            }))
-        })) // TODO: Check values
-    };
+    for (const info of infos.infos)
+    {
+        result.push({
+            date: info.date,
+            title: info.name,
+            author: info.author.name,
+            content: info.content[0].text,
+            files: info.content[0].files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
+        });
+    }
+
+    result.sort((a, b) => a.date - b.date);
+
+    return result;
 }
 
-module.exports = getInfos;
+module.exports = infos;

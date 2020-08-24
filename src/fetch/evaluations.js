@@ -1,49 +1,52 @@
-const parse = require('../data/types');
-const { toPronote } = require('../data/objects');
+const { getPeriodBy } = require('../data/periods');
+const getEvaluations = require('./pronote/evaluations');
 
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'DernieresEvaluations';
-const TAB_ID = 201;
-const ACCOUNTS = ['student'];
-
-async function getEvaluations(session, period)
+async function evaluations(session, period = null)
 {
-    const evaluations = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
-        periode: period.name ? toPronote(period) : period
-    });
+    const evaluations = await getEvaluations(session, getPeriodBy(session, period));
+    const result = [];
 
-    if (!evaluations) {
-        return null;
+    for (const evaluation of evaluations) {
+        let subject = result.find(s => s.name === evaluation.subject.name);
+        if (!subject) {
+            const { position, name, color } = evaluation.subject;
+            subject = {
+                position,
+                name,
+                teacher: evaluation.teacher.name,
+                color,
+                evaluations: []
+            };
+
+            result.push(subject);
+        }
+
+        subject.evaluations.push({
+            name: evaluation.name,
+            date: evaluation.date,
+            levels: evaluation.acquisitionLevels.map(({ name, position, value, item, domain, pillar }) => ({
+                name: item && item.name || domain.name,
+                position,
+                value: {
+                    short: value,
+                    long: name
+                },
+                prefixes: pillar.prefixes
+            }))
+        });
     }
 
-    return parse(evaluations.listeEvaluations).pronoteMap(({
-        listeNiveauxDAcquisitions, listePaliers, matiere, individu, coefficient, descriptif, date, periode
-    }) => ({
-        title: descriptif,
-        acquisitionLevels: parse(listeNiveauxDAcquisitions).pronoteMap(({
-            abbreviation, ordre, pilier, coefficient, domaine, item
-        }) => ({
-            position: ordre,
-            value: abbreviation,
-            pillar: parse(pilier).pronote(({ strPrefixes }) => ({
-                prefixes: strPrefixes.split(', ')
-            })),
-            coefficient,
-            domain: parse(domaine).pronote(),
-            item: item && parse(item).pronote() || null
-        })),
-        levels: parse(listePaliers).pronoteMap(),
-        subject: parse(matiere).pronote(({ couleur, ordre, serviceConcerne }) => ({
-            position: ordre,
-            service: parse(serviceConcerne).pronote(),
-            color: couleur
-        })),
-        teacher: parse(individu).pronote(),
-        coefficient,
-        date: parse(date),
-        period: parse(periode).pronote()
-    }));
+    result.sort((a, b) => a.position - b.position);
+    result.forEach(s => {
+        s.evaluations.forEach(e => {
+            e.levels.sort((a, b) => a.position - b.position);
+            e.levels.forEach(l => delete l.position);
+        });
+
+        return delete s.position;
+    });
+
+    return result;
 }
 
-module.exports = getEvaluations;
+module.exports = evaluations;
