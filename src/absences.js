@@ -14,7 +14,7 @@ async function absences(session, period = null)
         delays: [],
         punishments: [],
         other: [],
-        total: []
+        totals: []
     };
 
     const p = getPeriodBy(session, period);
@@ -63,7 +63,7 @@ async function absences(session, period = null)
             result.punishments.push({
                 date: event.date,
                 isExclusion: event.isExclusion,
-                isNotDuringLesson: event.isNotDuringLesson,
+                isDuringLesson: !event.isNotDuringLesson,
                 homework: event.homework,
                 circumstances: event.circumstances,
                 giver: event.giver.name,
@@ -93,7 +93,7 @@ async function absences(session, period = null)
             res.subs = absences.subjects.filter(s => s.inGroup === subject.group).map(s => parseSubject(s));
         }
 
-        result.total.push(res);
+        result.totals.push(res);
     }
 
     return result;

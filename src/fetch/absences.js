@@ -68,25 +68,25 @@ async function getAbsences(session, period, from, to)
 function parseEvent(a)
 {
     switch (a.page.Absence) {
-    case 45:
+    case 13:
         return {
-            type: 'other',
-            ...parseOther(a)
-        };
-    case 41:
-        return {
-            type: 'punishment',
-            ...parsePunishment(a)
+            type: 'absence',
+            ...parseAbsence(a)
         };
     case 14:
         return {
             type: 'delay',
             ...parseDelay(a)
         };
-    case 13:
+    case 41:
         return {
-            type: 'absence',
-            ...parseAbsence(a)
+            type: 'punishment',
+            ...parsePunishment(a)
+        };
+    case 45:
+        return {
+            type: 'other',
+            ...parseOther(a)
         };
     default:
         return {
@@ -94,20 +94,6 @@ function parseEvent(a)
             ...a
         };
     }
-}
-
-function parseOther(a)
-{
-    return {
-        date: parse(a.date),
-        giver: parse(a.demandeur).pronote(({ estProfPrincipal, mail }) => ({
-            isHeadTeacher: estProfPrincipal,
-            mail
-        })),
-        comment: a.commentaire,
-        read: a.estLue,
-        subject: fromPronote(parse(a.matiere))
-    };
 }
 
 function parseAbsence(a)
@@ -124,6 +110,18 @@ function parseAbsence(a)
     }
 }
 
+function parseDelay(a)
+{
+    return {
+        date: parse(a.date),
+        solved: a.reglee,
+        justified: a.justifie,
+        justification: a.justification,
+        duration: a.duree,
+        reasons: parse(a.listeMotifs).pronoteMap()
+    };
+}
+
 function parsePunishment(a)
 {
     return {
@@ -134,9 +132,7 @@ function parsePunishment(a)
         isBoundToIncident: a.estLieAUnIncident,
         circumstances: a.circonstances,
         duration: a.duree,
-        giver: {
-            name: a.demandeur.V.L
-        },
+        giver: parse(a.demandeur).pronote(),
         isSchedulable: a.estProgrammable,
         reasons: parse(a.listeMotifs).pronoteMap(),
         schedule: parse(a.programmation).pronoteMap(({ date, placeExecution, duree }) => ({
@@ -151,15 +147,17 @@ function parsePunishment(a)
     }
 }
 
-function parseDelay(a)
+function parseOther(a)
 {
     return {
         date: parse(a.date),
-        solved: a.reglee,
-        justified: a.justifie,
-        justification: a.justification,
-        duration: a.duree,
-        reasons: parse(a.listeMotifs).pronoteMap()
+        giver: parse(a.demandeur).pronote(({ estProfPrincipal, mail }) => ({
+            isHeadTeacher: estProfPrincipal,
+            mail
+        })),
+        comment: a.commentaire,
+        read: a.estLue,
+        subject: parse(a.matiere).pronote()
     };
 }
 
