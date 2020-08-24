@@ -16,11 +16,11 @@ const getEvaluations = require('./src/fetch/evaluations');
 const getInfos = require('./src/fetch/Informations');
 const getHomeworks = require('./src/fetch/homeworks');
 const getMenu = require('./src/fetch/menu');
-const getAbsence = require('./src/fetch/absence');
+const getAbsence = require('./src/fetch/absences');
 
 const navigate = require('./src/fetch/navigate');
 
-const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/weeks');
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/dates');
 const { getFileURL } = require('./src/data/files');
 
 const http = require('./src/http');

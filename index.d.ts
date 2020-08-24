@@ -25,7 +25,7 @@ export interface PronoteSession
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
-    absences(period?: String): Promise<Absences>
+    absences(period?: PronotePeriod | String): Promise<Absences>
     infos(period?: String): Promise<Infos>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
@@ -624,7 +624,7 @@ export interface Absences
 export interface Infos
 {
     infos: [],
-
+}
 export interface PronoteHomeworks
 {
     homeworks: Array<PronoteHomework>, // ListeCahierDeTextes

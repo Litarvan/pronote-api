@@ -1,9 +1,10 @@
 const navigate = require('./navigate');
+const parse = require('../data/types');
 
 const PAGE_NAME = 'PageActualites';
 const TAB_ID = 8;
 
-async function getinfos(session)
+async function getInfos(session)
 {
     const infos = await navigate(session, PAGE_NAME, TAB_ID, {
         estAuteur: false
@@ -12,7 +13,8 @@ async function getinfos(session)
     if (!infos) {
         return null;
     }
-    return infos.listeActualites.V;
+
+    return parse(infos.listeActualites);
 }
 
-module.exports = getinfos;
+module.exports = getInfos;

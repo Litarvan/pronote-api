@@ -1,4 +1,4 @@
-const { toPronoteDate } = require('../data/weeks');
+const { toPronoteDate } = require('../data/dates');
 const parse = require('../data/types');
 
 const navigate = require('./navigate');

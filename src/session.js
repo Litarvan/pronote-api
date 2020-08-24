@@ -2,7 +2,7 @@ const { initCipher } = require('./cipher');
 const timetable = require('./timetable');
 const marks = require('./marks');
 const evaluations = require('./evaluations');
-const absence = require('./absence');
+const absences = require('./absences');
 const infos = require('./Informations');
 const homeworks = require('./homeworks');
 const menu = require('./menu');
@@ -30,7 +30,7 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     session.timetable = (...args) => timetable(session, ...args);
     session.marks = (...args) => marks(session, ...args);
     session.evaluations = (...args) => evaluations(session, ...args);
-    session.absences = (...args) => absence(session, ...args);
+    session.absences = (...args) => absences(session, ...args);
     session.infos = (...args) => infos(session, ...args);
     session.homeworks = (...args) => homeworks(session, ...args);
     session.menu = (...args) => menu(session, ...args);

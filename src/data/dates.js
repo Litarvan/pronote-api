@@ -35,6 +35,11 @@ function toPronoteDate(date)
            `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 }
 
+function fromPronoteHours(hours)
+{
+    return ~~hours[0] + ~~hours.substring(2) / 60;
+}
+
 module.exports = {
     toPronoteWeek,
     toUTCWeek,
@@ -42,5 +47,7 @@ module.exports = {
     toPronoteDay,
     fromPronoteDay,
 
-    toPronoteDate
+    toPronoteDate,
+
+    fromPronoteHours
 };

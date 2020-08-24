@@ -1,4 +1,4 @@
-const { toPronoteWeek } = require('./data/weeks');
+const { toPronoteWeek } = require('./data/dates');
 const { getFilledDaysAndWeeks, getTimetable } = require('./fetch/timetable');
 
 const validateAccount = ['STUDENT'];

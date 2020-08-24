@@ -1,4 +1,4 @@
-const { toPronoteWeek } = require('./data/weeks');
+const { toPronoteWeek } = require('./data/dates');
 const { getFileURL } = require('./data/files');
 const getHomeworks = require('./fetch/homeworks');
 
