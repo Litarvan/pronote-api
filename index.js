@@ -7,20 +7,20 @@ const { createSession } = require('./src/session');
 const { cipher, decipher } = require('./src/cipher');
 const { getStart, auth } = require('./src/auth');
 
-const getParams = require('./src/fetch/params');
-const { getId, getAuthKey } = require('./src/fetch/auth');
-const getUser = require('./src/fetch/user');
-const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable');
-const getMarks = require('./src/fetch/marks');
-const getEvaluations = require('./src/fetch/evaluations');
-const getInfos = require('./src/fetch/Informations');
-const getHomeworks = require('./src/fetch/homeworks');
-const getMenu = require('./src/fetch/menu');
-const getAbsence = require('./src/fetch/absence');
+const getParams = require('./src/fetch/pronote/params');
+const { getId, getAuthKey } = require('./src/fetch/pronote/auth');
+const getUser = require('./src/fetch/pronote/user');
+const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/pronote/timetable');
+const getMarks = require('./src/fetch/pronote/marks');
+const getEvaluations = require('./src/fetch/pronote/evaluations');
+const getAbsences = require('./src/fetch/pronote/absences');
+const getInfos = require('./src/fetch/pronote/infos');
+const getHomeworks = require('./src/fetch/pronote/homeworks');
+const getMenu = require('./src/fetch/pronote/menu');
 
-const navigate = require('./src/fetch/navigate');
+const navigate = require('./src/fetch/pronote/navigate');
 
-const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/weeks');
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/dates');
 const { getFileURL } = require('./src/data/files');
 
 const http = require('./src/http');
@@ -44,10 +44,10 @@ module.exports = {
     fetchTimetable: getTimetable,
     fetchMarks: getMarks,
     fetchEvaluations: getEvaluations,
+    fetchAbsences: getAbsences,
     fetchInfos: getInfos,
     fetchHomeworks: getHomeworks,
     fetchMenu: getMenu,
-    fetchAbsence: getAbsence,
 
     navigate,
 

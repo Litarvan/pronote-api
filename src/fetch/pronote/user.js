@@ -1,7 +1,7 @@
-const request = require('../request');
+const request = require('../../request');
 
-const parse = require('../data/types');
-const { fromPronote } = require('../data/objects');
+const parse = require('../../data/types');
+const { fromPronote } = require('../../data/objects');
 
 async function getUser(session)
 {
@@ -16,7 +16,7 @@ async function getUser(session)
         establishment: fromPronote(establishment),
         hasAvatar: res.avecPhoto,
         studentClass: fromPronote(res.classeDEleve),
-        ClassHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
+        classHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
             hadMarks: AvecNote,
             hadOptions: AvecFiliere
         })),

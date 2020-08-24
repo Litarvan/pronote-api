@@ -1,8 +1,8 @@
-const request = require('../request');
+const request = require('../../request');
 
-async function navigate(session, page, tab, data)
+async function navigate(session, page, tab, accounts, data)
 {
-    if (session.user.hiddenTabs.includes(tab)) {
+    if (session.user.hiddenTabs.includes(tab) || !accounts.includes(session.type.name)) {
         return null;
     }
 

@@ -1,78 +1,80 @@
-const parse = require('../data/types');
-const { toPronote, fromPronote } = require('../data/objects');
+const { toPronoteWeek } = require('../data/dates');
+const { getFilledDaysAndWeeks, getTimetable } = require('./pronote/timetable');
 
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'PageEmploiDuTemps';
-const TAB_ID = 16;
-
-async function getTimetable(session, week)
+async function timetable(session, from = new Date(), to = null)
 {
-    const student = toPronote(session.user);
-    const timetable = await navigate(session, PAGE_NAME, TAB_ID, {
-        avecAbsencesEleve: false, // TODO: Test what those parameters do
-        avecAbsencesRessource: true,
-        avecConseilDeClasse: true,
-        avecDisponibilites: true,
-        avecInfosPrefsGrille: true,
-        avecRessourceLibrePiedHoraire: false,
-        estEDTPermanence: false,
-        numeroSemaine: week, // *Clown emoji*
-        NumeroSemaine: week,
-        ressource: student,
-        Ressource: student
-    });
-
-    if (!timetable) {
-        return null;
+    if (!to || to > from) {
+        to = new Date(from.getTime());
+        to.setDate(to.getDate() + 1);
     }
 
-    let iCalURL = null;
-    if (timetable.avecExportICal) {
-        const id = timetable.ParametreExportiCal;
-        iCalURL = `${session.server}ical/Edt.ics?icalsecurise=${id}&version=${session.params.version}`;
+    const filled = await getFilledDaysAndWeeks(session);
+    if (!filled) {
+        return [];
     }
 
-    return {
-        hasCancelledLessons: timetable.avecCoursAnnule,
-        iCalURL,
-        lessons: timetable.ListeCours.map(o => fromPronote(o, ({
-            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue
-        }) => ({
-            position: place,
-            duration: duree,
-            date: parse(DateDuCours),
-            status: Statut,
-            color: CouleurFond,
-            content: parse(ListeContenus).pronoteMap(),
-            hasHomework: AvecTafPublie,
-            isCancelled: !!estAnnule,
-            isDetention: !!estRetenue
-        }))),
-        // I was unable to witness a filled "absences.joursCycle", so didn't include it
-        breaks: parse(timetable.recreations).pronoteMap(({ place }) => ({
-            position: place
-        }))
-    };
+    const fromWeek = toPronoteWeek(session, from);
+    const toWeek = toPronoteWeek(session, to);
+
+    const weeks = [];
+    for (let i = fromWeek; i <= toWeek; i++) {
+        weeks.push(i);
+    }
+
+    const result = [];
+    for (const week of weeks) {
+        const timetable = await getTimetable(session, week);
+        const lessons = getTimetableWeek(session, timetable);
+
+        lessons.filter(l => l.from >= from && l.from <= to).forEach(lesson => {
+            if (!filled.filledWeeks.includes(week)) {
+                lesson.isCancelled = true;
+            }
+
+            result.push(lesson);
+        });
+    }
+
+    return result.sort((a, b) => a.from - b.from);
 }
 
-async function getFilledDaysAndWeeks(session)
-{
-    const daysData = await navigate(session, PAGE_NAME + '_DomainePresence', TAB_ID, {
-        Ressource: toPronote(session.user)
-    });
+function getTimetableWeek(session, table) {
+    const result = [];
 
-    if (!daysData) {
-        return null;
+    for (const lesson of table.lessons) {
+        const from = lesson.date;
+        const to = new Date(from.getTime() + (lesson.duration / session.params.ticksPerHour * 3600000));
+
+        const res = {
+            from,
+            to,
+            isDetention: lesson.isDetention,
+            hasDuplicate: !!table.lessons.find(l => l.date.getTime() === from.getTime() && l !== lesson)
+        };
+
+        let room, subject, teacher;
+        if (lesson.isDetention) {
+            subject = lesson.content[0];
+            teacher = lesson.content[1];
+            room = lesson.content[2];
+        } else {
+            subject = lesson.content.find(o => o.type === 16);
+            teacher = lesson.content.find(o => o.type === 3);
+            room = lesson.content.find(o => o.type === 17);
+
+            res.isAway = (lesson.status || false) && !!lesson.status.match(/(.+)?prof(.+)?absent(.+)?/giu);
+            res.isCancelled = !res.isAway && lesson.isCancelled;
+            res.color = lesson.color;
+        }
+
+        res.subject = subject && subject.name || null;
+        res.teacher = teacher && teacher.name || null;
+        res.room = room && teacher.room || null;
+
+        result.push(res);
     }
 
-    return {
-        filledWeeks: parse(daysData.Domaine),
-        filledDays: parse(daysData.joursPresence)
-    }
+    return result;
 }
 
-module.exports = {
-    getTimetable,
-    getFilledDaysAndWeeks
-};
+module.exports = timetable;
