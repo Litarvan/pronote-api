@@ -3,7 +3,7 @@ const timetable = require('./timetable');
 const marks = require('./marks');
 const evaluations = require('./evaluations');
 const absences = require('./absences');
-const infos = require('./Informations');
+const infos = require('./infos');
 const homeworks = require('./homeworks');
 const menu = require('./menu');
 
@@ -34,7 +34,6 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     session.infos = (...args) => infos(session, ...args);
     session.homeworks = (...args) => homeworks(session, ...args);
     session.menu = (...args) => menu(session, ...args);
-
 
     sessions[session.id] = session;
     return session;

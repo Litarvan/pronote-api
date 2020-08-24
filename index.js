@@ -14,7 +14,7 @@ const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/timetable')
 const getMarks = require('./src/fetch/marks');
 const getEvaluations = require('./src/fetch/evaluations');
 const getAbsences = require('./src/fetch/absences');
-const getInfos = require('./src/fetch/Informations');
+const getInfos = require('./src/fetch/infos');
 const getHomeworks = require('./src/fetch/homeworks');
 const getMenu = require('./src/fetch/menu');
 

@@ -26,7 +26,7 @@ export interface PronoteSession
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
     absences(period?: PronotePeriod | String): Promise<Absences>
-    infos(period?: String): Promise<Infos>
+    infos(): Promise<Array<Info>>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
@@ -197,9 +197,13 @@ export interface SubjectAbsences
     subs?: Array<SubjectAbsences>
 }
 
-export interface Infos
+export interface Info
 {
-    infos: [],
+    date: Date,
+    title: string,
+    author: string,
+    content: string,
+    files: Array<File>
 }
 
 export interface Homework
@@ -258,6 +262,7 @@ export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<Pro
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
 export function fetchAbsences(session: PronoteSession, period?: PronotePeriod, from?: Date, to?: Date): Promise<PronoteAbsences>;
+export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
 export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
@@ -690,7 +695,7 @@ export interface PronoteEvaluationSubject extends PronoteObject
 export interface PronoteAbsences
 {
     authorizations: PronoteAbsencesAuthorizations, // autorisations
-    events: Array<PronoteEvent>, // listeAbsences
+    events: Array<PronoteAbsence | PronoteDelay | PronotePunishment | PronoteOtherEvent | PronoteEvent>, // listeAbsences
     subjects: Array<PronoteSubjectAbsences>, // Matieres
     recaps: Array<PronoteAbsenceRecap>, // listeRecapitulatifs
     sanctions: Array<PronoteObject> // listeSanctionUtilisateur
@@ -796,6 +801,30 @@ export interface PronoteAbsenceRecap extends PronoteObject
     count: number, // NombreTotal
     unjustifiedCount: number, // NombreNonJustifie
     hours: number // NbrHeures
+}
+
+export interface PronoteInfos
+{
+    categories: Array<PronoteInfoCategory>,
+    infos: Array<PronoteInfo>
+}
+
+export interface PronoteInfoCategory extends PronoteObject
+{
+    isDefault: boolean // estDefaut
+}
+
+export interface PronoteInfo extends PronoteObject
+{
+    date: Date, // dateDebut
+    author: PronoteObject, // elmauteur
+    content: Array<PronoteInfoContent> // listeQuestions
+}
+
+export interface PronoteInfoContent extends PronoteObject
+{
+    text: PronoteObject, // texte
+    files: Array<PronoteObject> // listePiecesJointes
 }
 
 export interface PronoteHomeworks
