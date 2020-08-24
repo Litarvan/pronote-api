@@ -1,16 +1,10 @@
 const { getFileURL } = require('./data/files');
 const getInfos = require('./fetch/infos');
 
-const validateAccount = ['STUDENT'];
-
 /* This was not tested in Pronote 2020 */
 
 async function infos(session)
 {
-    if (!validateAccount.includes(session.accountType.type)) {
-        return;
-    }
-
     const infos = await getInfos(session);
     const result = [];
 

@@ -1,14 +1,8 @@
 const { getPeriodBy } = require('./data/periods');
 const getEvaluations = require('./fetch/evaluations');
 
-const validateAccount = ['STUDENT'];
-
 async function evaluations(session, period = null)
 {
-    if (!validateAccount.includes(session.accountType.type)) {
-        return;
-    }
-
     const evaluations = await getEvaluations(session, getPeriodBy(session, period));
     const result = [];
 

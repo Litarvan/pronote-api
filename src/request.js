@@ -15,7 +15,7 @@ async function request(session, name, content = {})
     }
 
     const order = cipher(session, session.request);
-    const url = `${session.server}appelfonction/${session.target.id}/${session.id}/${order}`;
+    const url = `${session.server}appelfonction/${session.type.id}/${session.id}/${order}`;
 
     const result = await http({
         url,

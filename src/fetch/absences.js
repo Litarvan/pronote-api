@@ -1,17 +1,17 @@
 const parse = require('../data/types');
 const { toPronote } = require('../data/objects');
-const { fromPronote } = require('./../data/objects');
 const { toPronoteDate } = require('../data/dates');
+const { fromPronoteHours } = require('../data/dates');
 
 const navigate = require('./navigate');
-const { fromPronoteHours } = require('../data/dates');
 
 const PAGE_NAME = 'PagePresence';
 const TAB_ID = 19;
+const ACCOUNTS = ['student'];
 
 async function getAbsences(session, period, from, to)
 {
-    const absences = await navigate(session, PAGE_NAME, TAB_ID, {
+    const absences = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
         DateDebut: {
             _T: 7,
             V: toPronoteDate(from)
@@ -23,7 +23,7 @@ async function getAbsences(session, period, from, to)
         periode: period.name ? toPronote(period) : period
     });
 
-    if (absences === null) {
+    if (!absences) {
         return null;
     }
 

@@ -1,14 +1,8 @@
 const { getPeriodBy } = require('./data/periods');
 const getMarks = require('./fetch/marks');
 
-const validateAccount = ['STUDENT'];
-
 async function marks(session, period = null)
 {
-    if (!validateAccount.includes(session.accountType.type)) {
-        return;
-    }
-
     const marks = await getMarks(session, getPeriodBy(session, period));
     const result = {
         subjects: [],

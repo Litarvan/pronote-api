@@ -1,14 +1,8 @@
 const { toPronoteWeek } = require('./data/dates');
 const { getFilledDaysAndWeeks, getTimetable } = require('./fetch/timetable');
 
-const validateAccount = ['STUDENT'];
-
 async function timetable(session, from = new Date(), to = null)
 {
-    if (!validateAccount.includes(session.accountType.type)) {
-        return;
-    }
-
     if (!to || to > from) {
         to = new Date(from.getTime());
         to.setDate(to.getDate() + 1);

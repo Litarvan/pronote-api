@@ -2,31 +2,29 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const errors = require('./errors');
-const accountTypes = require('./accountType');
-
 const { decipher, getLoginKey, generateIV } = require('./cipher');
+const getAccountType = require('./accounts');
 const { createSession, getServer } = require('./session');
 
 const getParams = require('./fetch/params');
 const { getId, getAuthKey } = require('./fetch/auth');
 const getUser = require('./fetch/user');
 
-async function login(url, username, password, cas, accountType)
+async function login(url, username, password, cas, account)
 {
-    const start = await getStart(getServer(url), username, password, cas || 'none', accountType || 'Student');
+    const type = getAccountType(account);
+    const start = await getStart(getServer(url), username, password, cas || 'none', type);
     const session = createSession({
         serverURL: url,
         sessionID: start.h,
 
-        type: start.a || 3,
+        type,
 
         disableAES: !!start.sCrA,
         disableCompress: !!start.sCoA,
 
         keyModulus: start.MR,
-        keyExponent: start.ER,
-
-        accountType: accountTypes.getAccountType(accountType || 'Student')
+        keyExponent: start.ER
     });
 
     const iv = generateIV();
@@ -40,17 +38,11 @@ async function login(url, username, password, cas, accountType)
     return session;
 }
 
-async function getStart(url, username, password, cas, accountType)
+async function getStart(url, username, password, cas, type)
 {
     if (cas.toLowerCase() === 'api') {
         throw errors.UNKNOWN_CAS.drop(cas);
     }
-
-    if (!accountType || !accountTypes.ACCOUNTTYPE.includes(accountType.toLowerCase())) {
-        throw errors.UNKONWN_ACCOUNT.drop(accountType)
-    }
-
-    const accountPage = accountTypes.getAccountType(accountType).accountPage;
 
     const casPath = `./cas/${cas}.js`;
     try {
@@ -59,8 +51,10 @@ async function getStart(url, username, password, cas, accountType)
         throw errors.UNKNOWN_CAS.drop(cas);
     }
 
+    const account = typeof type === 'string' ? getAccountType(type) : type;
+
     // eslint-disable-next-line node/global-require
-    return await require(casPath)(url, accountPage, username, password);
+    return await require(casPath)(url, account, username, password);
 }
 
 async function auth(session, username, password, fromCas)

@@ -1,14 +1,8 @@
 const { getPeriodBy } = require('./data/periods');
 const getAbsences = require('./fetch/absences');
 
-const validateAccount = ['STUDENT'];
-
 async function absences(session, period = null)
 {
-    if (!validateAccount.includes(session.accountType.type)) {
-        return;
-    }
-
     const result = {
         absences: [],
         delays: [],

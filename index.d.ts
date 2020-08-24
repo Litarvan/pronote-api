@@ -6,7 +6,7 @@ export interface PronoteSession
 {
     id: number,
     server: string,
-    target: PronoteTarget,
+    type: PronoteAccountType,
 
     request: number,
 
@@ -31,13 +31,16 @@ export interface PronoteSession
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
 
-export interface PronoteTarget
+type PronoteAccountTypeName = 'student' | 'parent' | 'teacher' | 'attendant' | 'company' | 'administration';
+
+export interface PronoteAccountType
 {
-    name: string,
+    name: PronoteAccountTypeName,
+    value: string,
     id: number
 }
 
-export function login(url: string, username: string, password: string, cas?: string, accountType?: string): Promise<PronoteSession>;
+export function login(url: string, username: string, password: string, cas?: string, account?: PronoteAccountTypeName): Promise<PronoteSession>;
 
 export namespace errors {
     const PRONOTE: PronoteError;
@@ -250,7 +253,7 @@ export function createSession(options: CreateSessionOptions): PronoteSession;
 export function cipher(session: PronoteSession, data: any, options?: CipherOptions): string;
 export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
 
-export function getStart(url: string, username: string, password: string, cas: string): Promise<PronoteStartParams>;
+export function getStart(url: string, username: string, password: string, cas: string, type?: PronoteAccountTypeName | PronoteAccountType): Promise<PronoteStartParams>;
 export function auth(session: PronoteSession): Promise<PronoteUser>;
 
 export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
@@ -282,7 +285,7 @@ export interface CreateSessionOptions
 {
     serverURL: string,
     sessionID: number,
-    type: number,
+    type: PronoteAccountTypeName | PronoteAccountType,
 
     disableAES: boolean,
     disableCompress: boolean,

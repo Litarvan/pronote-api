@@ -1,4 +1,6 @@
 const { initCipher } = require('./cipher');
+const getAccountType = require('./accounts');
+
 const timetable = require('./timetable');
 const marks = require('./marks');
 const evaluations = require('./evaluations');
@@ -9,13 +11,12 @@ const menu = require('./menu');
 
 const sessions = {}; // TODO: Keep alive sessions
 
-function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent,
-    accountType })
+function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent })
 {
     const session = {
         id: ~~sessionID,
         server: getServer(serverURL),
-        target: getTarget(type),
+        type: typeof type === 'string' ? getAccountType(type) : type,
 
         request: -1,
 
@@ -24,8 +25,6 @@ function createSession({ serverURL, sessionID, type, disableAES, disableCompress
     };
 
     initCipher(session, keyModulus, keyExponent);
-
-    session.accountType = accountType;
 
     session.timetable = (...args) => timetable(session, ...args);
     session.marks = (...args) => marks(session, ...args);
@@ -60,21 +59,6 @@ function getSessions()
 function removeSession(session)
 {
     delete sessions[session.id];
-}
-
-function getTarget(type)
-{
-    let name;
-    switch (type)
-    {
-    case 3:
-        name = 'eleve';
-        break;
-    default:
-        name = 'unknown';
-    }
-
-    return { name, id: type };
 }
 
 module.exports = {

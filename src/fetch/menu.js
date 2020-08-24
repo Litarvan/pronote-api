@@ -5,10 +5,11 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'PageMenus';
 const TAB_ID = 10;
+const ACCOUNTS = ['student'];
 
 async function getMenu(session, day = new Date())
 {
-    const menu = await navigate(session, PAGE_NAME, TAB_ID, {
+    const menu = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
         date: {
             _T: 7,
             V: toPronoteDate(day)

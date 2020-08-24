@@ -1,7 +1,7 @@
-const request = require('../request');
-
 const parse = require('../data/types');
 const { fromPronote } = require('../data/objects');
+
+const request = require('../request');
 
 const { getUUID } = require('../cipher');
 

@@ -1,9 +1,11 @@
 const parse = require('../data/types');
 const { fromPronote } = require('../data/objects');
+
 const navigate = require('./navigate');
 
 const PAGE_NAME = 'PageCahierDeTexte';
 const TAB_ID = 89;
+const ACCOUNTS = ['student'];
 
 async function getHomeworks(session, fromWeek = 1, toWeek = null)
 {
@@ -11,7 +13,7 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         toWeek = fromWeek;
     }
 
-    const homeworks = await navigate(session, PAGE_NAME, TAB_ID, {
+    const homeworks = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
         domaine: {
             _T: 8,
             V: `[${fromWeek}..${toWeek}]`
