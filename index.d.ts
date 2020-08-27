@@ -6,7 +6,7 @@ export interface PronoteSession
 {
     id: number,
     server: string,
-    target: PronoteTarget,
+    type: PronoteAccountType,
 
     request: number,
 
@@ -25,19 +25,22 @@ export interface PronoteSession
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
     evaluations(period?: PronotePeriod | String): Promise<Array<EvaluationsSubject>>
-    absences(period?: String): Promise<Absences>
-    infos(period?: String): Promise<Infos>
+    absences(period?: PronotePeriod | String): Promise<Absences>
+    infos(): Promise<Array<Info>>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
 }
 
-export interface PronoteTarget
+type PronoteAccountTypeName = 'student' | 'parent' | 'teacher' | 'attendant' | 'company' | 'administration';
+
+export interface PronoteAccountType
 {
-    name: string,
+    name: PronoteAccountTypeName,
+    value: string,
     id: number
 }
 
-export function login(url: string, username: string, password: string, cas?: string, accountType?: string): Promise<PronoteSession>;
+export function login(url: string, username: string, password: string, cas?: string, account?: PronoteAccountTypeName): Promise<PronoteSession>;
 
 export namespace errors {
     const PRONOTE: PronoteError;
@@ -133,6 +136,79 @@ export interface EvaluationLevelValue
     long: string
 }
 
+export interface Absences
+{
+    absences: Array<Absence>,
+    delays: Array<Delay>,
+    punishments: Array<Punishment>,
+    other: Array<OtherEvent>,
+    totals: Array<SubjectAbsences>
+}
+
+export interface Absence
+{
+    from: Date,
+    to: Date,
+    justified: boolean,
+    solved: boolean,
+    hours: number,
+    reason?: string
+}
+
+export interface Delay
+{
+    date: Date,
+    justified: boolean,
+    solved: boolean,
+    justification: string,
+    minutesMissed: number,
+    reason?: string
+}
+
+export interface Punishment
+{
+    date: Date,
+    isExclusion: boolean,
+    isDuringLesson: boolean,
+    homework: string,
+    circumstances: string,
+    giver: string,
+    reason?: string,
+    detention?: Detention
+}
+
+export interface Detention
+{
+    from: Date,
+    to: Date
+}
+
+export interface OtherEvent
+{
+    kind: string,
+    date: Date,
+    giver: string,
+    comment: string,
+    subject?: string
+}
+
+export interface SubjectAbsences
+{
+    subject: string,
+    hoursAssisted: null,
+    hoursMissed: string,
+    subs?: Array<SubjectAbsences>
+}
+
+export interface Info
+{
+    date: Date,
+    title: string,
+    author: string,
+    content: string,
+    files: Array<File>
+}
+
 export interface Homework
 {
     subject: string,
@@ -177,7 +253,7 @@ export function createSession(options: CreateSessionOptions): PronoteSession;
 export function cipher(session: PronoteSession, data: any, options?: CipherOptions): string;
 export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
 
-export function getStart(url: string, username: string, password: string, cas: string): Promise<PronoteStartParams>;
+export function getStart(url: string, username: string, password: string, cas: string, type?: PronoteAccountTypeName | PronoteAccountType): Promise<PronoteStartParams>;
 export function auth(session: PronoteSession): Promise<PronoteUser>;
 
 export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
@@ -188,6 +264,8 @@ export function fetchTimetable(session: PronoteSession, date?: Date): Promise<Pr
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
+export function fetchAbsences(session: PronoteSession, period?: PronotePeriod, from?: Date, to?: Date): Promise<PronoteAbsences>;
+export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
 export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
@@ -207,7 +285,7 @@ export interface CreateSessionOptions
 {
     serverURL: string,
     sessionID: number,
-    type: number,
+    type: PronoteAccountTypeName | PronoteAccountType,
 
     disableAES: boolean,
     disableCompress: boolean,
@@ -617,13 +695,140 @@ export interface PronoteEvaluationSubject extends PronoteObject
     color: string // couleur
 }
 
-export interface Absences
+export interface PronoteAbsences
 {
-    absences: [],
+    authorizations: PronoteAbsencesAuthorizations, // autorisations
+    events: Array<PronoteAbsence | PronoteDelay | PronotePunishment | PronoteOtherEvent | PronoteEvent>, // listeAbsences
+    subjects: Array<PronoteSubjectAbsences>, // Matieres
+    recaps: Array<PronoteAbsenceRecap>, // listeRecapitulatifs
+    sanctions: Array<PronoteObject> // listeSanctionUtilisateur
 }
-export interface Infos
+
+export interface PronoteAbsencesAuthorizations
 {
-    infos: [],
+    absences: boolean, // absence
+    fillAbsenceReason: boolean, // saisieMotifAbsence
+    delays: boolean, // retard
+    fillDelayReason: boolean, // saisieMotifRetard
+    punishments: boolean, // punition
+    exclusions: boolean, // exclusion
+    sanctions: boolean, // sanction
+    conservatoryMesures: boolean, // mesureConservatoire
+    infirmary: boolean, // infirmerie
+    mealAbsences: boolean, // absenceRepas
+    internshipAbsences: boolean, // absenceInternat
+    observations: boolean, // observation
+    incidents: boolean, // incident
+    totalHoursMissed: boolean // totalHeuresManquees
+}
+
+export interface PronoteEvent extends PronoteObject
+{
+    type: 'absence' | 'delay' | 'punishment' | 'other' | 'unknown'
+}
+
+export interface PronoteAbsence extends PronoteEvent
+{
+    from: Date, // dateDebut
+    to: Date, // dateFin
+    opened: boolean, // ouverte
+    solved: boolean, // reglee
+    justified: boolean, // justifie
+    hours: number, // NbrHeures
+    days: number, // NbrJours
+    reasons: Array<PronoteObject> // listeMotifs
+}
+
+export interface PronoteDelay extends PronoteEvent
+{
+    date: Date, // date
+    solved: boolean, // reglee
+    justified: boolean, // justifie
+    justification: string, // justification
+    duration: number, // duree
+    reasons: Array<PronoteObject> // listeMotifs
+}
+
+export interface PronotePunishment extends PronoteEvent
+{
+    date: Date, // dateDemande
+    isExclusion: boolean, // estUneExclusion
+    giver: PronoteObject, // demandeur
+    isSchedulable: boolean, // estProgrammable
+    reasons: Array<PronoteObject>, // listeMotifs
+    schedule: Array<PronotePunishmentSchedule>, // programmation
+    nature: PronotePunishmentNature
+}
+
+export interface PronotePunishmentSchedule extends PronoteObject
+{
+    date: Date, // date,
+    position: number, // placeExecution
+    duration: number // duree
+}
+
+export interface PronotePunishmentNature extends PronoteObject
+{
+    isSchedulable: boolean, // estProgrammable
+    requiresParentsMetting: boolean // estAvecARParent
+}
+
+export interface PronoteOtherEvent extends PronoteEvent
+{
+    date: Date, // date
+    giver: PronoteOtherEventGiver, // demandeur
+    comment: string, // commentaire
+    read: boolean, // estLue
+    subject: PronoteObject // matiere
+}
+
+export interface PronoteOtherEventGiver extends PronoteObject
+{
+    isHeadTeacher: boolean, // estProfPrincipal
+    mail: string // mail
+}
+
+export interface PronoteSubjectAbsences extends PronoteObject
+{
+    position: number, // P
+    group: number, // regroupement
+    inGroup: number, // dansRegroupement
+    hoursAssisted: number, // suivi / 3600
+    hoursMissed: number, // absence / 3600
+    lessonExclusions: number, // excluCours
+    establishmentExclusions: number // excluEtab
+}
+
+export interface PronoteAbsenceRecap extends PronoteObject
+{
+    count: number, // NombreTotal
+    unjustifiedCount: number, // NombreNonJustifie
+    hours: number // NbrHeures
+}
+
+export interface PronoteInfos
+{
+    categories: Array<PronoteInfoCategory>,
+    infos: Array<PronoteInfo>
+}
+
+export interface PronoteInfoCategory extends PronoteObject
+{
+    isDefault: boolean // estDefaut
+}
+
+export interface PronoteInfo extends PronoteObject
+{
+    date: Date, // dateDebut
+    author: PronoteObject, // elmauteur
+    content: Array<PronoteInfoContent> // listeQuestions
+}
+
+export interface PronoteInfoContent extends PronoteObject
+{
+    text: PronoteObject, // texte
+    files: Array<PronoteObject> // listePiecesJointes
+}
 
 export interface PronoteHomeworks
 {

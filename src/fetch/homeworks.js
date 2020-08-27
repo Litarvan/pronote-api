@@ -1,58 +1,44 @@
-const parse = require('../data/types');
-const { fromPronote } = require('../data/objects');
-const navigate = require('./navigate');
+const { toPronoteWeek } = require('../data/dates');
+const { getFileURL } = require('../data/files');
+const getHomeworks = require('./pronote/homeworks');
 
-const PAGE_NAME = 'PageCahierDeTexte';
-const TAB_ID = 89;
-
-async function getHomeworks(session, fromWeek = 1, toWeek = null)
+async function homeworks(session, from = new Date(), to = null)
 {
-    if (!toWeek || toWeek > fromWeek) {
-        toWeek = fromWeek;
+    if (!to || to > from) {
+        to = new Date(from.getTime());
+        to.setDate(to.getDate() + 1);
     }
 
-    const homeworks = await navigate(session, PAGE_NAME, TAB_ID, {
-        domaine: {
-            _T: 8,
-            V: `[${fromWeek}..${toWeek}]`
-        }
-    });
+    const fromWeek = toPronoteWeek(session, from);
+    const toWeek = toPronoteWeek(session, to);
 
+    const homeworks = await getHomeworks(session, fromWeek, toWeek);
     if (!homeworks) {
         return null;
     }
 
-    return {
-        homeworks: parse(homeworks.ListeCahierDeTextes).pronoteMap(({
-            cours, verrouille, listeGroupes, Matiere, CouleurFond, listeProfesseurs, Date, DateFin,
-            listeContenus, listeElementsProgrammeCDT
-        }) => ({
-            lesson: parse(cours).pronote(),
-            locked: verrouille,
-            groups: parse(listeGroupes).pronoteMap(), // TODO: Check values
-            subject: parse(Matiere).pronote(),
-            color: CouleurFond,
-            teachers: parse(listeProfesseurs).pronoteMap(),
-            from: parse(Date),
-            to: parse(DateFin),
-            content: parse(listeContenus).pronoteMap(({
-                descriptif, categorie, parcoursEducatif, ListePieceJointe, training
-            }) => ({
-                description: parse(descriptif),
-                category: parse(categorie).pronote(),
-                path: parcoursEducatif,
-                files: parse(ListePieceJointe).pronoteMap(),
-                training: parse(training).ListeExecutionsQCM.map(o => fromPronote(o)) // TODO: Check values
-            })),
-            skills: parse(listeElementsProgrammeCDT).pronoteMap()
-        })),
-        resources: (({ listeRessources, listeMatieres }) => ({
-            resources: parse(listeRessources).pronoteMap(), // TODO: Check values
-            subjects: parse(listeMatieres).pronoteMap() // TODO: Check values
-        }))(parse(homeworks.ListeRessourcesPedagogiques)),
-        // TODO: Check values
-        numericalResources: parse(parse(homeworks.ListeRessourcesNumeriques).listeRessources).pronoteMap()
-    };
+    const result = [];
+
+    for (const homework of homeworks.homeworks) {
+        if (homework.from < from || homework.from > to) {
+            continue;
+        }
+
+        const content = homework.content[0]; // Maybe on some instances there will be multiple entries ? Check this
+        result.push({
+            subject: homework.subject.name,
+            teachers: homework.teachers.map(t => t.name),
+            from: homework.from,
+            to: homework.to,
+            color: homework.color,
+            title: content.name,
+            description: content.description.replace('<br/>', '\n'),
+            files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
+            category: content.category.name
+        });
+    }
+
+    return result.sort((a, b) => a.from - b.from);
 }
 
-module.exports = getHomeworks;
+module.exports = homeworks;

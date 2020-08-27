@@ -1,71 +1,64 @@
-const parse = require('../data/types');
-const { toPronote } = require('../data/objects');
+const { getPeriodBy } = require('../data/periods');
+const getMarks = require('./pronote/marks');
 
-const navigate = require('./navigate');
-
-const PAGE_NAME = 'DernieresNotes';
-const TAB_ID = 198;
-
-async function getMarks(session, period)
+async function marks(session, period = null)
 {
-    const marks = await navigate(session, PAGE_NAME, TAB_ID, {
-        periode: period.name ? toPronote(period) : period
-    });
+    const marks = await getMarks(session, getPeriodBy(session, period));
+    const result = {
+        subjects: [],
+        averages: {}
+    };
 
     if (!marks) {
-        return null;
+        return result;
     }
 
-    const result = {};
-
-    if (marks.moyGenerale) {
-        result.studentAverage = parse(marks.moyGenerale);
-        result.studentAverageScale = parse(marks.baremeMoyGenerale);
-        result.defaultStudentAverageScale = parse(marks.baremeMoyGeneraleParDefaut);
+    if (marks.studentAverage) {
+        result.averages.student = marks.studentAverage / marks.studentAverageScale * 20;
+    }
+    if (marks.studentClassAverage) {
+        result.averages.studentClass = marks.studentClassAverage;
     }
 
-    if (marks.moyGeneraleClasse) {
-        result.studentClassAverage = parse(marks.moyGeneraleClasse);
+    for (const subject of marks.subjects.sort((a, b) => a.order - b.order)) {
+        result.subjects.push({
+            name: subject.name,
+            averages: {
+                student: subject.studentAverage / subject.studentAverageScale * 20,
+                studentClass: subject.studentClassAverage,
+                max: subject.maxAverage,
+                min: subject.minAverage
+            },
+            color: subject.color,
+            marks: []
+        });
     }
 
-    return {
-        ...result,
-        subjects: marks.avecDetailService && parse(marks.listeServices).pronoteMap(({
-            ordre, estServiceEnGroupe,
-            moyEleve, baremeMoyEleve, baremeMoyEleveParDefaut, moyClasse, moyMax, moyMin,
-            couleur
-        }) => ({
-            position: ordre,
-            isGroupSubject: estServiceEnGroupe,
-            studentAverage: parse(moyEleve),
-            studentAverageScale: parse(baremeMoyEleve),
-            defaultStudentAverageScale: parse(baremeMoyEleveParDefaut),
-            studentClassAverage: parse(moyClasse),
-            maxAverage: parse(moyMax),
-            minAverage: parse(moyMin),
-            color: couleur
-        })) || [],
-        marks: marks.avecDetailDevoir && parse(marks.listeDevoirs).pronoteMap(({
-            note, bareme, baremeParDefaut, date, service, periode, moyenne, estEnGroupe, noteMax, noteMin,
-            commentaire, coefficient
-        }) => ({
-            subject: parse(service).pronote(({ couleur }) => ({
-                color: couleur
-            })),
-            title: commentaire,
-            value: parse(note),
-            scale: parse(bareme),
-            average: parse(moyenne),
-            defaultScale: parse(baremeParDefaut),
-            coefficient,
-            min: parse(noteMin),
-            max: parse(noteMax),
-            date: parse(date),
-            period: parse(periode).pronote(),
-            isAway: parse(note) === -1,
-            isGroupMark: estEnGroupe
-        })) || []
-    };
+    for (const mark of marks.marks) {
+        const subject = result.subjects.find(s => s.name === mark.subject.name);
+        if (!subject) {
+            continue;
+        }
+
+        const res = {};
+        if (!mark.isAway) {
+            res.value = mark.value;
+        }
+
+        subject.marks.push({
+            title: mark.title,
+            ...res,
+            scale: mark.scale,
+            average: mark.average,
+            coefficient: mark.coefficient,
+            min: mark.min,
+            max: mark.max,
+            date: mark.date,
+            isAway: mark.isAway
+        });
+    }
+
+    return result;
 }
 
-module.exports = getMarks;
+module.exports = marks;

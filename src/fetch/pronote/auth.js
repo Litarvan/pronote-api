@@ -1,12 +1,12 @@
-const request = require('../request');
-const { cipher } = require('../cipher');
+const request = require('../../request');
+const { cipher } = require('../../cipher');
 
 async function getId(session, username, fromCas)
 {
     const { donnees: id } = await request(session, 'Identification', {
         donnees: {
             genreConnexion: 0,
-            genreEspace: session.target.id,
+            genreEspace: session.type.id,
             identifiant: username,
             pourENT: fromCas,
             enConnexionAuto: false,
@@ -30,7 +30,7 @@ async function getAuthKey(session, challenge, key)
         donnees: {
             connexion: 0,
             challenge: cipher(session, challenge, { key }),
-            espace: session.target.id
+            espace: session.type.id
         }
     });
 
