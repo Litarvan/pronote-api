@@ -3,7 +3,7 @@ const errors = require('./src/errors');
 
 // -----------------------------------------------------------
 
-const { createSession } = require('./src/session');
+const PronoteSession = require('./src/session');
 const { cipher, decipher } = require('./src/cipher');
 const { getStart, auth } = require('./src/auth');
 
@@ -19,6 +19,7 @@ const getHomeworks = require('./src/fetch/pronote/homeworks');
 const getMenu = require('./src/fetch/pronote/menu');
 
 const navigate = require('./src/fetch/pronote/navigate');
+const keepAlive = require('./src/fetch/pronote/keepAlive');
 
 const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/dates');
 const { getFileURL } = require('./src/data/files');
@@ -32,7 +33,7 @@ module.exports = {
     errors,
 
     // Low-level API (you can use this if you need, but it may mean I've forgotten a use case, please open an issue!)
-    createSession,
+    PronoteSession,
     cipher, decipher,
     getStart, auth,
 
@@ -50,6 +51,7 @@ module.exports = {
     fetchMenu: getMenu,
 
     navigate,
+    keepAlive,
 
     toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate,
     getFileURL,

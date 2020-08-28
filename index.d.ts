@@ -2,25 +2,26 @@ import * as forge from 'node-forge';
 
 // High-level API
 
-export interface PronoteSession
+export class PronoteSession
 {
-    id: number,
-    server: string,
-    type: PronoteAccountType,
+    constructor(options: PronoteSessionOptions)
 
-    request: number,
+    id: number
+    server: string
+    type: PronoteAccountType
 
-    aesKey: forge.util.ByteBuffer,
-    aesIV: forge.util.ByteBuffer,
-    publicKey: forge.pki.Key,
+    request: number
+    isKeptAlive: boolean
 
-    disableAES: boolean,
-    disableCompress: boolean,
+    aesKey: forge.util.ByteBuffer
+    aesIV: forge.util.ByteBuffer
+    publicKey: forge.pki.Key
 
-    signData: any,
+    disableAES: boolean
+    disableCompress: boolean
 
-    params: PronoteParams,
-    user: PronoteUser,
+    params?: PronoteParams
+    user?: PronoteUser
 
     timetable(from?: Date, to?: Date): Promise<Array<Lesson>>
     marks(period?: PronotePeriod | String): Promise<Marks>
@@ -29,6 +30,10 @@ export interface PronoteSession
     infos(): Promise<Array<Info>>
     homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
+
+    keepAlive(): Promise<void>
+
+    setKeepAlive(enabled: boolean, onError?: (error: any) => void, rate?: number);
 }
 
 type PronoteAccountTypeName = 'student' | 'parent' | 'teacher' | 'attendant' | 'company' | 'administration';
@@ -43,10 +48,20 @@ export interface PronoteAccountType
 export function login(url: string, username: string, password: string, cas?: string, account?: PronoteAccountTypeName): Promise<PronoteSession>;
 
 export namespace errors {
-    const PRONOTE: PronoteError;
-    const UNKNOWN_CAS: PronoteError;
-    const BANNED: PronoteError;
-    const WRONG_CREDENTIALS: PronoteError;
+    const PRONOTE: PronoteErrorType;
+    const UNKNOWN_CAS: PronoteErrorType;
+    const BANNED: PronoteErrorType;
+    const WRONG_CREDENTIALS: PronoteErrorType;
+    const UNKNOWN_ACCOUNT: PronoteErrorType;
+    const SESSION_EXPIRED: PronoteErrorType;
+    const RATE_LIMITED: PronoteErrorType;
+}
+
+export interface PronoteErrorType
+{
+    code: number
+
+    drop(...args: any): PronoteError
 }
 
 export interface PronoteError
@@ -248,8 +263,6 @@ export interface MenuMealLabel
 
 // Low-level API (if you need to use this, you can, but it may mean I've forgotten a use case, please open an issue!)
 
-export function createSession(options: CreateSessionOptions): PronoteSession;
-
 export function cipher(session: PronoteSession, data: any, options?: CipherOptions): string;
 export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
 
@@ -270,6 +283,7 @@ export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWee
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
+export function keepAlive(session: PronoteSession): Promise<void>;
 
 export function toPronoteWeek(session: PronoteSession, date: Date): number;
 export function toUTCWeek(date: Date): number;
@@ -281,7 +295,7 @@ export function getFileURL(session: PronoteSession, file: PronoteObject): string
 
 export function request(session: PronoteSession, name: string, content: any): Promise<any>;
 
-export interface CreateSessionOptions
+export interface PronoteSessionOptions
 {
     serverURL: string,
     sessionID: number,

@@ -4,7 +4,7 @@ const path = require('path');
 const errors = require('./errors');
 const { decipher, getLoginKey, generateIV } = require('./cipher');
 const getAccountType = require('./accounts');
-const { createSession, getServer } = require('./session');
+const PronoteSession = require('./session');
 
 const getParams = require('./fetch/pronote/params');
 const { getId, getAuthKey } = require('./fetch/pronote/auth');
@@ -13,9 +13,10 @@ const getUser = require('./fetch/pronote/user');
 async function login(url, username, password, cas, account)
 {
     const type = getAccountType(account);
-    const start = await getStart(getServer(url), username, password, cas || 'none', type);
-    const session = createSession({
-        serverURL: url,
+    const server = getServer(url);
+    const start = await getStart(server, username, password, cas || 'none', type);
+    const session = new PronoteSession({
+        serverURL: server,
         sessionID: start.h,
 
         type,
@@ -25,7 +26,7 @@ async function login(url, username, password, cas, account)
 
         keyModulus: start.MR,
         keyExponent: start.ER
-    });
+    })
 
     const iv = generateIV();
     session.params = await getParams(session, iv);
@@ -36,6 +37,19 @@ async function login(url, username, password, cas, account)
     session.user = await getUser(session);
 
     return session;
+}
+
+function getServer(url)
+{
+    if (url.endsWith('.html')) {
+        return url.substring(0, url.lastIndexOf('/') + 1);
+    }
+
+    if (!url.endsWith('/')) {
+        url += '/';
+    }
+
+    return url;
 }
 
 async function getStart(url, username, password, cas, type)
