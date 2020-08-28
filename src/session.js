@@ -9,62 +9,54 @@ const infos = require('./fetch/infos');
 const homeworks = require('./fetch/homeworks');
 const menu = require('./fetch/menu');
 
-const sessions = {}; // TODO: Keep alive sessions
+const keepAlive = require('./fetch/pronote/keepAlive');
 
-function createSession({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent })
-{
-    const session = {
-        id: ~~sessionID,
-        server: getServer(serverURL),
-        type: typeof type === 'string' ? getAccountType(type) : type,
-
-        request: -1,
-
-        disableAES,
-        disableCompress
-    };
-
-    initCipher(session, keyModulus, keyExponent);
-
-    session.timetable = (...args) => timetable(session, ...args);
-    session.marks = (...args) => marks(session, ...args);
-    session.evaluations = (...args) => evaluations(session, ...args);
-    session.absences = (...args) => absences(session, ...args);
-    session.infos = (...args) => infos(session, ...args);
-    session.homeworks = (...args) => homeworks(session, ...args);
-    session.menu = (...args) => menu(session, ...args);
-
-    sessions[session.id] = session;
-    return session;
-}
-
-function getServer(url)
-{
-    if (url.endsWith('.html')) {
-        return url.substring(0, url.lastIndexOf('/') + 1);
-    }
-
-    if (!url.endsWith('/')) {
-        url += '/';
-    }
-
-    return url;
-}
-
-function getSessions()
-{
-    return Object.values(sessions);
-}
-
-function removeSession(session)
-{
-    delete sessions[session.id];
-}
-
-module.exports = {
-    createSession,
-    getSessions,
-    removeSession,
-
-    getServer
+const DEFAULT_KEEP_ALIVE_RATE = 120; // In seconds. 120 is the Pronote default 'Presence' request rate.
+const REQUESTS = {
+    timetable, marks, evaluations, absences,
+    infos, homeworks, menu, keepAlive
 };
+
+class PronoteSession
+{
+    constructor({ serverURL, sessionID, type, disableAES, disableCompress, keyModulus, keyExponent })
+    {
+        this.id = ~~sessionID;
+        this.server = serverURL;
+        this.type = typeof type === 'string' ? getAccountType(type) : type;
+
+        this.disableAES = disableAES;
+        this.disableCompress = disableCompress;
+
+        initCipher(this, keyModulus, keyExponent);
+
+        this.request = -1;
+        this.isKeptAlive = false;
+
+        for (const [req, method] of Object.entries(REQUESTS)) {
+            this[req] = (...args) => method(this, ...args);
+        }
+    }
+
+    setKeepAlive(enabled, onError, rate = DEFAULT_KEEP_ALIVE_RATE)
+    {
+        if (enabled === this.isKeptAlive) {
+            return;
+        }
+
+        if (enabled) {
+            this.interval = setInterval(() => {
+                this.keepAlive().catch(err => {
+                    this.setKeepAlive(false);
+                    onError(err);
+                });
+            }, rate * 1000);
+        } else {
+            clearInterval(this.interval);
+        }
+
+        this.isKeptAlive = enabled;
+    }
+}
+
+module.exports = PronoteSession;

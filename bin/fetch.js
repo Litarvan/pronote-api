@@ -35,5 +35,9 @@ fetch().catch(err => {
         return console.error('Invalid credentials, did you chose the right CAS ?');
     }
 
-    console.error(err);
+    if (err.code !== undefined) {
+        console.error(`ERROR: [${err.code}] ${err.message}`);
+    } else {
+        console.error(err);
+    }
 });
