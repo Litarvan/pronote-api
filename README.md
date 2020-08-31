@@ -117,7 +117,7 @@ Le serveur renverra alors une réponse de cette forme :
 }
 ```
 
-Retenez le Token, et vous pourrez appelez `POST /auth/logout` et `POST /graphql` **avec en Header `Token: LETOKEN`**,
+Retenez le Token, et vous pourrez appeler `POST /auth/logout` et `POST /graphql` **avec en Header `Token: LETOKEN`**,
 pour cette dernière le contenu doit être un JSON avec un field `query` contenant votre requête GraphQL.
 
 Exemple, pour récupérer les salles des cours du Mercredi 2 Septembre :
@@ -134,7 +134,7 @@ Le schéma complet des requêtes et mutations se trouve [à cet endroit](https:/
 ### Au secours je n'arrive pas à m'y connecter
 
 Par défaut le serveur est ouvert sur `127.0.0.1`, vous ne pouvez donc vous y connecter que depuis la même machine
-et avec cette adresse. Pour le lancer le serveur sur une autre adresse et/ou un autre port, utilisez
+et avec cette adresse. Pour le lancer le serveur sur une autre adresse ou un autre port, utilisez
 `pronote-api-server PORT HOST`
 
 **ATTENTION : Il n'est pas prévu et probablement peu sécurisé d'ouvrir le serveur sur l'extérieur**
