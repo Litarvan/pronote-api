@@ -13,7 +13,6 @@ async function homeworks(session, from = new Date(), to = null)
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
-
     const contents = await getHomeworks(session, fromWeek, toWeek);
     if (!contents) {
         return null;

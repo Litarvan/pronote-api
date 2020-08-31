@@ -24,7 +24,6 @@ async function getContents(session, fromWeek = 1, toWeek = null)
         return null;
     }
 
-    console.log( parse(contents.ListeCahierDeTextes))
     return {
         lessons: parse(contents.ListeCahierDeTextes).pronoteMap(({
             cours, verrouille, listeGroupes, Matiere, CouleurFond, listeProfesseurs, Date, DateFin,
