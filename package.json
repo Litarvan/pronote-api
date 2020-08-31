@@ -1,7 +1,7 @@
 {
     "name": "pronote-api",
     "version": "2.0.0",
-    "description": "Pronote 2020/2021 API (Node.JS/TS library, and HTTP server)",
+    "description": "Pronote 2020/2021 API (Node.JS/TS library, and GraphQL server)",
     "main": "index.js",
     "types": "index.d.ts",
     "type": "commonjs",
@@ -34,6 +34,7 @@
         "axios": "^0.19",
         "body-parser": "^1.19.0",
         "graphql": "^15.3.0",
+        "jsdom": "^16.4.0",
         "node-forge": "0.6.33",
         "pako": "^1.0",
         "polka": "^0.5.2",

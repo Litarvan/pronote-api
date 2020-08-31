@@ -13,6 +13,15 @@ type Query {
     menu(from: Date, to: Date): [MenuDay!]!
 }
 
+type Mutation {
+    # Please remember to disable this when you don't need it, or else sessions will last forever !
+    setKeepAlive(enabled: Boolean!): Boolean!
+
+    # This is in a mutation, because this is a request that send a keep alive to Pronote, not a value
+    # It will always returns True
+    keepAlive: Boolean!
+}
+
 type Lesson {
     from: Date!
     to: Date!
