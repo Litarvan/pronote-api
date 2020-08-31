@@ -9,7 +9,7 @@ type Query {
     evaluations(period: String): [EvaluationSubject!]!
     absences(period: String): Absences!
     infos: [Info!]!
-    homeworks(from: Date, to: Date): [Homework!]!
+    contents(from: Date, to: Date): [LessonContent!]!
     menu(from: Date, to: Date): [MenuDay!]!
 }
 
@@ -160,7 +160,7 @@ type Info {
     files: [File!]!
 }
 
-type Homework {
+type LessonContent {
     subject: String!
     teachers: [String!]!
     from: Date!

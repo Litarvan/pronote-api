@@ -7,25 +7,25 @@ const PAGE_NAME = 'PageCahierDeTexte';
 const TAB_ID = 89;
 const ACCOUNTS = ['student'];
 
-async function getHomeworks(session, fromWeek = 1, toWeek = null)
+async function getContents(session, fromWeek = 1, toWeek = null)
 {
     if (!toWeek || toWeek < fromWeek) {
         toWeek = fromWeek;
     }
 
-    const homeworks = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const contents = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
         domaine: {
             _T: 8,
             V: `[${fromWeek}..${toWeek}]`
         }
     });
 
-    if (!homeworks) {
+    if (!contents) {
         return null;
     }
 
     return {
-        homeworks: parse(homeworks.ListeCahierDeTextes).pronoteMap(({
+        lessons: parse(contents.ListeCahierDeTextes).pronoteMap(({
             cours, verrouille, listeGroupes, Matiere, CouleurFond, listeProfesseurs, Date, DateFin,
             listeContenus, listeElementsProgrammeCDT
         }) => ({
@@ -51,10 +51,10 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         resources: (({ listeRessources, listeMatieres }) => ({
             resources: parse(listeRessources).pronoteMap(), // TODO: Check values
             subjects: parse(listeMatieres).pronoteMap() // TODO: Check values
-        }))(parse(homeworks.ListeRessourcesPedagogiques)),
+        }))(parse(contents.ListeRessourcesPedagogiques)),
         // TODO: Check values
-        numericalResources: parse(parse(homeworks.ListeRessourcesNumeriques).listeRessources).pronoteMap()
+        numericalResources: parse(parse(contents.ListeRessourcesNumeriques).listeRessources).pronoteMap()
     };
 }
 
-module.exports = getHomeworks;
+module.exports = getContents;

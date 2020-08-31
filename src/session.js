@@ -6,7 +6,7 @@ const marks = require('./fetch/marks');
 const evaluations = require('./fetch/evaluations');
 const absences = require('./fetch/absences');
 const infos = require('./fetch/infos');
-const homeworks = require('./fetch/homeworks');
+const homeworks = require('./fetch/contents');
 const menu = require('./fetch/menu');
 
 const keepAlive = require('./fetch/pronote/keepAlive');

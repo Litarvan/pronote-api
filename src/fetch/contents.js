@@ -1,8 +1,9 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
-const getHomeworks = require('./pronote/homeworks');
 
-async function homeworks(session, from = new Date(), to = null)
+const getContents = require('./pronote/contents');
+
+async function contents(session, from = new Date(), to = null)
 {
     if (!to || to < from) {
         to = new Date(from.getTime());
@@ -12,25 +13,25 @@ async function homeworks(session, from = new Date(), to = null)
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
-    const homeworks = await getHomeworks(session, fromWeek, toWeek);
-    if (!homeworks) {
+    const contents = await getContents(session, fromWeek, toWeek);
+    if (!contents) {
         return null;
     }
 
     const result = [];
 
-    for (const homework of homeworks.homeworks) {
-        if (homework.from < from || homework.from > to) {
+    for (const lesson of contents.lessons) {
+        if (lesson.from < from || lesson.from > to) {
             continue;
         }
 
-        const content = homework.content[0]; // Maybe on some instances there will be multiple entries ? Check this
+        const content = lesson.content[0]; // Maybe on some instances there will be multiple entries ? Check this
         result.push({
-            subject: homework.subject.name,
-            teachers: homework.teachers.map(t => t.name),
-            from: homework.from,
-            to: homework.to,
-            color: homework.color,
+            subject: lesson.subject.name,
+            teachers: lesson.teachers.map(t => t.name),
+            from: lesson.from,
+            to: lesson.to,
+            color: lesson.color,
             title: content.name,
             description: content.description.replace('<br/>', '\n'),
             files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
@@ -41,4 +42,4 @@ async function homeworks(session, from = new Date(), to = null)
     return result.sort((a, b) => a.from - b.from);
 }
 
-module.exports = homeworks;
+module.exports = contents;

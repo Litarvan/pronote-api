@@ -159,21 +159,21 @@ export class PronoteSession
     infos(): Promise<Array<Info>>
 
     /**
-     * Récupère les devoirs situés dans l'intervalle de temps donnée.
+     * Récupère les contenus des cours situés dans l'intervalle de temps donnée.
      *
      * Attention : Par défaut, une Date en JavaScript est initialisée à minuit si l'heure n'est pas donnée,
-     * mettre par exemple en 'to' le Mercredi 2 Septembre, ne renverra donc aucun des devoirs de ce jour.
+     * mettre par exemple en 'to' le Mercredi 2 Septembre, ne renverra le contenu d'aucun des cours de ce jour.
      *
      * Rappelez-vous aussi que le champ du mois dans les dates est décalé de 1 en arrière, et seulement
      * ce champ. Pour initialiser une Date au Mercredi 2 Septembre, il faut donc faire `new Date(2020, 8, 2);`.
      *
-     * @param from La date à partir de laquelle récupérer les devoirs. Par défaut la Date actuelle
-     * @param to La date jusqu'à laquelle récupérer les devoirs. Par défaut 'from' + 1 jour
+     * @param from La date à partir de laquelle récupérer le contenu des cours. Par défaut la Date actuelle
+     * @param to La date jusqu'à laquelle récupérer le contenu des cours. Par défaut 'from' + 1 jour
      *
-     * @return La liste des devoirs situés entre les deux dates données. Si l'onglet des devoirs n'est pas
-     * disponible, `null` sera renvoyé.
+     * @return La liste des devoirs situés entre les deux dates données. Si l'onglet du contenu des cours n'est
+     * pas disponible, `null` sera renvoyé.
      */
-    homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
+    contents(from?: Date, to?: Date): Promise<Array<LessonContent>>
 
     /**
      * Récupère les menus de la cantine des repas situés dans l'intervalle de temps donnée.
@@ -870,58 +870,58 @@ export interface Info
 }
 
 /**
- * Devoir
+ * Contenu d'un cours
  */
-export interface Homework
+export interface LessonContent
 {
     /**
-     * Matière du devoir
+     * Matière du cours
      */
     subject: string,
 
     /**
-     * Professeurs liés au devoir
+     * Professeurs liés au cours
      */
     teachers: Array<string>,
 
     /**
-     * Quand a été donné le devoir
+     * Horaire précise de début du cours
      */
     from: Date,
 
     /**
-     * Pour quand le devoir est à faire ou rendre
+     * Horaire précise de fin du cours
      */
     to: Date,
 
     /**
-     * Couleur de la matière dans laquelle a été donné le devoir
+     * Couleur de la matière du cours
      */
     color: string,
 
     /**
-     * Titre du devoir
+     * Titre du contenu
      */
     title: string,
 
     /**
-     * Description du devoir
+     * Description du contenu
      */
     description: string,
 
     /**
-     * Fichiers attachés au devoir
+     * Fichiers attachés au contenu
      */
     files: Array<File>,
 
     /**
-     * Catégorie du devoir
+     * Catégorie du contenu
      */
     category: string
 }
 
 /**
- * Un fichier attaché par exemple à une information ou un devoir
+ * Un fichier attaché par exemple à une information, un devoir, ou au contenu d'un cours
  */
 export interface File
 {
@@ -1002,7 +1002,7 @@ export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Pro
 export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod): Promise<Array<PronoteEvaluation>>;
 export function fetchAbsences(session: PronoteSession, period?: PronotePeriod, from?: Date, to?: Date): Promise<PronoteAbsences>;
 export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
-export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteHomeworks>;
+export function fetchContents(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteLessonsContents>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
@@ -1575,14 +1575,14 @@ export interface PronoteInfoContent extends PronoteObject
     files: Array<PronoteObject> // listePiecesJointes
 }
 
-export interface PronoteHomeworks
+export interface PronoteLessonsContents
 {
-    homeworks: Array<PronoteHomework>, // ListeCahierDeTextes
-    resources: PronoteHomeworksResources, // ListeRessourcesPedagogiques
+    lessons: Array<PronoteLessonContent>, // ListeCahierDeTextes
+    resources: PronoteLessonsContentsResources, // ListeRessourcesPedagogiques
     numericalResources: Array<PronoteObject> // ListeRessourcesNumeriques
 }
 
-export interface PronoteHomework extends PronoteObject
+export interface PronoteLessonContent extends PronoteObject
 {
     lesson: PronoteObject, // cours
     locked: boolean, // verrouille
@@ -1592,11 +1592,11 @@ export interface PronoteHomework extends PronoteObject
     teachers: Array<PronoteObject>, // listeProfesseurs
     from: Date, // Date
     to: Date, // DateFin
-    content: Array<PronoteHomeworkContent>, // listeContenus
+    content: Array<PronoteLessonContentEntry>, // listeContenus
     skills: Array<PronoteObject> // listeElementsProgrammeCDT
 }
 
-export interface PronoteHomeworkContent extends PronoteObject
+export interface PronoteLessonContentEntry extends PronoteObject
 {
     description: string, // descriptif
     category: PronoteObject, // categorie
@@ -1605,7 +1605,7 @@ export interface PronoteHomeworkContent extends PronoteObject
     training: Array<PronoteObject> // training.V.ListeExecutionsQCM
 }
 
-export interface PronoteHomeworksResources
+export interface PronoteLessonsContentsResources
 {
     resources: Array<PronoteObject>, // listeRessources
     subjects: Array<PronoteObject> // listeMatieres
