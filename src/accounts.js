@@ -9,7 +9,7 @@ const ACCOUNTS = [
     { name: 'administration', value: 'viescolaire', id: 13 }
 ];
 
-function getAccountType(type = 'student')
+function getAccountType(type)
 {
     for (const account of ACCOUNTS) {
         if (account.name === type) {

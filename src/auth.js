@@ -10,11 +10,11 @@ const getParams = require('./fetch/pronote/params');
 const { getId, getAuthKey } = require('./fetch/pronote/auth');
 const getUser = require('./fetch/pronote/user');
 
-async function login(url, username, password, cas, account)
+async function login(url, username, password, cas = 'none', account = 'student')
 {
     const type = getAccountType(account);
     const server = getServer(url);
-    const start = await getStart(server, username, password, cas || 'none', type);
+    const start = await getStart(server, username, password, cas, type);
     const session = new PronoteSession({
         serverURL: server,
         sessionID: start.h,

@@ -2,7 +2,7 @@ const getMenu = require('./pronote/menu');
 
 async function menu(session, from = new Date(), to = null)
 {
-    if (!to || to > from) {
+    if (!to || to < from) {
         to = new Date(from.getTime());
         to.setDate(to.getDate() + 1);
         to.setHours(to.getHours() - 1);

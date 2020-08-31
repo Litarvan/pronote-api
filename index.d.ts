@@ -100,12 +100,14 @@ export interface MarksSubject
 
 export interface MarksAverages
 {
-    student: number,
-    studentClass: number
+    student?: number,
+    studentClass?: number
 }
 
-export interface MarksSubjectAverages extends MarksAverages
+export interface MarksSubjectAverages
 {
+    student: number,
+    studentClass: number,
     min: number,
     max: number
 }
@@ -210,8 +212,8 @@ export interface OtherEvent
 export interface SubjectAbsences
 {
     subject: string,
-    hoursAssisted: null,
-    hoursMissed: string,
+    hoursAssisted: number,
+    hoursMissed: number,
     subs?: Array<SubjectAbsences>
 }
 
@@ -404,7 +406,7 @@ export interface PronoteParams
     displayAcquisitionShortLabel: boolean, // General.AfficherAbbreviationNiveauDAcquisition
     withEvaluationHistory: boolean, // General.AvecEvaluationHistorique
     withoutIntermediaryLevelAutoValidation: boolean, // General.SansValidationNivIntermediairesDsValidAuto
-    onlySchoolYearEvaluationsInAutoValidation: false, // General.NeComptabiliserQueEvalsAnneeScoDsValidAuto
+    onlySchoolYearEvaluationsInAutoValidation: boolean, // General.NeComptabiliserQueEvalsAnneeScoDsValidAuto
     CECRLLevelsSupport?: boolean, // General.AvecGestionNiveauxCECRL
     langActivityColor?: string, // General.couleurActiviteLangagiere
     minMarkMCQ: number, // General.minBaremeQuestionQCM

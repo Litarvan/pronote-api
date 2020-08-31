@@ -4,7 +4,7 @@ const getHomeworks = require('./pronote/homeworks');
 
 async function homeworks(session, from = new Date(), to = null)
 {
-    if (!to || to > from) {
+    if (!to || to < from) {
         to = new Date(from.getTime());
         to.setDate(to.getDate() + 1);
     }
