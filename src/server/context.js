@@ -8,5 +8,15 @@ module.exports = session => ({
     absences: ({ period }) => session.absences(period),
     infos: () => session.infos(),
     homeworks: ({ from, to }) => session.homeworks(from, to),
-    menu: ({ from, to }) => session.menu(from, to)
+    menu: ({ from, to }) => session.menu(from, to),
+
+    keepAlive: async () => {
+        await session.keepAlive();
+        return true;
+    },
+
+    setKeepAlive: async ({ enabled }) => {
+        await session.setKeepAlive(enabled);
+        return enabled;
+    }
 });
