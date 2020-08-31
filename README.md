@@ -47,7 +47,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Nantes
 - ENT "Île de France"
 - ENT "Hauts-de-France"
-- ENT "Seine Et Marne"
+- ENT "Seine et Marne"
 
 ## Utilisation
 
