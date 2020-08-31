@@ -1,16 +1,9 @@
-const request = require('../request');
-const util = require('../util');
+const http = require('../http');
+const { extractStart } = require('./api');
 
-async function login({ username, password, url })
+async function login(url, account)
 {
-    console.log(`'${username}' for '${url}' is using regular login`);
-
-    let html = await request.http({
-        url: url + '?login=true',
-        method: 'GET'
-    });
-
-    return util.extractStart(html);
+    return extractStart(await http({ url: url + account.value + '.html?login=true' }));
 }
 
 module.exports = login;

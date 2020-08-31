@@ -1,14 +1,13 @@
 const jsdom = require('jsdom');
 
+const { getDOM, extractStart } = require('./api');
 const aten = require('./aten');
-const util = require('../util');
 
-async function login({ username, password, url })
+async function login(url, account, username, password)
 {
-    console.log(`Logging in '${username}' for '${url}' using Rouen CAS`);
-
-    let jar = new jsdom.CookieJar();
-    let dom = await util.getDOM({
+    const jar = new jsdom.CookieJar();
+    let dom = await getDOM({
+        // eslint-disable-next-line max-len
         url: 'https://nero.l-educdenormandie.fr/Shibboleth.sso/Login?entityID=urn:fi:ac-rouen:ts-EDUC-Normandie:1:0&target=',
         jar,
         runScripts: true,
@@ -17,18 +16,18 @@ async function login({ username, password, url })
 
     await aten.submit({ dom, jar, username, password, atenURL: 'https://sso-ent.ac-rouen.fr/login/' });
 
-    await util.getDOM({
+    await getDOM({
         url: 'https://nero.l-educdenormandie.fr/c/portal/nero/access',
         jar
     });
 
-    dom = await util.getDOM({
+    dom = await getDOM({
         url,
         jar,
         asIs: true
     });
 
-    return util.tryExtractStart(username, dom);
+    return extractStart(username, dom);
 }
 
 module.exports = login;

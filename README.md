@@ -1,26 +1,25 @@
-# Pronote API - PLEASE READ ME
+# Pronote API - LISEZ MOI ABSOLUMENT
 
-## [Avancement de la v2](https://github.com/Litarvan/pronote-api/pull/50)
+API Pronote **2020/2021** complète et plutôt stable avec intégration de nombreux CAS (connexion avec comptes spéciaux pour les régions).
 
-## Peut être utilisé avec N'IMPORTE QUEL LANGAGE de prog, pas besoin de skills en JS
+Disponible en tant que :
+- Librairie Node.JS [via NPM](https://www.npmjs.com/package/pronote-api) (note : **support TypeScript** complet)
+- Serveur GraphQL (donc depuis **n'importe que langage**), [voir instructions](#serveur-graphql)
 
-API Pronote **2020** complète et plutôt stable avec intégration de nombreux CAS (connexion avec comptes spéciaux pour les régions).
+**Nouveauté 2020/2021 : [Session conservable](#conserver-la-session)**
 
-_Note :_ La connexion via compte parent est supportée
+## Données récupérables
 
-## Données renvoyées
+- Infos Pronote, établissement et utilisateur
+- Emploi du temps
+- Devoirs
+- Notes
+- Compétences/évaluations
+- Absences/punitions/retenues
+- Informations
+- Menu de la cantine
 
-- **Emploi du temps** complet de la semaine en cours + prochaine, ordonné, avec timestamp précis pour chaque cours et semaine,
-et marquage des profs absents et cours annulés
-- **Devoirs** (si dispo) de la semaine en cours + prochaine, ordonnés, avec timestamp précis et fichiers joints
-- **Contenue des cours** (si dispo) ordonnés, avec timestamp précis et fichiers joints
-- **Notes** de tous les trimestres avec moyenne de chaque matière et moyenne générale (de la classe et de l'élève)
-- **Bulletins** (si dispo) de tous les trimestres
-- **Fichiers** partagés
-- **Menu de la Cantine** (si dispo)
-- **Informations**
-- **Infos de l'élève** (nom + classe + avatar)
-- **Competence de l'élève**
+À chaque fois, il est possible de choisir quelle période voire quel intervalle de jours récupérer précisément.
 
 ## Comptes région supportés
 
@@ -40,7 +39,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Rennes
 - Académie de Clermont-Ferrand
 - Académie de Reims
-- "Académie de Nancy-Metz" (Non fonctionnel Actuellement)
+- Académie de Nancy-Metz (Non fonctionnel Actuellement)
 - Académie de Strasbourg
 - Académie de Caen
 - Académie d'Orleans-Tours
@@ -48,43 +47,82 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Nantes
 - ENT "Île de France"
 - ENT "Hauts-de-France"
-- ENT "Seine Et Marne"
+- ENT "Seine et Marne"
 
 ## Utilisation
 
-C'est un mini serveur HTTP qui peut donc être appelé via n'importe que langage de programmation, il suffit
-d'une ou deux requêtes POST.
+### Librairie
 
-Mise en route du serveur (requiert Node.JS) :
-```bash 
-$ npm i
-$ node index.js
+```
+$ npm i --save pronote-api
 ```
 
-Utilisation :
+```javascript
+const pronote = require('pronote-api');
 
-Requête `POST` sur `http://127.0.0.1:21727/` avec en corps :
+// Exemple
+const url = 'https://demo.index-education.net/pronote/';
+const username = 'demonstration';
+const password = 'pronotevs';
+
+const session = await pronote.login(url, username, password/*, cas*/);
+
+console.log(session.user.name); // Affiche le nom de l'élève
+console.log(session.user.studentClass.name); // Affiche la classe de l'élève
+
+const timetable = await session.timetable(); // Récupérer l'emploi du temps d'aujourd'hui
+const marks = await session.marks(); // Récupérer les notes du trimestre
+
+console.log(`L'élève a ${timetable.length} cours aujourd'hui`); 
+console.log(`et a pour l'instant une moyenne de ${marks.averages.student} ce trimestre.`);
+
+// etc. les fonctions utilisables sont 'timetable', 'marks', 'homeworks', 'evaluations', 'absences',
+// 'infos', et 'menu', sans oublier les champs 'user' et 'params' qui regorgent d'informations.
+```
+
+### Serveur GraphQL
+
+```
+$ npm i -g pronote-api
+$ pronote-api-server
+```
+
+**Note : Toutes les requêtes nécessitent la présence du header `Content-Type: application/json`
+
+Pour commencer, il faut se connecter avec une requête `POST` sur `/auth/login` contenant :
 ```json
 {
-  "type": "fetch",
-  "username": "Nom d'utilisateur",
-  "password": "Mot de passe",
-  "url": "Url du serveur Pronote (avec / à la fin, et sans eleve.html)",
-  "cas": "Nom d'un fichier dans src/cas sans .js, exemple 'ac-montpellier', ou 'none' si connexion directe (ou juste ne pas renseigner le field)" ,
-  "typecon": "('eleve.html') pour les eleve et ('parent.html') pour les parent"
+    "url": "URL de l'instance Pronote",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "cas": "CAS (facultatif)"
 }
-``` 
+```
 
-Pour séparer la partie authentification de la partie récupération des données (util pour afficher un message différent),
-il est possible de faire deux fois cette requête une fois avec "type": "login", puis avec "type": "fetch" (dans les deux requêtes
-les autres paramètres doivent être les mêmes). 
+Le serveur renverra alors une réponse de cette forme :
+```json
+{
+    "token": "UN TOKEN DE SESSION"  
+}
+```
 
-La requête fetch renvoie un JSON avec toutes les informations reçues : [**Exemple de sortie de l'application**](https://gist.github.com/Litarvan/ec666fa544f6d036e515867d0f266ca7)
+Retenez le Token, et vous pourrez appelez `POST /auth/logout` et `POST /graphql` **avec en Header `Token: LETOKEN`**
 
-## Clients
+Exemple, pour récupérer les salles des cours du Mercredi 2 Septembre :
+```graphql
+{
+    timetable(from: "2020-09-02") {
+        room   
+    }
+}
+```
 
-L'API peut être utilisée depuis n'importe que langage (une simple requête POST et un parser JSON suffisent), ça n'empêche pas qu'il est utile dans
-certains langages d'avoir des objets pour parser ça correctement. Des clients sont donc disponibles dans certains
-langages (n'hésitez pas à en faire pour d'autres langages au besoin).
+Le schéma complet des requêtes et mutations se trouve [à cet endroit](https://github.com/Litarvan/pronote-api/blob/master/src/server/schema.graphql) 
 
-- [Client Java](https://github.com/Litarvan/pronote-api-client-java)
+## Conserver la session
+
+Une des nouvelles fonctionnalités de l'API est le fait de pouvoir garder la session envie indéfiniment.
+Il suffit pour ça d'utiliser la fonction `session.setKeepAlive(true);` (ou la mutation `mutation { setKeepAlive(enabled: true) }`).
+
+**ATTENTION : Les sessions dureront à l'infini tant que `session.setKeepAlive(false);` ne sera pas appelé ou le programme arrêté
+(dans le cas du serveur, `mutation { setKeepAlive(enabled: false) }` appelé, `/auth/logout` exécuté ou le serveur arrêté).**

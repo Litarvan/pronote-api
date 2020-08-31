@@ -1,23 +1,49 @@
 {
-  "name": "pronote-api",
-  "version": "1.2.0",
-  "description": "Pronote 2020 API",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "pronote",
-    "api"
-  ],
-  "author": "Adrien 'Litarvan' Navratil <adrien1975@live.Fr>",
-  "license": "GPL-3.0",
-  "dependencies": {
-    "axios": "^0.18.1",
-    "jsdom": "^11.7.0",
-    "node-forge": "0.6.33",
-    "pako": "^1.0.6",
-    "xml2js": "^0.4.19"
-  }
+    "name": "pronote-api",
+    "version": "2.0.0",
+    "description": "Pronote 2020/2021 API (Node.JS/TS library, and GraphQL server)",
+    "main": "index.js",
+    "types": "index.d.ts",
+    "type": "commonjs",
+    "engines": {
+        "node": ">=11.14.0"
+    },
+    "scripts": {
+        "start": "node ./bin/server.js",
+        "lint": "eslint src/* bin/* index.js",
+        "check": "eslint --fix src/* bin/* index.js",
+        "test": "eslint src/* bin* index.js && node ./bin/fetch.js https://demo.index-education.net/pronote/ demonstration pronotevs"
+    },
+    "keywords": [
+        "pronote",
+        "api",
+        "http",
+        "2020"
+    ],
+    "author": "Adrien 'Litarvan' Navratil <adrien1975@live.fr>",
+    "license": "MIT",
+    "repository": {
+        "url": "https://github.com/Litarvan/pronote-api.git",
+        "type": "git"
+    },
+    "bin": {
+        "pronote-api-server": "./bin/server.js",
+        "pronote-fetch": "./bin/fetch.js"
+    },
+    "dependencies": {
+        "axios": "^0.19",
+        "body-parser": "^1.19.0",
+        "graphql": "^15.3.0",
+        "jsdom": "^16.4.0",
+        "node-forge": "0.6.33",
+        "pako": "^1.0",
+        "polka": "^0.5.2",
+        "uuid": "^8.3.0"
+    },
+    "devDependencies": {
+        "@types/node-forge": "^0.6",
+        "@types/pako": "^1.0",
+        "eslint": "^7.6.0",
+        "eslint-plugin-node": "^11.1.0"
+    }
 }

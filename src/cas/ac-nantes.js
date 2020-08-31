@@ -1,24 +1,22 @@
 const jsdom = require('jsdom');
 
+const { getParams, getDOM, extractStart } = require('./api');
 const aten = require('./aten');
-const util = require('../util');
 
-async function login({ username, password, url })
+async function login(url, account, username, password)
 {
-    console.log(`Logging in '${username}' for '${url}' using Nantes CAS`);
+    const jar = new jsdom.CookieJar();
 
-    let jar = new jsdom.CookieJar();
-
-    let dom = await util.getDOM({
+    let dom = await getDOM({
         url: `https://cas3.e-lyco.fr/access/login?service=${encodeURIComponent(url)}`,
         jar
     });
 
-    let params = util.getParams(dom);
-    params['origin'] = 'https://ats-idp.ac-nantes.fr/SAML/FIM';
-    params['action'] = 'selection';
-    dom = await util.getDOM({
-        url: `https://cas3.e-lyco.fr/discovery/WAYF`,
+    const params = getParams(dom);
+    params.origin = 'https://ats-idp.ac-nantes.fr/SAML/FIM';
+    params.action = 'selection';
+    dom = await getDOM({
+        url: 'https://cas3.e-lyco.fr/discovery/WAYF',
         jar,
         data: params,
         runScripts: true,
@@ -33,7 +31,7 @@ async function login({ username, password, url })
         atenURL: 'https://ats-idp.ac-nantes.fr/login/'
     });
 
-    return util.extractStart(dom);
+    return extractStart(dom);
 }
 
 module.exports = login;

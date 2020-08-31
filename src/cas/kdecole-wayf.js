@@ -1,20 +1,22 @@
 const jsdom = require('jsdom');
 
+const { getDOM, submitForm, extractStart } = require('./api');
 const aten = require('./aten');
-const util = require('../util');
 
-async function login({ username, password, url, acName, casUrl, idp, atenURL })
+async function login({ url, username, password, casUrl, idp, atenURL })
 {
-    console.log(`Logging in '${username}' for '${url}' using ${acName} CAS`);
+    if (!idp.includes('parent_eleve')) {
+        idp += '_parent_eleve';
+    }
 
-    let jar = new jsdom.CookieJar();
-    let dom = await util.getDOM({
-        url: `${casUrl}login?selection=${idp.includes('parent_eleve') ? idp : idp + '_parent_eleve'}&service=${encodeURIComponent(url)}`,
+    const jar = new jsdom.CookieJar();
+    let dom = await getDOM({
+        url: `${casUrl}login?selection=${idp}&service=${encodeURIComponent(url)}`,
         jar
     });
 
     if (atenURL) {
-        dom = await util.submitForm({
+        dom = await submitForm({
             dom,
             jar,
             runScripts: !!atenURL,
@@ -27,7 +29,7 @@ async function login({ username, password, url, acName, casUrl, idp, atenURL })
         dom.window.document.getElementById('username').value = username;
         dom.window.document.getElementById('password').value = password;
 
-        dom = await util.submitForm({
+        dom = await submitForm({
             actionRoot: casUrl,
             dom,
             jar,
@@ -35,7 +37,7 @@ async function login({ username, password, url, acName, casUrl, idp, atenURL })
         });
     }
 
-    return util.tryExtractStart(username, dom);
+    return extractStart(username, dom);
 }
 
 module.exports = login;

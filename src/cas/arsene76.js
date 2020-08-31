@@ -1,9 +1,10 @@
-module.exports = ({ username, password, url }) => require('./kdecole-wayf')({
+const wayf = require('./kdecole-wayf');
+
+module.exports = (url, account, username, password) => wayf({
+    url,
     username,
     password,
-    url,
 
-    acName: 'Rouen',
     casUrl: 'https://cas.arsene76.fr/',
     idp: 'ATS_parent_eleve'
 });

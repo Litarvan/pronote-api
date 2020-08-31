@@ -1,73 +1,61 @@
-console.log('Starting...');
+const { login } = require('./src/auth');
+const errors = require('./src/errors');
 
-const http = require('http');
-const pronote = require('./src/pronote');
+// -----------------------------------------------------------
 
-const HOST = process.env.HOST == null ? '127.0.0.1' : process.env.HOST;
-const PORT = process.env.PORT == null ? 21727 : process.env.PORT;
+const PronoteSession = require('./src/session');
+const { cipher, decipher } = require('./src/cipher');
+const { getStart, auth } = require('./src/auth');
 
-const server = http.createServer((req, res) => {
-    if (req.method !== 'POST')
-    {
-        return endRequest(res, {
-            error: 'Bad method'
-        });
-    }
+const getParams = require('./src/fetch/pronote/params');
+const { getId, getAuthKey } = require('./src/fetch/pronote/auth');
+const getUser = require('./src/fetch/pronote/user');
+const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/pronote/timetable');
+const getMarks = require('./src/fetch/pronote/marks');
+const getEvaluations = require('./src/fetch/pronote/evaluations');
+const getAbsences = require('./src/fetch/pronote/absences');
+const getInfos = require('./src/fetch/pronote/infos');
+const getHomeworks = require('./src/fetch/pronote/homeworks');
+const getMenu = require('./src/fetch/pronote/menu');
 
-    let body = '';
+const navigate = require('./src/fetch/pronote/navigate');
+const keepAlive = require('./src/fetch/pronote/keepAlive');
 
-    req.on('data', (data) =>
-    {
-        body += data;
-    });
+const { toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate } = require('./src/data/dates');
+const { getFileURL } = require('./src/data/files');
 
-    req.on('end', () =>
-    {
-        try
-        {
-            let params = JSON.parse(body);
+const http = require('./src/http');
+const request = require('./src/request');
 
-            pronote[params.type](params).then(result =>
-            {
-                endRequest(res, result);
-            }).catch(err =>
-            {
-                console.error(err);
+module.exports = {
+    // High-level API
+    login,
+    errors,
 
-                endRequest(res, {
-                    error: err.message || JSON.stringify(err)
-                });
+    // Low-level API (you can use this if you need, but it may mean I've forgotten a use case, please open an issue!)
+    PronoteSession,
+    cipher, decipher,
+    getStart, auth,
 
-                /*if (err.stack)
-                {
-                    console.error(err.stack);
-                }*/
-            });
-        }
-        catch (e)
-        {
-            console.error(e);
+    fetchParams: getParams,
+    fetchAuthId: getId,
+    fetchAuthKey: getAuthKey,
+    fetchUser: getUser,
+    fetchTimetableDaysAndWeeks: getFilledDaysAndWeeks,
+    fetchTimetable: getTimetable,
+    fetchMarks: getMarks,
+    fetchEvaluations: getEvaluations,
+    fetchAbsences: getAbsences,
+    fetchInfos: getInfos,
+    fetchHomeworks: getHomeworks,
+    fetchMenu: getMenu,
 
-            endRequest(res, {
-                error: JSON.stringify(e)
-            });
-        }
-    });
-});
+    navigate,
+    keepAlive,
 
-function endRequest(res, content)
-{
-    res.writeHead(200, {
-        'Content-Type': 'application/json'
-    });
-    res.end(JSON.stringify(content));
-}
+    toPronoteWeek, toUTCWeek, toPronoteDay, fromPronoteDay, toPronoteDate,
+    getFileURL,
 
-
-// Let's not launch the server if the module is required by something else
-if (require.main === module) {
-  server.listen(PORT, HOST, () => {
-      console.log(`---> Pronote API HTTP Server working on ${HOST}:${PORT}`);
-  });
-}
-else module.exports = require('./src/pronote');
+    http,
+    request
+};

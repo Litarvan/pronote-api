@@ -1,0 +1,445 @@
+scalar Date
+
+type Query {
+    params: PronoteParams!
+    user: PronoteUser!
+
+    timetable(from: Date, to: Date): [Lesson!]!
+    marks(period: String): Marks!
+    evaluations(period: String): [EvaluationSubject!]!
+    absences(period: String): Absences!
+    infos: [Info!]!
+    homeworks(from: Date, to: Date): [Homework!]!
+    menu(from: Date, to: Date): [MenuDay!]!
+}
+
+type Mutation {
+    # Please remember to disable this when you don't need it, or else sessions will last forever !
+    setKeepAlive(enabled: Boolean!): Boolean!
+
+    # This is in a mutation, because this is a request that send a keep alive to Pronote, not a value
+    # It will always returns True
+    keepAlive: Boolean!
+}
+
+type Lesson {
+    from: Date!
+    to: Date!
+    isDetention: Boolean!
+    hasDuplicate: Boolean!
+    subject: String
+    teacher: String
+    room: String
+    isAway: Boolean!
+    isCancelled: Boolean!
+    color: String
+}
+
+type Marks {
+    subjects: [MarksSubject]!
+    averages: MarksAverages!
+}
+
+type MarksSubject {
+    name: String!
+    averages: MarksSubjectAverages!
+    color: String!
+    marks: [Mark!]!
+}
+
+type MarksAverages {
+    student: Float
+    studentClass: Float
+}
+
+type MarksSubjectAverages {
+    student: Float!
+    studentClass: Float!
+    min: Float!
+    max: Float!
+}
+
+type Mark {
+    title: String!,
+    value: Float,
+    scale: Float!,
+    average: Float!,
+    coefficient: Float!
+    min: Float!
+    max: Float!
+    date: Date!
+    isAway: Boolean!
+}
+
+type EvaluationSubject {
+    name: String!
+    teacher: String!
+    color: String!
+    evaluations: [Evaluation!]!
+}
+
+type Evaluation {
+    name: String!
+    date: Date!
+    levels: [EvaluationLevel!]!
+}
+
+type EvaluationLevel {
+    name: String!
+    value: EvaluationLevelValue!
+    prefixes: [String!]!
+}
+
+type EvaluationLevelValue {
+    short: String!
+    long: String!
+}
+
+type Absences {
+    absences: [Absence!]!
+    delays: [Delay!]!
+    punishments: [Punishment!]!
+    other: [OtherEvent!]!
+    totals: [SubjectAbsences!]!
+}
+
+type Absence {
+    from: Date!
+    to: Date!
+    justified: Boolean!
+    solved: Boolean!
+    hours: Float!
+    reason: String
+}
+
+type Delay {
+    date: Date!
+    justified: Boolean!
+    solved: Boolean!
+    justification: String!
+    minutesMissed: Int!
+    reason: String
+}
+
+type Punishment {
+    date: Date!
+    isExclusion: Boolean!
+    isDuringLesson: Boolean!
+    homework: String!
+    circumstances: String!
+    giver: String!
+    reason: String
+    detention: Detention
+}
+
+type Detention {
+    from: Date!
+    to: Date!
+}
+
+type OtherEvent {
+    kind: String!
+    date: Date!
+    giver: String!
+    comment: String!
+    subject: String
+}
+
+type SubjectAbsences {
+    subject: String!
+    hoursAssisted: Float!
+    hoursMissed: Float!
+    subs: [SubjectAbsences!]
+}
+
+type Info {
+    date: Date!
+    title: String!
+    author: String!
+    content: String!
+    files: [File!]!
+}
+
+type Homework {
+    subject: String!
+    teachers: [String!]!
+    from: Date!
+    to: Date!
+    color: String!
+    title: String!
+    description: String!
+    files: [File!]!
+    category: String!
+}
+
+type File {
+    name: String!
+    url: String!
+}
+
+type MenuDay {
+    date: Date!
+    meals: [[[MenuMealEntry!]!]!]!
+}
+
+type MenuMealEntry {
+    name: String!
+    labels: [MenuMealLabel!]!
+}
+
+type MenuMealLabel {
+    name: String!
+    color: String!
+}
+
+type PronoteParams {
+    navigatorId: String
+    fonts: [String!]!
+    withMember: Boolean!
+    forNewCaledonia: Boolean!
+    loginImageId: Float!
+    loginImageUrl: String!
+    cssLogo: String!
+    theme: Float!
+    serverTime: Date!
+    mobileURL: String!
+    mobileSupport: Boolean!
+    title: String!
+    indexEducationWebsite: String!
+    version: String!
+    versionFull: String!
+    year: Float!
+    language: PronoteLanguage
+    supportedLanguages: [PronoteLanguage]!
+    infoPage: String!
+    hasForum: Boolean!
+    helpURL: String!
+    videosURL: String!
+    twitterURL: String!
+    withLoginOptions: Boolean!
+    establishment: String!
+    displayWeeks: String!
+    schoolYear: String!
+    firstCycle: Date!
+    firstDay: Date!
+    firstMonday: Date!
+    lastDay: Date!
+    ticksPerDay: Float!
+    ticksPerHour: Float!
+    sequenceDuration: Float!
+    ticksForHalfDayAbsence: Float!
+    hasLunch: Boolean!
+    lunchStart: Float!
+    lunchEnd: Float!
+    withPlainAfternoonHours: Boolean!
+    firstOrLastWorkingDay: Date!
+    workingDays: [Float!]!
+    lunchDays: [Float!]!
+    parentsChat: Boolean!
+    workingDaysPerCycle: Float!
+    firstDayOfWeek: Float!
+    timetableGridsInCycle: Float!
+    workingDaysCycle: [Float!]!
+    halfWorkingDays: [[Float!]!]!
+    frequenciesRanges: [[Float!]!]!
+    frequenciesLabels: [String!]!
+    defaultMarkMax: Float!
+    allowedAnnotations: [Float!]!
+    acquisitionLevels: [PronoteAcquisitionLevel]!
+    displayAcquisitionShortLabel: Boolean!
+    withEvaluationHistory: Boolean!
+    withoutIntermediaryLevelAutoValidation: Boolean!
+    onlySchoolYearEvaluationsInAutoValidation: Boolean!
+    CECRLLevelsSupport: Boolean
+    langActivityColor: String
+    minMarkMCQ: Float!
+    maxMarkMCQ: Float!
+    maxPointsMCQ: Float!
+    skillsGridLabelSize: Float!
+    homeworkCommentSize: Float!
+    officeEnabled: Boolean!
+    officeFederatedMode: Boolean!
+    officeTutorial: String!
+    oneDriveTutorial: String!
+    connexionInfoRetrieval: Boolean!
+    font: String!
+    fontSize: Float!
+    attachedStudents: Boolean!
+    phoneMask: String!
+    maxECTS: Float!
+    maxAppreciationSizes: [Float!]!
+    publicHolidays: [PronoteHoliday]!
+    displaySequences: Boolean!
+    firstHour: Date!
+    hours: [PronoteHour]!
+    endHours: [PronoteHour]!
+    sequences: [String!]!
+    periods: [PronotePeriod]!
+    logo: Float!
+    breaks: [PronoteBreak]!
+    appCookieName: String!
+}
+
+type PronoteLanguage {
+    id: Int!
+    name: String!
+}
+
+type PronoteAcquisitionLevel {
+    count: Int!
+    positions: [PronoteAcquisitionLevelPositions!]!
+    triggerPosition: Float!
+    activeFor: [Int!]!
+    shortName: String!
+    shortPath: String!
+    color: String
+    weighting: Float
+    brevetPoints: Float
+    acquired: Boolean
+    countsForSuccess: Boolean
+}
+
+type PronoteAcquisitionLevelPositions {
+    name: String!
+    count: Int!
+    shortName: String!
+    shortNameWithPrefix: String
+}
+
+type PronoteHoliday {
+    name: String!
+    from: Date!
+    to: Date!
+}
+
+type PronoteHour {
+    name: String!
+    count: Int!
+    round: Boolean!
+}
+
+type PronotePeriod {
+    name: String!
+    notationPeriod: Int!
+    from: Date!
+    to: Date!
+}
+
+type PronoteBreak {
+    name: String!
+    position: Int!
+}
+
+type PronoteUser {
+    name: String!
+    establishment: PronoteNamedObject!
+    hasAvatar: Boolean!
+    studentClass: PronoteNamedObject!
+    classHistory: [PronoteClassHistoryElement!]!
+    groups: [PronoteNamedObject!]!
+    tabsPillars: [PronoteTabPillars!]!
+    tabsPeriods: [PronoteTabPeriods!]!
+    establishmentsInfo: [PronoteEstablishmentInfo!]!
+    userSettings: PronoteUserSettings!
+    sessionAuthorizations: PronoteSessionAuthorizations!
+    authorizations: PronoteUserAuthorizations
+    minPasswordSize: Int!
+    maxPasswordSize: Int!
+    passwordRules: [Int!]!
+    kioskAccess: Boolean!
+    tabs: [PronoteTab!]!
+    hiddenTabs: [Int!]!
+    notifiedTabs: [Int!]!
+}
+
+type PronoteNamedObject {
+    name: String!
+}
+
+type PronoteClassHistoryElement {
+    name: String!
+    hadMarks: Boolean!
+    hadOptions: Boolean!
+}
+
+type PronoteTabPillars {
+    tab: Int!
+    levels: [PronotePillarLevel!]!
+}
+
+type PronotePillarLevel {
+    name: String!
+    pillars: [PronotePillar!]!
+}
+
+type PronotePillar {
+    name: String!
+    isForeignLanguage: Boolean!
+    isCoreSkill: Boolean!
+    subject: PronoteNamedObject!
+}
+
+type PronoteTabPeriods {
+    tab: Int!
+    periods: [PronoteTabPeriod!]!
+    defaultPeriod: String!
+}
+
+type PronoteTabPeriod {
+    name: String!
+    isCorePeriod: Boolean!
+}
+
+type PronoteEstablishmentInfo {
+    name: String!
+    logoID: Int!
+    address: [String!]!
+    postalCode: String!
+    postalLabel: String!
+    city: String!
+    province: String!
+    country: String!
+    website: String!
+}
+
+type PronoteUserSettings {
+    version: Float!
+    timetable: PronoteUserTimetableSettings!
+    theme: Int!
+    unreadDiscussions: Boolean!
+}
+
+type PronoteUserTimetableSettings {
+    displayCanceledLessons: Boolean!
+    invertAxis: Boolean!
+    invertWeeklyPlanAxis: Boolean!
+    invertDayPlanAxis: Boolean!
+    invertDay2PlanAxis: Boolean!
+    dayCount: Int!
+    resourceCount: Int!
+    daysInTimetable: Int!
+    sequenceCount: Int!
+}
+
+type PronoteSessionAuthorizations {
+    twitterManagement: Boolean!
+    expandedAttestation: Boolean!
+}
+
+type PronoteUserAuthorizations {
+    discussions: Boolean!
+    teachersDiscussions: Boolean!
+    timetableVisibleWeeks: [Int!]!
+    canEditLessons: [Int!]!
+    hideClassParts: Boolean!
+    maxEstablishmentFileSize: Int!
+    maxUserWorkFileSize: Int!
+    hasPassword: Boolean!
+    hasPersonalInfo: Boolean!
+    canPrint: Boolean!
+}
+
+type PronoteTab {
+    id: Int!
+    subs: [PronoteTab!]!
+}

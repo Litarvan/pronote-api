@@ -1,9 +1,10 @@
-module.exports = ({ username, password, url }) => require('./kdecole-wayf')({
+const wayf = require('./kdecole-wayf');
+
+module.exports = (url, account, username, password) => wayf({
+    url,
     username,
     password,
-    url,
 
-    acName: 'Strasbourg',
     casUrl: 'https://cas.monbureaunumerique.fr/',
     idp: 'STRAS-ATS',
     atenURL: 'https://teleservices.ac-strasbourg.fr/login/'
