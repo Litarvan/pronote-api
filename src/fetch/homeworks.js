@@ -13,15 +13,15 @@ async function homeworks(session, from = new Date(), to = null)
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
-    const contents = await getHomeworks(session, fromWeek, toWeek);
-    if (!contents) {
+    const homeworks = await getHomeworks(session, fromWeek, toWeek);
+    if (!homeworks) {
         return null;
     }
 
     const result = [];
 
-    for (const lesson of contents.lessons) {
-        if (lesson.from < from || lesson.to > to) {
+    for (const homework of homeworks) {
+        if (homework.givenAt < from || lesson.for > to) {
             continue;
         }
 

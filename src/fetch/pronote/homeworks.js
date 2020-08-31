@@ -13,18 +13,18 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         toWeek = fromWeek;
     }
 
-    const contents = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const homeworks = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
         domaine: {
             _T: 8,
             V: `[${fromWeek}..${toWeek}]`
         }
     });
 
-    if (!contents) {
+    if (!homeworks) {
         return null;
     }
 
-    const obj =  parse(contents.ListeTravauxAFaire).pronoteMap(({
+    const obj =  parse(homeworks.ListeTravauxAFaire).pronoteMap(({
             descriptif, PourLe, TAFFait, niveauDifficulte, duree, cahierDeTextes, cours, DonneLe,
             Matiere, CouleurFond, ListePieceJointe
         }) => ({
@@ -32,7 +32,11 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
             subject: parse(Matiere).pronote(),
             color: CouleurFond,
             givenAt: parse(DonneLe),
-            for: parse(PourLe)
+            for: parse(PourLe),
+            done: TAFFait,
+            difficultyLevel: niveauDifficulte,
+            description: parse(descriptif),
+            files: parse(ListePieceJointe).pronoteMap()
         }))
     return obj
 }
