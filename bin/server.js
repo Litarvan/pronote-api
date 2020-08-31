@@ -9,7 +9,7 @@ if (process.argv.length === 2 && process.argv[1] === '--help') {
     return;
 }
 
-const [,, port = '21727', host = '0.0.0.0'] = process.argv;
+const [,, port = '21727', host = '127.0.0.1'] = process.argv;
 
 server(host, port).then(() => {
     console.log(`--> Listening on ${host}:${port}`);

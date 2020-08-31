@@ -65,19 +65,30 @@ const url = 'https://demo.index-education.net/pronote/';
 const username = 'demonstration';
 const password = 'pronotevs';
 
-const session = await pronote.login(url, username, password/*, cas*/);
+async function main()
+{
+    const session = await pronote.login(url, username, password/*, cas*/);
+    
+    console.log(session.user.name); // Affiche le nom de l'élève
+    console.log(session.user.studentClass.name); // Affiche la classe de l'élève
+    
+    const timetable = await session.timetable(); // Récupérer l'emploi du temps d'aujourd'hui
+    const marks = await session.marks(); // Récupérer les notes du trimestre
+    
+    console.log(`L'élève a ${timetable.length} cours aujourd'hui`); 
+    console.log(`et a pour l'instant une moyenne de ${marks.averages.student} ce trimestre.`);
+    
+    // etc. les fonctions utilisables sont 'timetable', 'marks', 'homeworks', 'evaluations', 'absences',
+    // 'infos', et 'menu', sans oublier les champs 'user' et 'params' qui regorgent d'informations.
+}
 
-console.log(session.user.name); // Affiche le nom de l'élève
-console.log(session.user.studentClass.name); // Affiche la classe de l'élève
-
-const timetable = await session.timetable(); // Récupérer l'emploi du temps d'aujourd'hui
-const marks = await session.marks(); // Récupérer les notes du trimestre
-
-console.log(`L'élève a ${timetable.length} cours aujourd'hui`); 
-console.log(`et a pour l'instant une moyenne de ${marks.averages.student} ce trimestre.`);
-
-// etc. les fonctions utilisables sont 'timetable', 'marks', 'homeworks', 'evaluations', 'absences',
-// 'infos', et 'menu', sans oublier les champs 'user' et 'params' qui regorgent d'informations.
+main().catch(err => {
+    if (err.code === pronote.errors.WRONG_CREDENTIALS.code) {
+        console.error('Mauvais identifiants');    
+    } else {
+        console.error(err);
+    }
+});
 ```
 
 ### Serveur GraphQL
@@ -87,7 +98,7 @@ $ npm i -g pronote-api
 $ pronote-api-server
 ```
 
-**Note : Toutes les requêtes nécessitent la présence du header `Content-Type: application/json`
+**Note : Toutes les requêtes nécessitent la présence du header `Content-Type: application/json`**
 
 Pour commencer, il faut se connecter avec une requête `POST` sur `/auth/login` contenant :
 ```json
@@ -119,6 +130,14 @@ Exemple, pour récupérer les salles des cours du Mercredi 2 Septembre :
 
 Le schéma complet des requêtes et mutations se trouve [à cet endroit](https://github.com/Litarvan/pronote-api/blob/master/src/server/schema.graphql) 
 
+### Au secours je n'arrive pas à m'y connecter
+
+Par défaut le serveur est ouvert sur `127.0.0.1`, vous ne pouvez donc vous y connecter que depuis la même machine
+et avec cette adresse. Pour le lancer le serveur sur une autre adresse et/ou un autre port, utilisez
+`pronote-api-server PORT HOST`
+
+**ATTENTION : Il n'est pas prévu et probablement peu sécurisé d'ouvrir le serveur sur l'extérieur**
+
 ## Conserver la session
 
 Une des nouvelles fonctionnalités de l'API est le fait de pouvoir garder la session envie indéfiniment.
@@ -126,3 +145,13 @@ Il suffit pour ça d'utiliser la fonction `session.setKeepAlive(true);` (ou la m
 
 **ATTENTION : Les sessions dureront à l'infini tant que `session.setKeepAlive(false);` ne sera pas appelé ou le programme arrêté
 (dans le cas du serveur, `mutation { setKeepAlive(enabled: false) }` appelé, `/auth/logout` exécuté ou le serveur arrêté).**
+
+## API bas niveau
+
+Il est très possible que quelque chose dont vous ayez besoin ne soit pas renvoyé par l'API, pas de panique. L'API bas
+niveau permet d'accéder à tout : Les fonctions 'fetch' exportées (fetchHomeworks, fetchTimetable, etc.) permettent
+de récupérer la réponse complète de Pronote simplement traduite sans traitement supplémentaire.
+
+Si jamais une requête dont vous avez besoin n'est pas exportée, vous pouvez utiliser la fonction 'request' qui permet
+de faire facilement une requête à Pronote. Et si vous voulez outrepasser/modifier la partie authentification, vous
+pouvez manuellement créer une session.
