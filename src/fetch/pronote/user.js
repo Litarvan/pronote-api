@@ -1,6 +1,7 @@
 const request = require('../../request');
 
 const parse = require('../../data/types');
+const { getFileURL } = require('../../data/files');
 const { fromPronote } = require('../../data/objects');
 
 async function getUser(session)
@@ -10,11 +11,19 @@ async function getUser(session)
     const res = user.ressource;
     const establishment = parse(res.Etablissement);
 
+    const avatar = {};
+    if (res.avecPhoto) {
+        avatar.avatar = getFileURL(session, {
+            id: res.N,
+            name: 'photo.jpg'
+        });
+    }
+
     return {
         id: res.N,
         name: res.L,
         establishment: fromPronote(establishment),
-        hasAvatar: res.avecPhoto,
+        ...avatar,
         studentClass: fromPronote(res.classeDEleve),
         classHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
             hadMarks: AvecNote,

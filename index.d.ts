@@ -1216,7 +1216,15 @@ export interface PronoteBreak
 export interface PronoteUser extends PronoteObject
 {
     establishment: PronoteObject, // ressource.Etablissement
-    hasAvatar: boolean, // ressource.avecPhoto
+
+    /**
+     * URL de l'avatar de l'utilisateur, si disponible
+     */
+    avatar?: string, // ressource.avecPhoto && photo.jpg (ressource.N)
+
+    /**
+     * Classe de l'utilisateur
+     */
     studentClass: PronoteObject, // ressource.classeDEleve
     classHistory: Array<PronoteClassHistoryElement>, // ressource.listeClassesHistoriques
     groups: Array<PronoteObject>, // ressource.listeGroupes

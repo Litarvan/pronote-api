@@ -25,7 +25,7 @@ async function getInfos(session)
             date: parse(dateDebut),
             author: parse(elmauteur).pronote(),
             content: parse(listeQuestions).pronoteMap(({ texte, listePiecesJointes }) => ({
-                text: parse(texte).pronote(),
+                text: parse(texte),
                 files: parse(listePiecesJointes).pronoteMap()
             }))
         })) // TODO: Check values

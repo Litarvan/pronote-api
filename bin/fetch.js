@@ -36,6 +36,7 @@ async function fetch()
     const result = {
         name: session.user.name,
         studentClass: session.user.studentClass.name,
+        avatar: session.user.avatar,
 
         timetable, marks, evaluations, absences,
         infos, homeworks, menu
