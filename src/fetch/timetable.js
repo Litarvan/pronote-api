@@ -69,7 +69,7 @@ function getTimetableWeek(session, table) {
 
         res.subject = subject && subject.name || null;
         res.teacher = teacher && teacher.name || null;
-        res.room = room && teacher.room || null;
+        res.room = room && room.name || null;
 
         result.push(res);
     }
