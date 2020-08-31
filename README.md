@@ -117,7 +117,8 @@ Le serveur renverra alors une réponse de cette forme :
 }
 ```
 
-Retenez le Token, et vous pourrez appelez `POST /auth/logout` et `POST /graphql` **avec en Header `Token: LETOKEN`**
+Retenez le Token, et vous pourrez appelez `POST /auth/logout` et `POST /graphql` **avec en Header `Token: LETOKEN`**,
+pour cette dernière le contenu doit être un JSON avec un field `query` contenant votre requête GraphQL.
 
 Exemple, pour récupérer les salles des cours du Mercredi 2 Septembre :
 ```graphql
