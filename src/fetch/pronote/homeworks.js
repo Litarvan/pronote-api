@@ -9,7 +9,7 @@ const ACCOUNTS = ['student'];
 
 async function getHomeworks(session, fromWeek = 1, toWeek = null)
 {
-    if (!toWeek || toWeek > fromWeek) {
+    if (!toWeek || toWeek < fromWeek) {
         toWeek = fromWeek;
     }
 

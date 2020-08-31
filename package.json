@@ -12,7 +12,7 @@
         "start": "node ./bin/server.js",
         "lint": "eslint src/* bin/* index.js",
         "check": "eslint --fix src/* bin/* index.js",
-        "test":  "eslint src/* bin* index.js && node ./bin/fetch.js https://demo.index-education.net/pronote/ demonstration pronotevs"
+        "test": "eslint src/* bin* index.js && node ./bin/fetch.js https://demo.index-education.net/pronote/ demonstration pronotevs"
     },
     "keywords": [
         "pronote",
@@ -32,8 +32,12 @@
     },
     "dependencies": {
         "axios": "^0.19",
+        "body-parser": "^1.19.0",
+        "graphql": "^15.3.0",
         "node-forge": "0.6.33",
-        "pako": "^1.0"
+        "pako": "^1.0",
+        "polka": "^0.5.2",
+        "uuid": "^8.3.0"
     },
     "devDependencies": {
         "@types/node-forge": "^0.6",
