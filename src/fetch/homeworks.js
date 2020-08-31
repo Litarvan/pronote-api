@@ -21,21 +21,21 @@ async function homeworks(session, from = new Date(), to = null)
     const result = [];
 
     for (const homework of homeworks) {
-        if (homework.givenAt < from || lesson.for > to) {
+        if (homework.givenAt < from || homework.for > to) {
             continue;
         }
 
-        const content = lesson.content[0]; // Maybe on some instances there will be multiple entries ? Check this
         result.push({
-            subject: lesson.subject.name,
-            teachers: lesson.teachers.map(t => t.name),
-            from: lesson.from,
-            to: lesson.to,
-            color: lesson.color,
-            title: content.name,
-            description: content.description.replace('<br/>', '\n'),
-            files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
-            category: content.category.name
+            lesson: homework.lesson,
+            subject: homework.subject,
+            color: homework.color,
+            givenAt: homework.givenAt,
+            for: homework.for,
+            done: homework.done,
+            difficultyLevel: homework.difficultyLevel,
+            description: homework.description,
+            duration: homework.duration,
+            files: homework.files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
         });
     }
 

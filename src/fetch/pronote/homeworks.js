@@ -1,5 +1,4 @@
 const parse = require('../../data/types');
-const { fromPronote } = require('../../data/objects');
 
 const navigate = require('./navigate');
 
@@ -24,21 +23,21 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         return null;
     }
 
-    const obj =  parse(homeworks.ListeTravauxAFaire).pronoteMap(({
-            descriptif, PourLe, TAFFait, niveauDifficulte, duree, cahierDeTextes, cours, DonneLe,
-            Matiere, CouleurFond, ListePieceJointe
-        }) => ({
-            lesson: parse(cours).pronote(),
-            subject: parse(Matiere).pronote(),
-            color: CouleurFond,
-            givenAt: parse(DonneLe),
-            for: parse(PourLe),
-            done: TAFFait,
-            difficultyLevel: niveauDifficulte,
-            description: parse(descriptif),
-            files: parse(ListePieceJointe).pronoteMap()
-        }))
-    return obj
+    return parse(homeworks.ListeTravauxAFaire).pronoteMap(({
+        descriptif, PourLe, TAFFait, niveauDifficulte, duree, cours, DonneLe,
+        Matiere, CouleurFond, ListePieceJointe
+    }) => ({
+        lesson: parse(cours).pronote(),
+        subject: parse(Matiere).pronote(),
+        color: CouleurFond,
+        givenAt: parse(DonneLe),
+        for: parse(PourLe),
+        done: TAFFait,
+        difficultyLevel: niveauDifficulte,
+        description: parse(descriptif),
+        files: parse(ListePieceJointe).pronoteMap(),
+        duration: duree
+    }));
 }
 
 module.exports = getHomeworks;
