@@ -378,18 +378,19 @@ export interface Lesson
     room?: string,
 
     /**
-     * Indique si le professeur est absent. Ne peut pas être à `true` en même temps que `isCancelled`.
+     * Indique si le professeur est absent. Ne peut pas être à `true` en même temps que `isCancelled`.  Est à `null`
+     * dans le cas d'une retenue.
      */
-    isAway: boolean,
+    isAway?: boolean,
 
     /**
      * Indique que le cours est annulé (par exemple parce qu'il est déplacé). Ne peut pas être à `true` en même
-     * temps que `isAway`.
+     * temps que `isAway`. Est à `null` dans le cas d'une retenue.
      */
-    isCancelled: boolean,
+    isCancelled?: boolean,
 
     /**
-     * Couleur du cours dans l'emploi du temps
+     * Couleur du cours dans l'emploi du temps. Est à `null` dans le cas d'une retenue.
      */
     color?: string
 }

@@ -30,8 +30,8 @@ type Lesson {
     subject: String
     teacher: String
     room: String
-    isAway: Boolean!
-    isCancelled: Boolean!
+    isAway: Boolean
+    isCancelled: Boolean
     color: String
 }
 
