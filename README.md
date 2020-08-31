@@ -91,6 +91,18 @@ main().catch(err => {
 });
 ```
 
+#### TypeScript
+
+```typescript
+import { login } from 'pronote-api';
+
+async function main()
+{
+    const session = await login(url, username, password/*, cas*/);
+    // ... Voir l'exemple JavaScript
+}
+```
+
 ### Serveur GraphQL
 
 ```
