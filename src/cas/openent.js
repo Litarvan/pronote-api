@@ -12,7 +12,7 @@ async function login({ url, username, password, target })
         data: {
             email: username,
             password,
-            callback: '/cas/login?service=' + encodeURIComponent(url)
+            callback: '/cas/login?service=' + encodeURIComponent(target)
         },
         asIs: true
     });

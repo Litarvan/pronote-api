@@ -69,7 +69,11 @@ async function getDOM({ url, jar, method = 'GET', data = '', runScripts, hook, f
 
     return new JSDOM(result, {
         runScripts: runScripts ? 'dangerously' : 'outside-only',
-        beforeParse(window) { hook && hook(window) },
+        beforeParse(window) {
+            if (hook) {
+                hook(window)
+            }
+        },
         cookieJar: jar
     });
 }
