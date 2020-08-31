@@ -21,7 +21,7 @@ async function contents(session, from = new Date(), to = null)
     const result = [];
 
     for (const lesson of contents.lessons) {
-        if (lesson.from < from || lesson.from > to) {
+        if ((lesson.from).getTime() < from.getTime() || (lesson.to).getTime() > to.getTime()) {
             continue;
         }
 
