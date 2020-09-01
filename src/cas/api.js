@@ -105,5 +105,6 @@ function extractStart(html)
 module.exports = {
     submitForm,
     getDOM,
+    getParams,
     extractStart
 };
