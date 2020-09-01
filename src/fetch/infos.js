@@ -19,6 +19,7 @@ async function infos(session)
             title: info.name,
             author: info.author.name,
             content: info.content[0].text,
+            htmlContent: info.content[0].text,
             files: info.content[0].files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
         });
     }
