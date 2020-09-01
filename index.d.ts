@@ -892,7 +892,12 @@ export interface Info
 export interface Homework
 {
     /**
-     * Matière du cours
+     * Le cours lié au devoir
+     */
+    lesson: Lesson,
+
+    /**
+     * Matière du cours du devoir
      */
     subject: string,
 
