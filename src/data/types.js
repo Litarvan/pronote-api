@@ -1,3 +1,4 @@
+const { fromString } = require('html-to-text');
 const { fromPronote } = require('./objects');
 
 function parseDate(str)
@@ -65,6 +66,9 @@ function parse({ _T: type, V: value } = {}, helpers = true)
         }
 
         return ~~value;
+    case 21: // html content
+        value = fromString(value);
+        return value;
     case 23: // URL
     case 24: // Object (includes Array)
     case 25: // Resource
