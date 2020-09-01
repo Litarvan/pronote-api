@@ -1,5 +1,6 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
+const { parseHtml } = require('../data/types');
 
 const getContents = require('./pronote/contents');
 
@@ -33,7 +34,8 @@ async function contents(session, from = new Date(), to = null)
             to: lesson.to,
             color: lesson.color,
             title: content.name,
-            description: content.description.replace('<br/>', '\n'),
+            description: parseHtml(content.description),
+            htmlDescription: content.description,
             files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
             category: content.category.name
         });
