@@ -884,7 +884,7 @@ export interface Info
      * Contenu de l'information en HTML
      */
     htmlContent: string,
-    
+
     /**
      * Fichiers attachés à l'information
      */
@@ -1644,8 +1644,7 @@ export interface PronoteInfo extends PronoteObject
 
 export interface PronoteInfoContent extends PronoteObject
 {
-    text: PronoteObject, // texte
-    htmlText: string, // texte html
+    text: string, // texte
     files: Array<PronoteObject> // listePiecesJointes
 }
 
@@ -1673,7 +1672,6 @@ export interface PronoteLessonContent extends PronoteObject
 export interface PronoteLessonContentEntry extends PronoteObject
 {
     description: string, // descriptif
-    htmlDescription: string, // descriptif HTML
     category: PronoteObject, // categorie
     path: number, // parcoursEducatif
     files: Array<PronoteObject>, // ListePieceJointe
@@ -1689,7 +1687,6 @@ export interface PronoteLessonsContentsResources
 export interface PronoteHomework
 {
     description: string, // descriptif
-    htmlDescription: string, // descriptif HTML
     lesson: PronoteObject, // cours
     subject: PronoteObject, // Matiere
     givenAt: Date, // DonneLe

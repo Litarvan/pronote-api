@@ -1,5 +1,6 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
+const fromHTML = require('../data/html');
 
 const getHomeworks = require('./pronote/homeworks');
 
@@ -26,8 +27,8 @@ async function homeworks(session, from = new Date(), to = null)
         }
 
         result.push({
-            description: homework.description,
-            htmlDescription: homework.htmlDescription,
+            description: fromHTML(homework.description),
+            htmlDescription: homework.description,
             subject: homework.subject.name,
             givenAt: homework.givenAt,
             for: homework.for,

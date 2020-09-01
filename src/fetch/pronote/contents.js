@@ -40,8 +40,7 @@ async function getContents(session, fromWeek = 1, toWeek = null)
             content: parse(listeContenus).pronoteMap(({
                 descriptif, categorie, parcoursEducatif, ListePieceJointe, training
             }) => ({
-                description: parse(descriptif, null, true),
-                htmlDescription: parse(descriptif),
+                description: parse(descriptif),
                 category: parse(categorie).pronote(),
                 path: parcoursEducatif,
                 files: parse(ListePieceJointe).pronoteMap(),

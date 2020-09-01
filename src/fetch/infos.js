@@ -1,7 +1,7 @@
 const { getFileURL } = require('../data/files');
-const getInfos = require('./pronote/infos');
+const fromHTML = require('../data/html');
 
-/* This was not tested in Pronote 2020 */
+const getInfos = require('./pronote/infos');
 
 async function infos(session)
 {
@@ -18,7 +18,7 @@ async function infos(session)
             date: info.date,
             title: info.name,
             author: info.author.name,
-            content: info.content[0].text,
+            content: fromHTML(info.content[0].text),
             htmlContent: info.content[0].text,
             files: info.content[0].files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
         });

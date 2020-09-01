@@ -4,7 +4,6 @@
 [![MIT license](https://img.shields.io/badge/license-MIT-lightgray?style=flat-square)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/Litarvan/pronote-api?color=darkgreen&include_prereleases&label=Latest%20release&style=flat-square)](https://github.com/Litarvan/pronote-api/releases)
 [![NPM release](https://img.shields.io/npm/v/pronote-api?style=flat-square)](https://npmjs.org/package/pronote-api)
-[![Dependencies](https://img.shields.io/librariesio/release/npm/pronote-api?style=flat-square)](https://npmjs.org/package/pronote-api)
 
 API Pronote **2020/2021** complète et plutôt stable avec intégration de nombreux CAS (connexion avec comptes spéciaux pour les régions).
 

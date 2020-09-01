@@ -27,8 +27,7 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         descriptif, PourLe, TAFFait, niveauDifficulte, duree, cours, DonneLe,
         Matiere, CouleurFond, ListePieceJointe
     }) => ({
-        description: parse(descriptif, null, true),
-        htmlDescription: parse(descriptif),
+        description: parse(descriptif),
         lesson: parse(cours).pronote(),
         subject: parse(Matiere).pronote(),
         givenAt: parse(DonneLe),
