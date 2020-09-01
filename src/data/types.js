@@ -50,7 +50,7 @@ function parseRange(str)
     return result;
 }
 
-function parse({ _T: type, V: value } = {}, helpers = true, valueStripHtml = true)
+function parse({ _T: type, V: value } = {}, helpers = true, valueStripHtml = false)
 {
     if (!value) {
         return value;
