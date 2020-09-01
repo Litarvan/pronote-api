@@ -85,6 +85,10 @@ function extractStart(html)
         throw errors.BANNED.drop();
     }
 
+    if (html.includes('Le site n\'est pas disponible')) {
+        throw errors.CLOSED.drop();
+    }
+
     if (!html.includes('PRONOTE')) {
         throw errors.WRONG_CREDENTIALS.drop();
     }

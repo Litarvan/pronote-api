@@ -315,6 +315,13 @@ export namespace errors {
      * grand nombre de requête d'authentification, merci d'ouvrir une issue sur la page GitHub du projet.
      */
     const RATE_LIMITED: PronoteErrorType;
+
+    /**
+     * Code : 7
+     * Indique que l'instance est actuellement fermée, pour maintenance ou car la rentrée n'a pas encore eu
+     * lieu.
+     */
+    const CLOSED: PronoteErrorType;
 }
 
 /**
