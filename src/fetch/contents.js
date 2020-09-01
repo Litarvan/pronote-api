@@ -1,6 +1,5 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
-const { parseHtml } = require('../data/types');
 
 const getContents = require('./pronote/contents');
 
