@@ -3,7 +3,7 @@ const { fromPronote } = require('./objects');
 
 function parseHtml(str)
 {
-    return stripHtml(str).result
+    return stripHtml(str).result;
 }
 
 function parseDate(str)
