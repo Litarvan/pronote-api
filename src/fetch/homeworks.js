@@ -21,19 +21,16 @@ async function homeworks(session, from = new Date(), to = null)
     const result = [];
 
     for (const homework of homeworks) {
-        if (homework.givenAt < from || homework.for > to) {
+        if (homework.for < from || homework.for > to) {
             continue;
         }
 
         result.push({
             description: homework.description,
-            lesson: homework.lesson,
-            subject: homework.subject,
+            subject: homework.subject.name,
             givenAt: homework.givenAt,
             for: homework.for,
             done: homework.done,
-            difficultyLevel: homework.difficultyLevel,
-            duration: homework.duration,
             color: homework.color,
             files: homework.files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
         });

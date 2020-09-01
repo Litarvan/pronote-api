@@ -887,62 +887,6 @@ export interface Info
 }
 
 /**
- * Contenu d'un devoir
- */
-export interface Homework
-{
-    /**
-     * Description du devoir
-     */
-    description: string,
-
-    /**
-     * Le cours lié au devoir
-     */
-    lesson: Lesson,
-
-    /**
-     * Matière du cours du devoir
-     */
-    subject: string,
-
-    /**
-     * Horaire précise à laquelle le devoir a été donné
-     */
-    givenAt: Date,
-
-    /**
-     * Horaire précise à laquelle le devoir doit être rendu
-     */
-    for: Date,
-
-    /**
-     * Si le travail a été marqué comme "fait" ou non
-     */
-    done: boolean,
-
-    /**
-     * Niveau de difficulté du devoir
-     */
-    difficultyLevel: number,
-
-    /**
-     * Durée du devoir
-     */
-    duration: number,
-
-    /**
-     * Couleur de la matière du devoir
-     */
-    color: string,
-
-    /**
-     * Fichiers attachés au devoir
-     */
-    files: Array<File>
-}
-
-/**
  * Contenu d'un cours
  */
 export interface LessonContent
@@ -991,6 +935,47 @@ export interface LessonContent
      * Catégorie du contenu
      */
     category: string
+}
+
+/**
+ * Contenu d'un devoir
+ */
+export interface Homework
+{
+    /**
+     * Description du devoir
+     */
+    description: string,
+
+    /**
+     * Matière du cours du devoir
+     */
+    subject: string,
+
+    /**
+     * Horaire précise à laquelle le devoir a été donné
+     */
+    givenAt: Date,
+
+    /**
+     * Horaire précise à laquelle le devoir doit être rendu
+     */
+    for: Date,
+
+    /**
+     * Si le travail a été marqué comme "fait" ou non
+     */
+    done: boolean,
+
+    /**
+     * Couleur de la matière du devoir
+     */
+    color: string,
+
+    /**
+     * Fichiers attachés au devoir
+     */
+    files: Array<File>
 }
 
 /**
@@ -1076,7 +1061,7 @@ export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod
 export function fetchAbsences(session: PronoteSession, period?: PronotePeriod, from?: Date, to?: Date): Promise<PronoteAbsences>;
 export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
 export function fetchContents(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteLessonsContents>;
-export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<Array<Homework>>;
+export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<Array<PronoteHomework>>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
@@ -1683,6 +1668,20 @@ export interface PronoteLessonsContentsResources
 {
     resources: Array<PronoteObject>, // listeRessources
     subjects: Array<PronoteObject> // listeMatieres
+}
+
+export interface PronoteHomework
+{
+    description: string, // descriptif
+    lesson: PronoteObject, // cours
+    subject: PronoteObject, // Matiere
+    givenAt: Date, // DonneLe
+    for: Date, // PourLe
+    done: boolean, // TAFFait
+    difficultyLevel: number, // niveauDifficulte
+    duration: number, // duree
+    color: string, // CouleurFond
+    files: Array<PronoteObject> // ListePieceJointe
 }
 
 export interface PronoteMenu

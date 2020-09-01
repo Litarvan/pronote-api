@@ -10,6 +10,7 @@ type Query {
     absences(period: String): Absences!
     infos: [Info!]!
     contents(from: Date, to: Date): [LessonContent!]!
+    homeworks(form: Date, to: Date): [Homework!]!
     menu(from: Date, to: Date): [MenuDay!]!
 }
 
@@ -170,6 +171,16 @@ type LessonContent {
     description: String!
     files: [File!]!
     category: String!
+}
+
+type Homework {
+    description: String!
+    subject: String!
+    givenAt: Date!
+    for: Date!
+    done: Boolean!
+    color: String!
+    files: [File!]!
 }
 
 type File {
