@@ -6,12 +6,14 @@ async function request(session, name, content = {})
 {
     session.request += 2;
 
-    const order = cipher(session, session.request);
+    const disableIV = session.request === 1;
+
+    const order = cipher(session, session.request, { disableIV });
     const url = `${session.server}appelfonction/${session.type.id}/${session.id}/${order}`;
 
     let data = content;
     if (!session.disableAES) {
-        data = cipher(session, JSON.stringify(content), { compress: true });
+        data = cipher(session, JSON.stringify(content), { compress: true, disableIV });
     }
 
     const result = await http({

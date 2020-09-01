@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const errors = require('./errors');
-const { decipher, getLoginKey, generateIV } = require('./cipher');
+const { decipher, getLoginKey } = require('./cipher');
 const getAccountType = require('./accounts');
 const PronoteSession = require('./session');
 
@@ -28,12 +28,12 @@ async function login(url, username, password, cas = 'none', account = 'student')
         keyExponent: start.ER
     })
 
-    const iv = generateIV();
-    session.params = await getParams(session, iv);
-    session.aesIV = iv;
-
-    await auth(session, username, password, cas !== 'none');
-
+    session.params = await getParams(session);
+    if (cas === 'none') {
+        await auth(session, username, password, false);
+    } else {
+        await auth(session, start.e, start.f, true);
+    }
     session.user = await getUser(session);
 
     return session;

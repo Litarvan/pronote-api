@@ -5,10 +5,10 @@ const request = require('../../request');
 
 const { getUUID } = require('../../cipher');
 
-async function getParams(session, iv)
+async function getParams(session)
 {
     const { donnees: params } = await request(session, 'FonctionParametres', {
-        donnees: { Uuid: getUUID(session, iv || session.aesIV) }
+        donnees: { Uuid: getUUID(session, session.aesIV) }
     });
 
     const general = params.General;

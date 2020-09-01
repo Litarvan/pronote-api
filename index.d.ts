@@ -56,11 +56,11 @@ export class PronoteSession
 
 
     /**
-     * La clé AES utilisée pour le chiffrement. D'abord vide, elle est assignée lors du processus d'authentification
+     * La clé AES utilisée pour le chiffrement. Elle est assignée lors du processus d'authentification
      * à la clé donnée par Pronote dans la réponse de la requête 'Authentification', et est utilisée ensuite
      * pour toutes les opérations de chiffrement (sauf si une autre clé est donnée dans des cas particuliers).
      */
-    aesKey: forge.util.ByteBuffer
+    aesKey?: forge.util.ByteBuffer
 
     /**
      * Vecteur d'initialisation (VI, donc IV en anglais) de chiffrement, généré aléatoirement par la fonction
@@ -1128,6 +1128,9 @@ export interface PronoteStartParams
 {
     h: string, // Session ID (number)
     a: number, // Session type (3 = student, ...)
+
+    e: string, // One time use username after CAS auth
+    f: string, // One time use password after CAS auth
 
     sCrA: boolean, // Disable AES
     sCoA: boolean, // Disable compression
