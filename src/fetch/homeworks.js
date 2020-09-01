@@ -26,15 +26,15 @@ async function homeworks(session, from = new Date(), to = null)
         }
 
         result.push({
+            description: homework.description,
             lesson: homework.lesson,
             subject: homework.subject,
-            color: homework.color,
             givenAt: homework.givenAt,
             for: homework.for,
             done: homework.done,
             difficultyLevel: homework.difficultyLevel,
-            description: homework.description,
             duration: homework.duration,
+            color: homework.color,
             files: homework.files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
         });
     }

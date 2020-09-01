@@ -27,16 +27,16 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         descriptif, PourLe, TAFFait, niveauDifficulte, duree, cours, DonneLe,
         Matiere, CouleurFond, ListePieceJointe
     }) => ({
+        description: parse(descriptif),
         lesson: parse(cours).pronote(),
         subject: parse(Matiere).pronote(),
-        color: CouleurFond,
         givenAt: parse(DonneLe),
         for: parse(PourLe),
         done: TAFFait,
         difficultyLevel: niveauDifficulte,
-        description: parse(descriptif),
-        files: parse(ListePieceJointe).pronoteMap(),
-        duration: duree
+        duration: duree,
+        color: CouleurFond,
+        files: parse(ListePieceJointe).pronoteMap()
     }));
 }
 

@@ -892,6 +892,11 @@ export interface Info
 export interface Homework
 {
     /**
+     * Description du devoir
+     */
+    description: string,
+
+    /**
      * Le cours lié au devoir
      */
     lesson: Lesson,
@@ -912,19 +917,9 @@ export interface Homework
     for: Date,
 
     /**
-     * Couleur de la matière du devoir
+     * Si le travail a été marqué comme "fait" ou non
      */
-    color: string,
-
-    /**
-     * Description du devoir
-     */
-    description: string,
-
-    /**
-     * Fichiers attachés au devoir
-     */
-    files: Array<File>,
+    done: boolean,
 
     /**
      * Niveau de difficulté du devoir
@@ -937,9 +932,14 @@ export interface Homework
     duration: number,
 
     /**
-     * Si le travail a été marqué comme "fait" ou non
+     * Couleur de la matière du devoir
      */
-    done: boolean
+    color: string,
+
+    /**
+     * Fichiers attachés au devoir
+     */
+    files: Array<File>
 }
 
 /**
