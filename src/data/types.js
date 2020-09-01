@@ -66,7 +66,7 @@ function parse({ _T: type, V: value } = {}, helpers = true)
         }
 
         return ~~value;
-    case 21: // html content
+    case 21: // HTML content
         value = stripHtml(value).result;
         return value;
     case 23: // URL
