@@ -40,12 +40,12 @@ async function marks(session, period = null)
             continue;
         }
 
-        const res = {};
+        const res = {
+            isAway: mark.value < 0
+        };
 
-        if (mark.value >= 0) {
+        if (!res.isAway) {
             res.value = mark.value;
-        } else {
-            res.isAway = true;
         }
 
         if (mark.average >= 0) {
@@ -59,8 +59,7 @@ async function marks(session, period = null)
             ...res,
             scale: mark.scale,
             coefficient: mark.coefficient,
-            date: mark.date,
-            isAway: mark.isAway
+            date: mark.date
         });
     }
 
