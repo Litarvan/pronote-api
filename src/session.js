@@ -6,14 +6,15 @@ const marks = require('./fetch/marks');
 const evaluations = require('./fetch/evaluations');
 const absences = require('./fetch/absences');
 const infos = require('./fetch/infos');
-const homeworks = require('./fetch/contents');
+const contents = require('./fetch/contents');
+const homeworks = require('./fetch/homeworks');
 const menu = require('./fetch/menu');
 
 const keepAlive = require('./fetch/pronote/keepAlive');
 
 const DEFAULT_KEEP_ALIVE_RATE = 120; // In seconds. 120 is the Pronote default 'Presence' request rate.
 const REQUESTS = {
-    timetable, marks, evaluations, absences,
+    timetable, marks, evaluations, absences, contents,
     infos, homeworks, menu, keepAlive
 };
 
