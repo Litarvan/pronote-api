@@ -48,6 +48,6 @@
         "eslint-plugin-node": "^11.1.0"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
+        "registry": "https://npm.pkg.github.com/@Litarvan"
     }
 }
