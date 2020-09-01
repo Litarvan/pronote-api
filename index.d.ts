@@ -96,7 +96,7 @@ export class PronoteSession
      * Informations de l'utilisateur connecté via la session, correspond au résultat de la requête
      * 'ParametresUtilisateur' envoyée après une authentification réussie.
      */
-    user?: PronoteUser
+    user?: PronoteStudentUser | PronoteParentUser
 
 
     /**
@@ -1070,12 +1070,12 @@ export function cipher(session: PronoteSession, data: any, options?: CipherOptio
 export function decipher(session: PronoteSession, data: any, options?: DecipherOptions): string | forge.util.ByteBuffer;
 
 export function getStart(url: string, username: string, password: string, cas: string, type?: PronoteAccountTypeName | PronoteAccountType): Promise<PronoteStartParams>;
-export function auth(session: PronoteSession): Promise<PronoteUser>;
+export function auth(session: PronoteSession): Promise<void>;
 
 export function fetchParams(session: PronoteSession, iv: forge.util.ByteBuffer): Promise<PronoteParams>;
 export function fetchId(session: PronoteSession, username: string, fromCas: boolean): Promise<PronoteIdResponse>;
 export function fetchAuth(session: PronoteSession, challenge: string, key: forge.util.ByteBuffer): Promise<string>;
-export function fetchUser(session: PronoteSession): Promise<PronoteUser>;
+export function fetchUser(session: PronoteSession): Promise<PronoteUser<any>>;
 export function fetchTimetable(session: PronoteSession, date?: Date): Promise<PronoteTimetable>;
 export function fetchTimetableDaysAndWeeks(session: PronoteSession): Promise<PronoteTimetableDaysAndWeeks>;
 export function fetchMarks(session: PronoteSession, period?: PronotePeriod): Promise<PronoteMarks>;
@@ -1298,7 +1298,26 @@ export interface PronoteBreak
     position: number // place
 }
 
-export interface PronoteUser extends PronoteObject
+export interface PronoteUser<A extends PronoteUserAuthorizations> extends PronoteObject
+{
+    establishmentsInfo: Array<PronoteEstablishmentInfo>, // ressource.listeInformationsEtablissements
+    userSettings: PronoteUserSettings, // ressource.parametresUtilisateur
+    sessionAuthorizations: PronoteSessionAuthorizations, // user.autorisationsSession.fonctionnalites
+    authorizations: A, // autorisations
+    minPasswordSize: number, // reglesSaisieMDP.min
+    maxPasswordSize: number, // reglesSaisieMDP.max
+    passwordRules: Array<number>, // reglesSaisieMDP.regles
+    kioskAccess: boolean, // autorisationKiosque
+    tabs: Array<PronoteTab>, // listeOnglets
+    hiddenTabs: Array<number>, // listeOngletsInvisibles
+    notifiedTabs: Array<number>, // lisetOngletsNotification
+}
+
+export interface PronoteStudentUser extends PronoteStudent, PronoteUser<PronoteStudentAuthorizations>
+{
+}
+
+export interface PronoteStudent
 {
     establishment: PronoteObject, // ressource.Etablissement
 
@@ -1315,17 +1334,31 @@ export interface PronoteUser extends PronoteObject
     groups: Array<PronoteObject>, // ressource.listeGroupes
     tabsPillars: Array<PronoteTabPillars>, // ressource.listeOngletsPourPiliers
     tabsPeriods: Array<PronoteTabPeriods>, // ressource.listeOngletsPourPeriodes
-    establishmentsInfo: Array<PronoteEstablishmentInfo>, // ressource.listeInformationsEtablissements
-    userSettings: PronoteUserSettings, // ressource.parametresUtilisateur
-    sessionAuthorizations: PronoteSessionAuthorizations, // user.autorisationsSession.fonctionnalites
-    authorizations: PronoteUserAuthorizations, // autorisations
-    minPasswordSize: number, // reglesSaisieMDP.min
-    maxPasswordSize: number, // reglesSaisieMDP.max
-    passwordRules: Array<number>, // reglesSaisieMDP.regles
-    kioskAccess: boolean, // autorisationKiosque
-    tabs: Array<PronoteTab>, // listeOnglets
-    hiddenTabs: Array<number>, // listeOngletsInvisibles
-    notifiedTabs: Array<number>, // lisetOngletsNotification
+}
+
+export interface PronoteStudentAuthorizations extends PronoteUserAuthorizations
+{
+    maxUserWorkFileSize: number // tailleMaxRenduTafEleve
+}
+
+export interface PronoteParentUser extends PronoteUser<PronoteParentAuthorizations>
+{
+    isDelegate: boolean, // estDelegue
+    isBDMember: boolean, // estMembreCA
+    canDiscussWithManagers: boolean, // avecDiscussionResponsables
+    absencesReasons: Array<PronoteObject>, // listeMotifsAbsences
+    delaysReasons: Array<PronoteObject>, // listeMotifsRetards
+    classDelegates: Array<PronoteObject>, // listeClassesDelegue
+    students: Array<PronoteStudent>
+}
+
+export interface PronoteParentAuthorizations extends PronoteUserAuthorizations
+{
+    staffDiscussion: boolean, // AvecDiscussionPersonnels
+    parentsDiscussion: boolean, // AvecDiscussionParents
+    editStudentPassword: boolean, // avecSaisieMotDePasseEleve
+    editCoordinates: boolean, // avecSaisieInfosPersoCoordonnees
+    editAuthorizations: boolean // avecSaisieInfosPersoAutorisations
 }
 
 export interface PronoteClassHistoryElement extends PronoteObject
@@ -1412,8 +1445,8 @@ export interface PronoteUserAuthorizations
     hideClassParts: boolean, // cours.masquerPartiesDeClasse
     maxEstablishmentFileSize: number, // tailleMaxDocJointEtablissement
     maxUserWorkFileSize: number, // tailleMaxRenduTafEleve
-    hasPassword: boolean, // compte.avecSaisieMotDePasse
-    hasPersonalInfo: boolean, // compte.avecInformationsPersonnelles
+    editPassword: boolean, // compte.avecSaisieMotDePasse
+    editPersonalInfo: boolean, // compte.avecInformationsPersonnelles
     canPrint: boolean // compte.autoriserImpression
 }
 

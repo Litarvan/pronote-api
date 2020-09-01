@@ -14,7 +14,7 @@ async function getParams(session)
     const general = params.General;
     return {
         navigatorId: params.identifiantNav,
-        fonts: parse(params.listePolices).map(o => o.L),
+        fonts: parse(params.listePolices, false).map(o => o.L),
         withMember: params.avecMembre,
         forNewCaledonia: params.pourNouvelleCaledonie,
         loginImageId: params.genreImageConnexion,
@@ -30,7 +30,7 @@ async function getParams(session)
         versionFull: general.version,
         year: ~~general.millesime,
         language: { id: general.langID, name: general.langue },
-        supportedLanguages: parse(general.listeLangues).map(({ langID, description }) => ({
+        supportedLanguages: parse(general.listeLangues, false).map(({ langID, description }) => ({
             id: langID,
             name: description
         })),

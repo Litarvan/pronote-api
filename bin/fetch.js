@@ -15,7 +15,12 @@ const [,, url, username, password, cas = 'none', accountType] = process.argv;
 async function fetch()
 {
     const session = await pronote.login(url, username, password, cas, accountType);
-    console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
+
+    if (session.type.name === 'student') {
+        console.log(`Logged as student '${session.user.name}' (${session.user.studentClass.name})`);
+    } else if (session.type.name === 'parent') {
+        console.log(`Logged as parent '${session.user.name}' (${session.user.students.length} children)`);
+    }
 
     let from = new Date();
     if (from < session.params.firstDay) {
