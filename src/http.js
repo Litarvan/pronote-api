@@ -29,7 +29,7 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
         } else {
             content.data = params;
         }
-    } else {
+    } else if (body) {
         content.data = body;
     }
 
@@ -77,7 +77,7 @@ function encodeParams(data)
     }
 
     let params = '';
-    for (const k in Object.keys(data)) {
+    for (const k of Object.keys(data)) {
         const v = data[k];
         params += `${k}=${encodeURIComponent(v)}&`
     }
