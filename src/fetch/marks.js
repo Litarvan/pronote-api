@@ -41,18 +41,24 @@ async function marks(session, period = null)
         }
 
         const res = {};
-        if (!mark.isAway) {
+
+        if (mark.value >= 0) {
             res.value = mark.value;
+        } else {
+            res.isAway = true;
+        }
+
+        if (mark.average >= 0) {
+            res.min = mark.min;
+            res.max = mark.max;
+            res.average = mark.average;
         }
 
         subject.marks.push({
             title: mark.title,
             ...res,
             scale: mark.scale,
-            average: mark.average,
             coefficient: mark.coefficient,
-            min: mark.min,
-            max: mark.max,
             date: mark.date,
             isAway: mark.isAway
         });

@@ -509,7 +509,7 @@ export interface Mark
     title: string,
 
     /**
-     * La note elle même, ou null si l'élève était absent.
+     * La note elle même, ou `null` si l'élève était absent.
      */
     value?: number,
 
@@ -519,9 +519,9 @@ export interface Mark
     scale: number,
 
     /**
-     * Moyenne de la classe
+     * Moyenne de la classe. Valeur absente si tout le monde était absent
      */
-    average: number,
+    average?: number,
 
     /**
      * Coefficient de la note
@@ -529,14 +529,14 @@ export interface Mark
     coefficient: number,
 
     /**
-     * Note la plus basse obtenue dans la classe
+     * Note la plus basse obtenue dans la classe. Valeur absente si tout le monde était absent
      */
-    min: number,
+    min?: number,
 
     /**
-     * Note la plus haute obtenue dans la classe
+     * Note la plus haute obtenue dans la classe. Valeur absente si tout le monde était absent
      */
-    max: number,
+    max?: number,
 
     /**
      * Date de l'évaluation qui a entraîné cette note (supposément)
@@ -1461,7 +1461,6 @@ export interface PronoteMark extends PronoteObject
     min: number, // noteMin
     date: number, // date
     period: PronoteObject, // periode
-    isAway: boolean, // note == '|1'
     isGroupMark: boolean // estEnGroupe
 }
 

@@ -64,10 +64,10 @@ type Mark {
     title: String!,
     value: Float,
     scale: Float!,
-    average: Float!,
+    average: Float,
     coefficient: Float!
-    min: Float!
-    max: Float!
+    min: Float
+    max: Float
     date: Date!
     isAway: Boolean!
 }

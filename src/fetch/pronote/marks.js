@@ -59,11 +59,10 @@ async function getMarks(session, period)
             average: parse(moyenne),
             defaultScale: parse(baremeParDefaut),
             coefficient,
-            min: parse(noteMin),
-            max: parse(noteMax),
+            min: parse(noteMin) || -1,
+            max: parse(noteMax) || -1,
             date: parse(date),
             period: parse(periode).pronote(),
-            isAway: parse(note) === -1,
             isGroupMark: estEnGroupe
         })) || []
     };
