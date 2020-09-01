@@ -1,4 +1,10 @@
+const stripHtml = require('string-strip-html');
 const { fromPronote } = require('./objects');
+
+function parseHtml(str)
+{
+    return stripHtml(str).result;
+}
 
 function parseDate(str)
 {
@@ -44,7 +50,7 @@ function parseRange(str)
     return result;
 }
 
-function parse({ _T: type, V: value } = {}, helpers = true)
+function parse({ _T: type, V: value } = {}, helpers = true, valueStripHtml = false)
 {
     if (!value) {
         return value;
@@ -65,6 +71,8 @@ function parse({ _T: type, V: value } = {}, helpers = true)
         }
 
         return ~~value;
+    case 21: // HTML content
+        return valueStripHtml ? parseHtml(value) : value;
     case 23: // URL
     case 24: // Object (includes Array)
     case 25: // Resource

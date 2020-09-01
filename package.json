@@ -38,6 +38,7 @@
         "node-forge": "0.6.33",
         "pako": "^1.0",
         "polka": "^0.5.2",
+        "string-strip-html": "^5.0.1",
         "uuid": "^8.3.0"
     },
     "devDependencies": {
