@@ -26,8 +26,8 @@ async function homeworks(session, from = new Date(), to = null)
         }
 
         result.push({
-            description: content.description,
-            htmlDescription: content.htmlDescription,
+            description: homework.description,
+            htmlDescription: homework.htmlDescription,
             subject: homework.subject.name,
             givenAt: homework.givenAt,
             for: homework.for,
