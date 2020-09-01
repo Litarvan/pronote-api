@@ -176,6 +176,23 @@ export class PronoteSession
     contents(from?: Date, to?: Date): Promise<Array<LessonContent>>
 
     /**
+     * Récupère les devoirs situés dans l'intervalle de temps donnée.
+     *
+     * Attention : Par défaut, une Date en JavaScript est initialisée à minuit si l'heure n'est pas donnée,
+     * mettre par exemple en 'to' le Mercredi 2 Septembre, ne renverra donc aucun des devoirs de ce jour.
+     *
+     * Rappelez-vous aussi que le champ du mois dans les dates est décalé de 1 en arrière, et seulement
+     * ce champ. Pour initialiser une Date au Mercredi 2 Septembre, il faut donc faire `new Date(2020, 8, 2);`.
+     *
+     * @param from La date à partir de laquelle récupérer les devoirs. Par défaut la Date actuelle
+     * @param to La date jusqu'à laquelle récupérer les devoirs. Par défaut 'from' + 1 jour
+     *
+     * @return La liste des devoirs situés entre les deux dates données. Si l'onglet des devoirs n'est pas
+     * disponible, `null` sera renvoyé.
+     */
+    homeworks(from?: Date, to?: Date): Promise<Array<Homework>>
+
+    /**
      * Récupère les menus de la cantine des repas situés dans l'intervalle de temps donnée.
      *
      * Attention : Par défaut, une Date en JavaScript est initialisée à minuit si l'heure n'est pas donnée,
@@ -870,6 +887,57 @@ export interface Info
 }
 
 /**
+ * Contenu d'un devoir
+ */
+export interface Homework
+{
+    /**
+     * Matière du cours
+     */
+    subject: string,
+
+    /**
+     * Horaire précise à laquelle le devoir a été donné
+     */
+    givenAt: Date,
+
+    /**
+     * Horaire précise à laquelle le devoir doit être rendu
+     */
+    for: Date,
+
+    /**
+     * Couleur de la matière du devoir
+     */
+    color: string,
+
+    /**
+     * Description du devoir
+     */
+    description: string,
+
+    /**
+     * Fichiers attachés au devoir
+     */
+    files: Array<File>,
+
+    /**
+     * Niveau de difficulté du devoir
+     */
+    difficultyLevel: number,
+
+    /**
+     * Durée du devoir
+     */
+    duration: number,
+
+    /**
+     * Si le travail a été marqué comme "fait" ou non
+     */
+    done: boolean
+}
+
+/**
  * Contenu d'un cours
  */
 export interface LessonContent
@@ -1003,6 +1071,7 @@ export function fetchEvaluations(session: PronoteSession, period?: PronotePeriod
 export function fetchAbsences(session: PronoteSession, period?: PronotePeriod, from?: Date, to?: Date): Promise<PronoteAbsences>;
 export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
 export function fetchContents(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteLessonsContents>;
+export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<Array<Homework>>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
