@@ -39,7 +39,7 @@ async function homeworks(session, from = new Date(), to = null)
         });
     }
 
-    return result.sort((a, b) => a.from - b.from);
+    return result.sort((a, b) => a.for - b.for);
 }
 
 module.exports = homeworks;
