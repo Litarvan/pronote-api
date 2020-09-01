@@ -30,6 +30,7 @@ async function fetch()
     const evaluations = await session.evaluations();
     const absences = await session.absences();
     const infos = await session.infos();
+    const contents = await session.contents(from, to);
     const homeworks = await session.homeworks(from, to);
     const menu = await session.menu(from, to);
 
@@ -39,7 +40,7 @@ async function fetch()
         avatar: session.user.avatar,
 
         timetable, marks, evaluations, absences,
-        infos, homeworks, menu
+        infos, contents, homeworks, menu
     };
 
     await fs.writeFile('result.json', JSON.stringify(result, null, 4));
