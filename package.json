@@ -46,5 +46,8 @@
         "@types/pako": "^1.0",
         "eslint": "^7.6.0",
         "eslint-plugin-node": "^11.1.0"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     }
 }
