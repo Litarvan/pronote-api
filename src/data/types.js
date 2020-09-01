@@ -1,4 +1,4 @@
-const { fromString } = require('html-to-text');
+const stripHtml = require('string-strip-html');
 const { fromPronote } = require('./objects');
 
 function parseDate(str)
@@ -67,7 +67,7 @@ function parse({ _T: type, V: value } = {}, helpers = true)
 
         return ~~value;
     case 21: // html content
-        value = fromString(value);
+        value = stripHtml(value).result;
         return value;
     case 23: // URL
     case 24: // Object (includes Array)
