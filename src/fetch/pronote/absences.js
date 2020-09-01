@@ -44,8 +44,8 @@ async function getAbsences(session, period, from, to)
             incidents: a.incident,
             totalHoursMissed: a.totalHeuresManquees
         }))(absences.autorisations),
-        events: parse(absences.listeAbsences).pronoteMap(a => parseEvent(a), false),
-        subjects: parse(absences.Matieres).pronoteMap(({
+        events: parse(absences.listeAbsences, a => parseEvent(a), false),
+        subjects: parse(absences.Matieres, ({
             P, regroupement, dansRegroupement, suivi, absence, excluCours, excluEtab
         }) => ({
             position: P,
@@ -56,12 +56,12 @@ async function getAbsences(session, period, from, to)
             lessonExclusions: excluCours,
             establishmentExclusions: excluEtab
         })),
-        recaps: parse(absences.listeRecapitulatifs).pronoteMap(({ NombreTotal, NbrHeures, NombreNonJustifie }) => ({
+        recaps: parse(absences.listeRecapitulatifs, ({ NombreTotal, NbrHeures, NombreNonJustifie }) => ({
             count: NombreTotal,
             unjustifiedCount: NombreNonJustifie,
             hours: fromPronoteHours(NbrHeures)
         })),
-        sanctions: parse(absences.listeSanctionUtilisateur).pronoteMap() // TODO: Check values
+        sanctions: parse(absences.listeSanctionUtilisateur) // TODO: Check values
     };
 }
 
@@ -106,7 +106,7 @@ function parseAbsence(a)
         justified: a.justifie,
         hours: fromPronoteHours(a.NbrHeures),
         days: a.NbrJours,
-        reasons: parse(a.listeMotifs).pronoteMap()
+        reasons: parse(a.listeMotifs)
     }
 }
 
@@ -118,7 +118,7 @@ function parseDelay(a)
         justified: a.justifie,
         justification: a.justification,
         duration: a.duree,
-        reasons: parse(a.listeMotifs).pronoteMap()
+        reasons: parse(a.listeMotifs)
     };
 }
 
@@ -132,15 +132,15 @@ function parsePunishment(a)
         isBoundToIncident: a.estLieAUnIncident,
         circumstances: a.circonstances,
         duration: a.duree,
-        giver: parse(a.demandeur).pronote(),
+        giver: parse(a.demandeur),
         isSchedulable: a.estProgrammable,
-        reasons: parse(a.listeMotifs).pronoteMap(),
-        schedule: parse(a.programmation).pronoteMap(({ date, placeExecution, duree }) => ({
+        reasons: parse(a.listeMotifs),
+        schedule: parse(a.programmation, ({ date, placeExecution, duree }) => ({
             date: parse(date),
             position: placeExecution,
             duration: duree
         })),
-        nature: a.nature && parse(a.nature).pronote(({ estProgrammable, estAvecARParent }) => ({
+        nature: a.nature && parse(a.nature, ({ estProgrammable, estAvecARParent }) => ({
             isSchedulable: estProgrammable,
             requiresParentsMeeting: estAvecARParent
         }))
@@ -151,13 +151,13 @@ function parseOther(a)
 {
     return {
         date: parse(a.date),
-        giver: parse(a.demandeur).pronote(({ estProfPrincipal, mail }) => ({
+        giver: parse(a.demandeur, ({ estProfPrincipal, mail }) => ({
             isHeadTeacher: estProfPrincipal,
             mail
         })),
         comment: a.commentaire,
         read: a.estLue,
-        subject: parse(a.matiere).pronote()
+        subject: parse(a.matiere)
     };
 }
 

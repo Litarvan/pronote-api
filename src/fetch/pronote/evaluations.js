@@ -17,32 +17,32 @@ async function getEvaluations(session, period)
         return null;
     }
 
-    return parse(evaluations.listeEvaluations).pronoteMap(({
+    return parse(evaluations.listeEvaluations, ({
         listeNiveauxDAcquisitions, listePaliers, matiere, individu, coefficient, descriptif, date, periode
     }) => ({
         title: descriptif,
-        acquisitionLevels: parse(listeNiveauxDAcquisitions).pronoteMap(({
+        acquisitionLevels: parse(listeNiveauxDAcquisitions, ({
             abbreviation, ordre, pilier, coefficient, domaine, item
         }) => ({
             position: ordre,
             value: abbreviation,
-            pillar: parse(pilier).pronote(({ strPrefixes }) => ({
+            pillar: parse(pilier, ({ strPrefixes }) => ({
                 prefixes: strPrefixes.split(', ')
             })),
             coefficient,
-            domain: parse(domaine).pronote(),
-            item: item && parse(item).pronote() || null
+            domain: parse(domaine),
+            item: item && parse(item) || null
         })),
-        levels: parse(listePaliers).pronoteMap(),
-        subject: parse(matiere).pronote(({ couleur, ordre, serviceConcerne }) => ({
+        levels: parse(listePaliers),
+        subject: parse(matiere, ({ couleur, ordre, serviceConcerne }) => ({
             position: ordre,
-            service: parse(serviceConcerne).pronote(),
+            service: parse(serviceConcerne),
             color: couleur
         })),
-        teacher: parse(individu).pronote(),
+        teacher: parse(individu),
         coefficient,
         date: parse(date),
-        period: parse(periode).pronote()
+        period: parse(periode)
     }));
 }
 

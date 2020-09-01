@@ -44,9 +44,13 @@ function parseRange(str)
     return result;
 }
 
-function parse({ _T: type, V: value } = {}, helpers = true)
+function parse({ _T: type, V: value } = {}, f = null, g = 'type')
 {
     if (!value) {
+        if (value === undefined) {
+            return null;
+        }
+
         return value;
     }
 
@@ -70,10 +74,10 @@ function parse({ _T: type, V: value } = {}, helpers = true)
     case 24: // Object (includes Array)
     case 25: // Resource
     default:
-        if (helpers && value.map) {
-            value.pronoteMap = (f, g) => value.map(o => fromPronote(o, f, g));
-        } else if (helpers && (value.N || value.L)) {
-            value.pronote = (f, g) => fromPronote(value, f, g);
+        if (f !== false && value.map) {
+            return value.map(o => fromPronote(o, f, g));
+        } else if (f !== false && (value.N || value.L)) {
+            return fromPronote(value, f, g);
         }
 
         return value;

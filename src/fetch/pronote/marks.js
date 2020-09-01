@@ -31,7 +31,7 @@ async function getMarks(session, period)
 
     return {
         ...result,
-        subjects: marks.avecDetailService && parse(marks.listeServices).pronoteMap(({
+        subjects: marks.avecDetailService && parse(marks.listeServices, ({
             ordre, estServiceEnGroupe,
             moyEleve, baremeMoyEleve, baremeMoyEleveParDefaut, moyClasse, moyMax, moyMin,
             couleur
@@ -46,11 +46,11 @@ async function getMarks(session, period)
             minAverage: parse(moyMin),
             color: couleur
         })) || [],
-        marks: marks.avecDetailDevoir && parse(marks.listeDevoirs).pronoteMap(({
+        marks: marks.avecDetailDevoir && parse(marks.listeDevoirs, ({
             note, bareme, baremeParDefaut, date, service, periode, moyenne, estEnGroupe, noteMax, noteMin,
             commentaire, coefficient
         }) => ({
-            subject: parse(service).pronote(({ couleur }) => ({
+            subject: parse(service, ({ couleur }) => ({
                 color: couleur
             })),
             title: commentaire,
@@ -62,7 +62,7 @@ async function getMarks(session, period)
             min: parse(noteMin) || -1,
             max: parse(noteMax) || -1,
             date: parse(date),
-            period: parse(periode).pronote(),
+            period: parse(periode),
             isGroupMark: estEnGroupe
         })) || []
     };

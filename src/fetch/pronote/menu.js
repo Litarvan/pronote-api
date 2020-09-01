@@ -24,12 +24,12 @@ async function getMenu(session, day = new Date())
         hasLunch: menu.AvecRepasMidi,
         hasDiner: menu.AvecRepasSoir,
         filledWeeks: parse(menu.DomaineDePresence),
-        menus: parse(menu.ListeJours).map(({ Date, ListeRepas }) => ({
+        menus: parse(menu.ListeJours, false).map(({ Date, ListeRepas }) => ({
             date: parse(Date),
-            meals: parse(ListeRepas).pronoteMap(({ ListePlats }) => ({
-                content: parse(ListePlats).pronoteMap(({ ListeAliments }) => ({
-                    lines: parse(ListeAliments).pronoteMap(({ listeLabelsAlimentaires }) => ({
-                        labels: parse(listeLabelsAlimentaires).pronoteMap(({ couleur }) => ({
+            meals: parse(ListeRepas, ({ ListePlats }) => ({
+                content: parse(ListePlats, ({ ListeAliments }) => ({
+                    lines: parse(ListeAliments, ({ listeLabelsAlimentaires }) => ({
+                        labels: parse(listeLabelsAlimentaires, ({ couleur }) => ({
                             color: couleur
                         }))
                     }))

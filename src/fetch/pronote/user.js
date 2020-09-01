@@ -25,27 +25,27 @@ async function getUser(session)
         establishment: fromPronote(establishment),
         ...avatar,
         studentClass: fromPronote(res.classeDEleve),
-        classHistory: parse(res.listeClassesHistoriques).pronoteMap(({ AvecNote, AvecFiliere }) => ({
+        classHistory: parse(res.listeClassesHistoriques, ({ AvecNote, AvecFiliere }) => ({
             hadMarks: AvecNote,
             hadOptions: AvecFiliere
         })),
-        groups: parse(res.listeGroupes).pronoteMap(),
-        tabsPillars: parse(res.listeOngletsPourPiliers).pronoteMap(({ listePaliers }) => ({
-            levels: parse(listePaliers).pronoteMap(({ listePiliers }) => ({
-                pillars: parse(listePiliers).pronoteMap(({ estPilierLVE, estSocleCommun, Service }) => ({
+        groups: parse(res.listeGroupes),
+        tabsPillars: parse(res.listeOngletsPourPiliers, ({ listePaliers }) => ({
+            levels: parse(listePaliers, ({ listePiliers }) => ({
+                pillars: parse(listePiliers, ({ estPilierLVE, estSocleCommun, Service }) => ({
                     isForeignLanguage: estPilierLVE,
                     isCoreSkill: estSocleCommun,
-                    subject: Service && parse(Service).pronote()
+                    subject: Service && parse(Service)
                 }))
             }))
         }), 'tab'),
-        tabsPeriods: parse(res.listeOngletsPourPeriodes).pronoteMap(({ listePeriodes, periodeParDefaut }) => ({
-            periods: parse(listePeriodes).pronoteMap(({ GenreNotation }) => ({
+        tabsPeriods: parse(res.listeOngletsPourPeriodes, ({ listePeriodes, periodeParDefaut }) => ({
+            periods: parse(listePeriodes, ({ GenreNotation }) => ({
                 isCorePeriod: GenreNotation === 1
             })),
-            defaultPeriod: parse(periodeParDefaut).L
+            defaultPeriod: parse(periodeParDefaut)
         }), 'tab'),
-        establishmentsInfo: parse(user.listeInformationsEtablissements).pronoteMap(({ Logo, Coordonnees }) => ({
+        establishmentsInfo: parse(user.listeInformationsEtablissements, ({ Logo, Coordonnees }) => ({
             logoID: parse(Logo),
             address: [Coordonnees.Adresse1, Coordonnees.Adresse2],
             postalCode: Coordonnees.CodePostal,

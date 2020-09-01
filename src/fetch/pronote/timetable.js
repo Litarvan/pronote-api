@@ -45,13 +45,13 @@ async function getTimetable(session, week)
             date: parse(DateDuCours),
             status: Statut,
             color: CouleurFond,
-            content: parse(ListeContenus).pronoteMap(),
+            content: parse(ListeContenus),
             hasHomework: AvecTafPublie,
             isCancelled: !!estAnnule,
             isDetention: !!estRetenue
         }))),
         // I was unable to witness a filled "absences.joursCycle", so didn't include it
-        breaks: parse(timetable.recreations).pronoteMap(({ place }) => ({
+        breaks: parse(timetable.recreations, ({ place }) => ({
             position: place
         }))
     };

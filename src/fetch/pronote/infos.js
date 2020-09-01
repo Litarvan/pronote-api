@@ -5,8 +5,6 @@ const PAGE_NAME = 'PageActualites';
 const TAB_ID = 8;
 const ACCOUNTS = ['student'];
 
-/* This was not tested in Pronote 2020 */
-
 async function getInfos(session)
 {
     const infos = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
@@ -18,17 +16,17 @@ async function getInfos(session)
     }
 
     return {
-        categories: parse(infos.listeCategories).pronoteMap(({ estDefaut }) => ({
+        categories: parse(infos.listeCategories, ({ estDefaut }) => ({
             isDefault: estDefaut
         })),
-        infos: parse(infos.listeActualites).pronoteMap(({ dateDebut, elmauteur, listeQuestions }) => ({
+        infos: parse(infos.listeActualites, ({ dateDebut, elmauteur, listeQuestions }) => ({
             date: parse(dateDebut),
-            author: parse(elmauteur).pronote(),
-            content: parse(listeQuestions).pronoteMap(({ texte, listePiecesJointes }) => ({
+            author: parse(elmauteur),
+            content: parse(listeQuestions, ({ texte, listePiecesJointes }) => ({
                 text: parse(texte),
-                files: parse(listePiecesJointes).pronoteMap()
+                files: parse(listePiecesJointes)
             }))
-        })) // TODO: Check values
+        }))
     };
 }
 

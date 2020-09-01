@@ -25,35 +25,35 @@ async function getContents(session, fromWeek = 1, toWeek = null)
     }
 
     return {
-        lessons: parse(contents.ListeCahierDeTextes).pronoteMap(({
+        lessons: parse(contents.ListeCahierDeTextes, ({
             cours, verrouille, listeGroupes, Matiere, CouleurFond, listeProfesseurs, Date, DateFin,
             listeContenus, listeElementsProgrammeCDT
         }) => ({
-            lesson: parse(cours).pronote(),
+            lesson: parse(cours),
             locked: verrouille,
-            groups: parse(listeGroupes).pronoteMap(), // TODO: Check values
-            subject: parse(Matiere).pronote(),
+            groups: parse(listeGroupes), // TODO: Check values
+            subject: parse(Matiere),
             color: CouleurFond,
-            teachers: parse(listeProfesseurs).pronoteMap(),
+            teachers: parse(listeProfesseurs),
             from: parse(Date),
             to: parse(DateFin),
-            content: parse(listeContenus).pronoteMap(({
+            content: parse(listeContenus, ({
                 descriptif, categorie, parcoursEducatif, ListePieceJointe, training
             }) => ({
                 description: parse(descriptif),
-                category: parse(categorie).pronote(),
+                category: parse(categorie),
                 path: parcoursEducatif,
-                files: parse(ListePieceJointe).pronoteMap(),
+                files: parse(ListePieceJointe),
                 training: parse(training).ListeExecutionsQCM.map(o => fromPronote(o)) // TODO: Check values
             })),
-            skills: parse(listeElementsProgrammeCDT).pronoteMap()
+            skills: parse(listeElementsProgrammeCDT)
         })),
         resources: (({ listeRessources, listeMatieres }) => ({
-            resources: parse(listeRessources).pronoteMap(), // TODO: Check values
-            subjects: parse(listeMatieres).pronoteMap() // TODO: Check values
+            resources: parse(listeRessources), // TODO: Check values
+            subjects: parse(listeMatieres) // TODO: Check values
         }))(parse(contents.ListeRessourcesPedagogiques)),
         // TODO: Check values
-        numericalResources: parse(parse(contents.ListeRessourcesNumeriques).listeRessources).pronoteMap()
+        numericalResources: parse(parse(contents.ListeRessourcesNumeriques).listeRessources)
     };
 }
 

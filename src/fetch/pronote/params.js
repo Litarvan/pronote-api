@@ -68,11 +68,11 @@ async function getParams(session, iv)
         frequenciesLabels: general.LibellesFrequences,
         defaultMarkMax: parse(general.BaremeNotation),
         allowedAnnotations: parse(general.listeAnnotationsAutorisees),
-        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions).pronoteMap(({
+        acquisitionLevels: parse(general.ListeNiveauxDAcquisitions, ({
             listePositionnements, positionJauge, actifPour, abbreviation, raccourci,
             couleur, ponderation, nombrePointsBrevet, estAcqui, estNotantPourTxReussite
         }) => ({
-            positions: parse(listePositionnements).pronoteMap(({ abbreviation, abbreviationAvecPrefixe }) => ({
+            positions: parse(listePositionnements, ({ abbreviation, abbreviationAvecPrefixe }) => ({
                 shortName: abbreviation,
                 shortNameWithPrefix: abbreviationAvecPrefixe
             }), 'count'),
@@ -108,16 +108,16 @@ async function getParams(session, iv)
         phoneMask: general.maskTelephone,
         maxECTS: general.maxECTS,
         maxAppreciationSizes: general.TailleMaxAppreciation,
-        publicHolidays: parse(general.listeJoursFeries).pronoteMap(({ dateDebut, dateFin }) => ({
+        publicHolidays: parse(general.listeJoursFeries, ({ dateDebut, dateFin }) => ({
             from: parse(dateDebut),
             to: parse(dateFin)
         })),
         displaySequences: general.afficherSequences,
         firstHour: parse(general.PremiereHeure),
-        hours: parse(general.ListeHeures).pronoteMap(({ A }) => ({
+        hours: parse(general.ListeHeures, ({ A }) => ({
             round: A === undefined
         }), 'count'),
-        endHours: parse(general.ListeHeuresFin).pronoteMap(({ A }) => ({
+        endHours: parse(general.ListeHeuresFin, ({ A }) => ({
             round: A === undefined
         }), 'count'),
         sequences: general.sequences,
@@ -128,7 +128,7 @@ async function getParams(session, iv)
             to: parse(dateFin)
         }), false)),
         logo: parse(general.logo),
-        breaks: parse(general.recreations).pronoteMap(({ place }) => ({
+        breaks: parse(general.recreations, ({ place }) => ({
             position: place
         })),
         appCookieName: general.nomCookieAppli

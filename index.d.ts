@@ -1353,7 +1353,7 @@ export interface PronoteTabPeriods
 {
     tab: number, // G
     periods: Array<PronoteTabPeriod>, // listePeriodes
-    defaultPeriod: string // periodeParDefault.L
+    defaultPeriod?: PronoteObject // periodeParDefault
 }
 
 export interface PronoteTabPeriod extends PronoteObject

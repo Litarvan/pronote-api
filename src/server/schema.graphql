@@ -396,7 +396,7 @@ type PronotePillar {
 type PronoteTabPeriods {
     tab: Int!
     periods: [PronoteTabPeriod!]!
-    defaultPeriod: String!
+    defaultPeriod: PronoteNamedObject
 }
 
 type PronoteTabPeriod {

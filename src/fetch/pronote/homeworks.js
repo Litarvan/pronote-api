@@ -23,20 +23,20 @@ async function getHomeworks(session, fromWeek = 1, toWeek = null)
         return null;
     }
 
-    return parse(homeworks.ListeTravauxAFaire).pronoteMap(({
+    return parse(homeworks.ListeTravauxAFaire, ({
         descriptif, PourLe, TAFFait, niveauDifficulte, duree, cours, DonneLe,
         Matiere, CouleurFond, ListePieceJointe
     }) => ({
         description: parse(descriptif),
-        lesson: parse(cours).pronote(),
-        subject: parse(Matiere).pronote(),
+        lesson: parse(cours),
+        subject: parse(Matiere),
         givenAt: parse(DonneLe),
         for: parse(PourLe),
         done: TAFFait,
         difficultyLevel: niveauDifficulte,
         duration: duree,
         color: CouleurFond,
-        files: parse(ListePieceJointe).pronoteMap()
+        files: parse(ListePieceJointe)
     }));
 }
 

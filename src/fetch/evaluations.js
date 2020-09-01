@@ -31,7 +31,7 @@ async function evaluations(session, period = null)
                     short: value,
                     long: name
                 },
-                prefixes: pillar.prefixes
+                prefixes: !pillar.prefixes[0] ? [] : pillar.prefixes
             }))
         });
     }
