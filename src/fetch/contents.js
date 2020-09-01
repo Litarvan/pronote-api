@@ -34,8 +34,8 @@ async function contents(session, from = new Date(), to = null)
             to: lesson.to,
             color: lesson.color,
             title: content.name,
-            description: parseHtml(content.description),
-            htmlDescription: content.description,
+            description: content.description,
+            htmlDescription: content.htmlDescription,
             files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
             category: content.category.name
         });
