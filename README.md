@@ -34,25 +34,24 @@ Disponible en tant que :
 
 Sinon, l'API propose de se connecter à Pronote avec des comptes des académies suivantes :
 
-- Académie de Lyon
-- Académie de Montpellier
-- Académie de Toulouse
-- Académie de Grenoble
-- Académie de Rouen
-- Académie de Rouen (Arsene76)
-- Académie de Lille
-- Académie de Rennes
-- Académie de Clermont-Ferrand
-- Académie de Reims
-- Académie de Nancy-Metz (Non fonctionnel Actuellement)
-- Académie de Strasbourg
-- Académie de Caen
-- Académie d'Orleans-Tours
-- Académie de Besançon
-- Académie de Nantes
-- ENT "Île de France"
-- ENT "Hauts-de-France"
-- ENT "Seine et Marne"
+- Académie de Lyon (CAS : `ac-lyon`)
+- Académie de Montpellier (CAS : `ac-montpellier`)
+- Académie de Toulouse (CAS : `ac-toulouse`)
+- Académie de Grenoble (CAS : `ac-grenoble`)
+- Académie de Rouen (CAS : `ac-rouen`)
+- Académie de Rouen (Arsene76) (CAS : `arsene76`)
+- Académie de Lille (CAS : `ac-lille`)
+- Académie de Clermont-Ferrand (CAS : `ac-clermont`)
+- Académie de Reims (CAS : `ac-reims`)
+- Académie de Nancy-Metz (CAS : `ac-nancy-metz`)
+- Académie de Strasbourg (CAS : `ac-strasbourg`)
+- Académie de Caen (CAS : `ac-caen`)
+- Académie d'Orleans-Tours (CAS : `ac-orleans-tours`)
+- Académie de Besançon (CAS : `ac-besancon`)
+- Académie de Nantes (CAS : `ac-nantes`)
+- ENT "Île de France" (CAS : `iledefrance`)
+- ENT "Hauts-de-France" (CAS : `hdf`)
+- ENT "Seine et Marne" (CAS : `seineetmarne`)
 
 ## Utilisation
 
