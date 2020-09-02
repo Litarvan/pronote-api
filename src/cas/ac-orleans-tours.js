@@ -38,7 +38,7 @@ async function login(url, account, username, password)
     });
 
     return extractStart(await getDOM({
-        url,
+        url: url + account.value + '.html',
         jar,
         asIs: true
     }));
