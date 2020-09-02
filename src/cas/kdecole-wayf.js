@@ -37,7 +37,7 @@ async function login({ url, username, password, casUrl, idp, atenURL })
         });
     }
 
-    return extractStart(username, dom);
+    return extractStart(dom);
 }
 
 module.exports = login;

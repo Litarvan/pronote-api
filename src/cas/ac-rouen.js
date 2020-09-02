@@ -6,7 +6,7 @@ const aten = require('./aten');
 async function login(url, account, username, password)
 {
     const jar = new jsdom.CookieJar();
-    let dom = await getDOM({
+    const dom = await getDOM({
         // eslint-disable-next-line max-len
         url: 'https://nero.l-educdenormandie.fr/Shibboleth.sso/Login?entityID=urn:fi:ac-rouen:ts-EDUC-Normandie:1:0&target=',
         jar,
@@ -21,13 +21,11 @@ async function login(url, account, username, password)
         jar
     });
 
-    dom = await getDOM({
-        url,
+    return extractStart(await getDOM({
+        url: url + account.value + '.html',
         jar,
         asIs: true
-    });
-
-    return extractStart(username, dom);
+    }));
 }
 
 module.exports = login;
