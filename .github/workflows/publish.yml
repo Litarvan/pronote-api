@@ -17,8 +17,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: actions/setup-node@v1
         with:
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@litarvan'
+          registry-url: 'https://npm.pkg.github.com/@Litarvan'
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
