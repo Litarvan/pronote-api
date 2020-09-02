@@ -1,4 +1,4 @@
-const { login } = require('./src/auth');
+const { loginStudent, loginParent } = require('./src/auth');
 const errors = require('./src/errors');
 
 // -----------------------------------------------------------
@@ -30,7 +30,9 @@ const request = require('./src/request');
 
 module.exports = {
     // High-level API
-    login,
+    login: loginStudent,
+    loginParent,
+
     errors,
 
     // Low-level API (you can use this if you need, but it may mean I've forgotten a use case, please open an issue!)

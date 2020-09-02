@@ -113,6 +113,7 @@ function getStudent(session, res)
     }
 
     return {
+        ...fromPronote(res),
         establishment: parse(res.Etablissement),
         ...avatar,
         studentClass: fromPronote(res.classeDEleve),

@@ -5,14 +5,14 @@ import * as forge from 'node-forge';
 /**
  * Une session Pronote
  *
- * Peut-être ouverte via la fonction {@link login}, ou instanciée manuellement.
- * Ouverte par {@link login}, les champs {@link params} et {@link user} sont garantis d'être remplis.
+ * Peut être ouverte via les fonctions {@link login}, ou {@link loginParent}.
+ * Ouverte par l'une de ces fonctions, le champ {@link params} est garanti d'être rempli.
  *
  * La session dure quelques dizaines de minutes, sauf si {@link setKeepAlive}(true) est appelé,
  * elle dure alors indéfiniment jusqu'à que {@link setKeepAlive}(false) soit appelé ou le
  * programme fermé.
  */
-export class PronoteSession
+export abstract class PronoteSession
 {
     /**
      * Créé une nouvelle session.
@@ -23,7 +23,6 @@ export class PronoteSession
      * @param options Les options d'instanciation
      */
     constructor(options: PronoteSessionOptions)
-
 
     /**
      * ID unique de la session donné par Pronote, sous la forme d'une suite de 7 chiffres.
@@ -37,7 +36,7 @@ export class PronoteSession
     server: string
 
     /**
-     * Type du compte de la session, pour l'instant seul le type 'student' est réellement supporté.
+     * Type du compte de la session, défini automatiquement par le constructeur
      */
     type: PronoteAccountType
 
@@ -92,11 +91,38 @@ export class PronoteSession
      */
     params?: PronoteParams
 
+
+    /**
+     * Envoi une requête de présence à Pronote, remettant à zero la durée de vie de la session
+     */
+    keepAlive(): Promise<void>
+
+    /**
+     * Active le maintien en vie de la session. Dès que ce paramètre est défini à `true`, l'API enverra
+     * des requêtes de présence à Pronote à l'intervalle défini. Tant que ce paramètre n'est pas défini à `false`
+     * le programme fermé, ou une erreur renvoyée, les requêtes continueront d'être envoyées et la session
+     * sera maintenue indéfiniment.
+     *
+     * @param enabled Si oui ou non le maintien de la session doit être activé
+     * @param onError Une action à effectuer en cas d'erreur. Dans tous les cas, une erreur arrêtera le maintien.
+     * @param rate L'intervalle auquel envoyer les requêtes, par défaut 2 minutes (le même que Pronote).
+     */
+    setKeepAlive(enabled: boolean, onError?: (error: any) => void, rate?: number);
+}
+
+/**
+ * Une session élève
+ *
+ * Peut être ouverte par {@link login} ou instanciée manuellement.
+ * Ouverte par {@link login}, le champ {@link user} est garanti d'être rempli.
+ */
+export class PronoteStudentSession extends PronoteSession
+{
     /**
      * Informations de l'utilisateur connecté via la session, correspond au résultat de la requête
      * 'ParametresUtilisateur' envoyée après une authentification réussie.
      */
-    user?: PronoteStudentUser | PronoteParentUser
+    user?: PronoteStudentUser
 
 
     /**
@@ -209,24 +235,21 @@ export class PronoteSession
      * disponible, `null` sera renvoyé.
      */
     menu(from?: Date, to?: Date): Promise<Array<MenuDay>>
+}
 
-
+/**
+ * Une session parent
+ *
+ * Peut être ouverte par {@link login} ou instanciée manuellement.
+ * Ouverte par {@link login}, le champ {@link user} est garanti d'être rempli.
+ */
+export class PronoteParentSession extends PronoteSession
+{
     /**
-     * Envoi une requête de présence à Pronote, remettant à zero la durée de vie de la session
+     * Informations de l'utilisateur connecté via la session, correspond au résultat de la requête
+     * 'ParametresUtilisateur' envoyée après une authentification réussie.
      */
-    keepAlive(): Promise<void>
-
-    /**
-     * Active le maintien en vie de la session. Dès que ce paramètre est défini à `true`, l'API enverra
-     * des requêtes de présence à Pronote à l'intervalle défini. Tant que ce paramètre n'est pas défini à `false`
-     * le programme fermé, ou une erreur renvoyée, les requêtes continueront d'être envoyées et la session
-     * sera maintenue indéfiniment.
-     *
-     * @param enabled Si oui ou non le maintien de la session doit être activé
-     * @param onError Une action à effectuer en cas d'erreur. Dans tous les cas, une erreur arrêtera le maintien.
-     * @param rate L'intervalle auquel envoyer les requêtes, par défaut 2 minutes (le même que Pronote).
-     */
-    setKeepAlive(enabled: boolean, onError?: (error: any) => void, rate?: number);
+    user?: PronoteParentUser
 }
 
 /**
@@ -246,7 +269,7 @@ export interface PronoteAccountType
 }
 
 /**
- * Ouvre une nouvelle session à l'instance Pronote donnée, et s'y connecte.
+ * Ouvre une nouvelle session élève à l'instance Pronote donnée, et s'y connecte.
  *
  * Par défaut, ouvrir une session à l'aide de cette fonction ne maintien pas la session en vie. Pour la maintenir
  * plus longtemps que le temps par défaut (quelques dizaines de minutes), utilisez {@link PronoteSession.setKeepAlive}.
@@ -259,11 +282,30 @@ export interface PronoteAccountType
  * vous êtes redirigé vers une interface de votre académie, vous devez alors choisir le CAS qui correspond. La valeur
  * de ce champ correspond au nom d'un fichier de src/cas/ sans le .js. Par exemple 'ac-montpellier'. Si votre
  * académie n'est pas supportée, vous pouvez ouvrir une issue sur le dépôt GitHub du projet.
- * @param account Type de compte à ouvrir (élève, parent, etc.). Pour l'instant, seul les comptes élèves sont supportés.
  *
  * @return La session créée et authentifiée. Ses champs 'params' et 'user' sont donc forcément non-vides.
  */
-export function login(url: string, username: string, password: string, cas?: string, account?: PronoteAccountTypeName): Promise<PronoteSession>;
+export function login(url: string, username: string, password: string, cas?: string): Promise<PronoteStudentSession>;
+
+/**
+ * Ouvre une nouvelle session parent à l'instance Pronote donnée, et s'y connecte.
+ *
+ * Par défaut, ouvrir une session à l'aide de cette fonction ne maintien pas la session en vie. Pour la maintenir
+ * plus longtemps que le temps par défaut (quelques dizaines de minutes), utilisez {@link PronoteSession.setKeepAlive}.
+ *
+ * @param url URL de l'instance Pronote à laquelle se connecter, exemple : https://demo.index-education.net/pronote/
+ * @param username Nom d'utilisateur
+ * @param password Mot de passe de l'utilisateur
+ * @param cas Nom du CAS à utiliser si besoin. Si vous vous connectez usuellement à Pronote directement par leur
+ * interface, vous pouvez laisser ce champ vide (ou mettre 'none'). En revanche, si lors de la connexion à Pronote
+ * vous êtes redirigé vers une interface de votre académie, vous devez alors choisir le CAS qui correspond. La valeur
+ * de ce champ correspond au nom d'un fichier de src/cas/ sans le .js. Par exemple 'ac-montpellier'. Si votre
+ * académie n'est pas supportée, vous pouvez ouvrir une issue sur le dépôt GitHub du projet.
+ *
+ * @return La session créée et authentifiée. Ses champs 'params' et 'user' sont donc forcément non-vides.
+ */
+export function loginParent(url: string, username: string, password: string, cas?: string): Promise<PronoteParentSession>;
+
 
 /**
  * Liste des erreurs pouvant être renvoyées par l'API.
@@ -1317,7 +1359,7 @@ export interface PronoteStudentUser extends PronoteStudent, PronoteUser<PronoteS
 {
 }
 
-export interface PronoteStudent
+export interface PronoteStudent extends PronoteObject
 {
     establishment: PronoteObject, // ressource.Etablissement
 

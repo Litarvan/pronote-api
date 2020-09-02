@@ -14,13 +14,26 @@ const [,, url, username, password, cas = 'none', accountType] = process.argv;
 
 async function fetch()
 {
-    const session = await pronote.login(url, username, password, cas, accountType);
-
-    if (session.type.name === 'student') {
-        console.log(`Logged as student '${session.user.name}' (${session.user.studentClass.name})`);
-    } else if (session.type.name === 'parent') {
-        console.log(`Logged as parent '${session.user.name}' (${session.user.students.length} children)`);
+    let result;
+    switch (accountType.toLowerCase())
+    {
+    case 'parent':
+        result = await parent();
+        break;
+    default:
+        result = await student();
+        break;
     }
+
+    await fs.writeFile('result.json', JSON.stringify(result, null, 4));
+
+    console.log('Wrote \'result.json\'');
+}
+
+async function student()
+{
+    const session = await pronote.login(url, username, password, cas);
+    console.log(`Logged as student '${session.user.name}' (${session.user.studentClass.name})`);
 
     let from = new Date();
     if (from < session.params.firstDay) {
@@ -39,7 +52,7 @@ async function fetch()
     const homeworks = await session.homeworks(from, to);
     const menu = await session.menu(from, to);
 
-    const result = {
+    return {
         name: session.user.name,
         studentClass: session.user.studentClass.name,
         avatar: session.user.avatar,
@@ -47,10 +60,17 @@ async function fetch()
         timetable, marks, evaluations, absences,
         infos, contents, homeworks, menu
     };
+}
 
-    await fs.writeFile('result.json', JSON.stringify(result, null, 4));
+async function parent()
+{
+    const session = await pronote.loginParent(url, username, password, cas);
+    console.log(`Logged as parent '${session.user.name}' (${session.user.students.length} students)`);
 
-    console.log('Wrote \'result.json\'');
+    return {
+        name: session.user.name,
+        students: session.user.students.map(s => s.name)
+    };
 }
 
 fetch().catch(err => {
