@@ -35,7 +35,7 @@ class PronoteSession
         this.isKeptAlive = false;
 
         for (const [req, method] of Object.entries(REQUESTS)) {
-            this[req] = (...args) => method(this, ...args);
+            this[req] = (...args) => callRequest(method, this, args);
         }
     }
 
@@ -57,6 +57,17 @@ class PronoteSession
         }
 
         this.isKeptAlive = enabled;
+    }
+}
+
+function callRequest(method, session, args)
+{
+    switch (session.type.name)
+    {
+    case 'student':
+        return method(session, session.user, ...args);
+    default:
+        return method(session, ...args);
     }
 }
 

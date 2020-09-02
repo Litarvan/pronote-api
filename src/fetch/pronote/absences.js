@@ -7,11 +7,11 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'PagePresence';
 const TAB_ID = 19;
-const ACCOUNTS = ['student'];
+const ACCOUNTS = ['student', 'parent'];
 
-async function getAbsences(session, period, from, to)
+async function getAbsences(session, user, period, from, to)
 {
-    const absences = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const absences = await navigate(session, user, PAGE_NAME, TAB_ID, ACCOUNTS, {
         DateDebut: {
             _T: 7,
             V: toPronoteDate(from)

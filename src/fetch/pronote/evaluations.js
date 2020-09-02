@@ -5,11 +5,11 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'DernieresEvaluations';
 const TAB_ID = 201;
-const ACCOUNTS = ['student'];
+const ACCOUNTS = ['student', 'parent'];
 
-async function getEvaluations(session, period)
+async function getEvaluations(session, user, period)
 {
-    const evaluations = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const evaluations = await navigate(session, user, PAGE_NAME, TAB_ID, ACCOUNTS, {
         periode: period.name ? toPronote(period) : period
     });
 

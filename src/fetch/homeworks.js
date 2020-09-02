@@ -4,7 +4,7 @@ const fromHTML = require('../data/html');
 
 const getHomeworks = require('./pronote/homeworks');
 
-async function homeworks(session, from = new Date(), to = null)
+async function homeworks(session, user, from = new Date(), to = null)
 {
     if (!to || to < from) {
         to = new Date(from.getTime());
@@ -14,7 +14,7 @@ async function homeworks(session, from = new Date(), to = null)
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
-    const homeworks = await getHomeworks(session, fromWeek, toWeek);
+    const homeworks = await getHomeworks(session, user, fromWeek, toWeek);
     if (!homeworks) {
         return null;
     }
