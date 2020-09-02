@@ -12,7 +12,7 @@ function fromPronote({ N, L, G, ...obj } = {}, fn = null, gName = 'type') {
     if (L) {
         result.name = L;
     }
-    if (G && gName) {
+    if (G !== undefined && gName) {
         result[gName] = G;
     }
 
