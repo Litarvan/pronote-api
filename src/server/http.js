@@ -32,6 +32,7 @@ function handle(req, res, handler)
             console.error(err);
 
             if (err.message) {
+                delete err.http;
                 respond(res, err.http || 500, err);
             } else {
                 respond(res, 500, {

@@ -258,7 +258,7 @@ export class PronoteParentSession extends PronoteSession
 
 
     /**
-     * Récupère les cours d'un élève situés dans l'intervalle de temps donnée.
+     * Récupère les cours d'un élève situé dans l'intervalle de temps donnée.
      *
      * Attention : Par défaut, une Date en JavaScript est initialisée à minuit si l'heure n'est pas donnée,
      * mettre par exemple en 'to' le Mercredi 2 Septembre, ne renverra donc aucun des cours de ce jour.

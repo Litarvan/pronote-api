@@ -1,10 +1,10 @@
 const { v4: uuid } = require('uuid');
 
-const auth = require('../auth');
+const { loginStudent, loginParent } = require('../auth');
 
 const sessions = {};
 
-async function login({ url, username, password, cas, account })
+async function login({ url, username, password, cas, account = 'student' })
 {
     if (!url || !username || !password) {
         throw {
@@ -13,8 +13,23 @@ async function login({ url, username, password, cas, account })
         };
     }
 
+    let func;
+    switch (account) {
+    case 'student':
+        func = loginStudent;
+        break;
+    case 'parent':
+        func = loginParent;
+        break;
+    default:
+        throw {
+            http: 400,
+            message: `Unknown account type '${account}'`
+        };
+    }
+
     const token = uuid();
-    sessions[token] = await auth.login(url, username, password, cas, account);
+    sessions[token] = await func(url, username, password, cas);
 
     return { token };
 }
