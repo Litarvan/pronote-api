@@ -1,7 +1,7 @@
 const { getPeriodBy } = require('../data/periods');
 const getAbsences = require('./pronote/absences');
 
-async function absences(session, period = null)
+async function absences(session, period = null, from = null, to = null)
 {
     const result = {
         absences: [],
@@ -11,8 +11,8 @@ async function absences(session, period = null)
         totals: []
     };
 
-    const p = getPeriodBy(session, period);
-    const absences = await getAbsences(session, p, p.from, p.to);
+    const p = getPeriodBy(session, !period && from && to ? 'Trimestre 1' : period);
+    const absences = await getAbsences(session, p, from || p.from, to || p.to);
 
     for (const event of absences.events) {
         // eslint-disable-next-line default-case

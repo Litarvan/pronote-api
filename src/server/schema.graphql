@@ -7,7 +7,7 @@ type Query {
     timetable(from: Date, to: Date): [Lesson!]!
     marks(period: String): Marks!
     evaluations(period: String): [EvaluationSubject!]!
-    absences(period: String): Absences!
+    absences(period: String, from: Date, to: Date): Absences!
     infos: [Info!]!
     contents(from: Date, to: Date): [LessonContent!]!
     homeworks(from: Date, to: Date): [Homework!]!

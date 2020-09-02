@@ -169,13 +169,18 @@ export class PronoteStudentSession extends PronoteSession
     /**
      * Récupère la liste des évènements tels que les absences, punitions, retenues, ou autre.
      *
+     * Il est possible de mettre 'from' et 'to' de sorte à couvrir toute l'année, tant que 'period' est défini à
+     * `null` ou au premier trimestre. Cela renverra alors bien les évènements de toute l'année.
+     *
      * @param period La période depuis laquelle récupérer les évènements. Par défaut le trimestre dans lequel on
      * est, ou le premier si on est hors période.
+     * @param from À partir de quand récupérer les évènements
+     * @param to Jusqu'à quand récupérer les évènements
      *
      * @return La liste des évènements de cette période rangés par types. Si l'onglet des évènements n'est pas
      * disponible, `null` sera renvoyé.
      */
-    absences(period?: PronotePeriod | String): Promise<Absences>
+    absences(period?: PronotePeriod | String, from?: Date, to?: Date): Promise<Absences>
 
     /**
      * Récupère la liste de toutes les informations disponibles.
