@@ -1,4 +1,4 @@
-const openent = require('./openent');
+const openent = require('./types/openent');
 
 module.exports = (url, account, username, password) => openent({
     url,

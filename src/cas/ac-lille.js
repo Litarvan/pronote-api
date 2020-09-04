@@ -1,4 +1,4 @@
-const wayf = require('./kdecole-wayf');
+const wayf = require('./types/kdecole-wayf');
 
 module.exports = (url, account, username, password) => wayf({
     url,
