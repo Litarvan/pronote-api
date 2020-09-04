@@ -2,12 +2,17 @@ const axios = require('axios');
 
 async function http({ url, body, data, method = 'GET', binary, jar = null, followRedirects = true })
 {
+    let userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0';
+    if (url.includes('teleservices.ac-nancy-metz.fr')) {
+        userAgent = 'FuckTheUselessProtection/1.0';
+    }
+
     const params = encodeParams(data);
     const content = {
         url,
         method: method.toLowerCase(),
         headers: {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0',
+            'User-Agent': userAgent,
             'Content-Type': body !== undefined
                 ? 'application/json'
                 : (params !== '' && method !== 'GET' ? 'application/x-www-form-urlencoded' : ''),
