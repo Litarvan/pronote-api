@@ -24,6 +24,7 @@ async function evaluations(session, period = null)
         subject.evaluations.push({
             name: evaluation.name,
             date: evaluation.date,
+            coefficient: evaluation.coefficient,
             levels: evaluation.acquisitionLevels.map(({ name, position, value, item, domain, pillar }) => ({
                 name: item && item.name || domain.name,
                 position,
