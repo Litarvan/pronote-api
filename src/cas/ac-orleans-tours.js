@@ -1,7 +1,7 @@
 const jsdom = require('jsdom');
 
-const errors = require('../errors');
-const { getDOM, submitForm, extractStart } = require('./api');
+const { getDOM } = require('./api');
+const educonnect = require('./generics/educonnect');
 
 async function login(url, account, username, password)
 {
@@ -16,32 +16,7 @@ async function login(url, account, username, password)
         jar
     });
 
-    dom.window.document.getElementById('username').value = username;
-    dom.window.document.getElementById('password').value = password;
-
-    dom = await submitForm({
-        dom,
-        jar,
-        actionRoot: 'https://educonnect.education.gouv.fr/',
-        extraParams: {
-            '_eventId_proceed': ''
-        }
-    });
-
-    if (!dom.window.document.querySelector('input[name=SAMLResponse]')) {
-        throw errors.WRONG_CREDENTIALS.drop();
-    }
-
-    await submitForm({
-        dom,
-        jar
-    });
-
-    return extractStart(await getDOM({
-        url: url + account.value + '.html',
-        jar,
-        asIs: true
-    }));
+    return educonnect({ dom, jar, url, account, username, password });
 }
 
 module.exports = login;

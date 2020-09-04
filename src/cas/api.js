@@ -35,14 +35,14 @@ function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionR
 
 function getParams(dom, extra = {})
 {
-    const params = { ...extra };
+    const params = {};
 
     Array.prototype.forEach.call(
         dom.window.document.getElementsByTagName('input'),
         input => (input.name !== '' ? params[input.name] = input.value : '')
     );
 
-    return params;
+    return { ...params, ...extra };
 }
 
 async function getDOM({ url, jar, method = 'GET', data = '', runScripts, hook, followRedirects, asIs })

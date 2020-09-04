@@ -73,6 +73,7 @@ type EvaluationSubject {
 type Evaluation {
     name: String!
     date: Date!
+    coefficient: Float!
     levels: [EvaluationLevel!]!
 }
 

@@ -768,7 +768,12 @@ export interface Evaluation
     /**
      * Date à laquelle l'évaluation a eu lieu
      */
-    date: Date
+    date: Date,
+
+    /**
+     * Coefficient de l'évaluation
+     */
+    coefficient: number,
 
     /**
      * Niveaux d'évaluations notés

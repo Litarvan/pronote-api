@@ -1,37 +1,15 @@
-const jsdom = require('jsdom');
+const wayf = require('./generics/wayf');
 
-const { getDOM, getParams, extractStart } = require('./api');
-const aten = require('./aten');
+module.exports = (url, account, username, password) => wayf({
+    url,
+    username,
+    password,
 
-async function login(url, account, username, password)
-{
-    const jar = new jsdom.CookieJar();
+    startURL: 'https://fip.itslearning.com/SP/bn/',
+    wayfURL: 'https://cas.itslearning.com/ds-bn/',
+    atenURL: 'https://teleservices.ac-caen.fr/',
 
-    let dom = await getDOM({
-        url: `https://fip.itslearning.com/SP/bn/login?service=${encodeURIComponent(url)}`,
-        jar
-    });
-
-    const params = getParams(dom);
-    params.origin = 'urn:fi:ac-caen:ts:1.0';
-
-    dom = await getDOM({
-        url: 'https://cas.itslearning.com/ds-bn/WAYF',
-        jar,
-        data: params,
-        runScripts: true,
-        hook: aten.hook
-    });
-
-    dom = await aten.submit({
-        dom,
-        jar,
-        username,
-        password,
-        atenURL: 'https://teleservices.ac-caen.fr/login/'
-    });
-
-    return extractStart(dom);
-}
-
-module.exports = login;
+    extraParams: {
+        origin: 'urn:fi:ac-caen:ts:1.0'
+    }
+});

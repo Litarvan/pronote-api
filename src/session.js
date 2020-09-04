@@ -49,7 +49,9 @@ class PronoteSession
             this.interval = setInterval(() => {
                 this.keepAlive().catch(err => {
                     this.setKeepAlive(false);
-                    onError(err);
+                    if (onError) {
+                        onError(err);
+                    }
                 });
             }, rate * 1000);
         } else {

@@ -58,7 +58,7 @@ function getServer(url)
 
 async function getStart(url, username, password, cas, type)
 {
-    if (cas.match(/(api|jsencrypt\.min)(\.js)?/giu)) {
+    if (cas.match(/api|\.|\\|\/|generics/giu)) {
         throw errors.UNKNOWN_CAS.drop(cas);
     }
 

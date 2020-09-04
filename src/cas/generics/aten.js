@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const errors = require('../errors');
-const { submitForm } = require('./api');
+const errors = require('../../errors');
+const { submitForm } = require('../api');
 
 // eslint-disable-next-line no-sync
 const jsEncrypt = fs.readFileSync(path.join(__dirname, 'jsencrypt.min.js'));

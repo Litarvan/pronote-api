@@ -1,6 +1,6 @@
 const jsdom = require('jsdom');
 
-const { getDOM, extractStart } = require('./api');
+const { getDOM, extractStart } = require('../api');
 
 async function login({ url, username, password, target })
 {

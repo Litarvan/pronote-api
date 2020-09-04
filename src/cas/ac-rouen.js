@@ -1,7 +1,7 @@
 const jsdom = require('jsdom');
 
 const { getDOM, extractStart } = require('./api');
-const aten = require('./aten');
+const aten = require('./generics/aten');
 
 async function login(url, account, username, password)
 {
