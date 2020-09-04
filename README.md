@@ -51,7 +51,9 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Nantes (CAS : `ac-nantes`)
 - ENT "Île de France" (CAS : `iledefrance`)
 - ENT "Hauts-de-France" (CAS : `hdf`)
-- ENT "Seine et Marne" (CAS : `seineetmarne`)
+- ENT "Seine-et-Marne" (CAS : `seine-et-marne`)
+- ENT "Toutatice" (Rennes) (CAS : `toutatice`)
+- ENT "Haute-Garonne" (CAS : `haute-garonne`)
 
 ## Utilisation
 
