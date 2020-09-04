@@ -10,7 +10,7 @@ const ACCOUNTS = ['student'];
 async function getMarks(session, period)
 {
     const marks = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
-        periode: period.name ? toPronote(period) : period
+        Periode: period.name ? toPronote(period) : period
     });
 
     if (!marks) {
