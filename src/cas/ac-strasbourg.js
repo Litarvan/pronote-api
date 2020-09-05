@@ -5,7 +5,7 @@ module.exports = (url, account, username, password) => wayf({
     username,
     password,
 
-    casUrl: 'https://cas.monbureaunumerique.fr/',
+    casUrl: 'cas.monbureaunumerique.fr',
     idp: 'STRAS-ATS',
-    atenURL: 'https://teleservices.ac-strasbourg.fr/login/'
+    atenURL: 'teleservices.ac-strasbourg.fr'
 });

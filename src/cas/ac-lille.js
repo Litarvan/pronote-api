@@ -5,7 +5,7 @@ module.exports = (url, account, username, password) => wayf({
     username,
     password,
 
-    casUrl: 'https://cas.savoirsnumeriques62.fr/',
+    casUrl: 'cas.savoirsnumeriques62.fr',
     idp: 'ATS_parent_eleve',
-    atenURL: 'https://teleservices.ac-lille.fr/login/'
+    atenURL: 'teleservices.ac-lille.fr'
 });

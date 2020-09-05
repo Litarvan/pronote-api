@@ -5,7 +5,7 @@ module.exports = (url, account, username, password) => wayf({
     username,
     password,
 
-    casUrl: 'https://cas.eclat-bfc.fr/',
+    casUrl: 'cas.eclat-bfc.fr',
     idp: 'BESANC-ATS_parent_eleve_2D',
-    atenURL: 'https://teleservices.ac-besancon.fr/login/'
+    atenURL: 'teleservices.ac-besancon.fr'
 });

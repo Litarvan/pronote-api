@@ -7,7 +7,7 @@ module.exports = (url, account, username, password) => wayf({
 
     startURL: 'https://cas3.e-lyco.fr/access/',
     wayfURL: 'https://cas3.e-lyco.fr/discovery/',
-    atenURL: 'https://ats-idp.ac-nantes.fr/',
+    atenURL: 'ats-idp.ac-nantes.fr',
 
     extraParams: {
         origin: 'https://ats-idp.ac-nantes.fr/SAML/FIM',
