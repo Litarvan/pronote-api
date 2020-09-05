@@ -52,6 +52,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - Académie de Bordeaux (CAS : `ac-bordeaux`)
 - Académie de Limoges (CAS : `ac-limoges`)
 - Académie de Poitiers (CAS : `ac-poitiers`)
+- Académie de Dijon (CAS : `ac-dijon`)
 - ENT "Île de France" (CAS : `iledefrance`)
 - ENT "Hauts-de-France" (CAS : `hdf`)
 - ENT "Seine-et-Marne" (CAS : `seine-et-marne`)
