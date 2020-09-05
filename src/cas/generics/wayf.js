@@ -25,7 +25,7 @@ async function login({ url, username, password, startURL, wayfURL, atenURL, extr
         jar,
         username,
         password,
-        atenURL: `${atenURL}/login/`
+        atenURL
     });
 
     return extractStart(dom);

@@ -5,7 +5,7 @@ const { getDOM, extractStart } = require('../api');
 async function login({ url, username, password, target })
 {
     return extractStart(await getDOM({
-        url: target + 'auth/login',
+        url: `https://${target}/auth/login`,
         jar: new jsdom.CookieJar(),
         method: 'POST',
         data: {

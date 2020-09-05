@@ -5,6 +5,6 @@ module.exports = (url, account, username, password) => wayf({
     username,
     password,
 
-    casUrl: 'https://cas.arsene76.fr/',
+    casUrl: 'cas.arsene76.fr',
     idp: 'ATS_parent_eleve'
 });

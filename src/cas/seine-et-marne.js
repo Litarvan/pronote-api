@@ -5,5 +5,5 @@ module.exports = (url, account, username, password) => openent({
     username,
     password,
 
-    target: 'https://ent77.seine-et-marne.fr/'
+    target: 'ent77.seine-et-marne.fr'
 });

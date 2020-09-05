@@ -5,6 +5,6 @@ module.exports = (url, account, username, password) => wayf({
     username,
     password,
 
-    casUrl: 'https://cas.mon-ent-occitanie.fr/',
+    casUrl: 'cas.mon-ent-occitanie.fr',
     idp: 'TOULO-ENT'
 });

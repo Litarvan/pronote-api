@@ -11,7 +11,7 @@ async function login({ url, username, password, casUrl, idp, atenURL })
 
     const jar = new jsdom.CookieJar();
     let dom = await getDOM({
-        url: `${casUrl}login?selection=${idp}&service=${encodeURIComponent(url)}`,
+        url: `https://${casUrl}/login?selection=${idp}&service=${encodeURIComponent(url)}`,
         jar
     });
 
