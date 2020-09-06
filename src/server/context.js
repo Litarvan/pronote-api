@@ -22,6 +22,7 @@ function student(session) {
         evaluations: ({ period }) => session.evaluations(period),
         absences: ({ period, from, to }) => session.absences(period, from, to),
         infos: () => session.infos(),
+        contents: ({ from, to }) => session.contents(from, to),
         homeworks: ({ from, to }) => session.homeworks(from, to),
         menu: ({ from, to }) => session.menu(from, to)
     };
@@ -44,6 +45,7 @@ function parent(session) {
         evaluations: ({ student, period }) => session.evaluations(getStudent(student), period),
         absences: ({ student, period, from, to }) => session.absences(getStudent(student), period, from, to),
         infos: ({ student }) => session.infos(getStudent(student)),
+        contents: ({ student, from, to }) => session.contents(getStudent(student), from, to),
         homeworks: ({ student, from, to }) => session.homeworks(getStudent(student), from, to),
         menu: ({ student, from, to }) => session.menu(getStudent(student), from, to)
     };
