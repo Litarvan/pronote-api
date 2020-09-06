@@ -7,6 +7,7 @@ module.exports = session => ({
     evaluations: ({ period }) => session.evaluations(period),
     absences: ({ period, from, to }) => session.absences(period, from, to),
     infos: () => session.infos(),
+    contents: ({ from, to }) => session.contents(from, to),
     homeworks: ({ from, to }) => session.homeworks(from, to),
     menu: ({ from, to }) => session.menu(from, to),
 
