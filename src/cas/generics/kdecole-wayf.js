@@ -5,13 +5,13 @@ const aten = require('./aten');
 
 async function login({ url, username, password, casUrl, idp, atenURL })
 {
-    if (!idp.includes('parent_eleve')) {
+    if (idp && !idp.includes('parent_eleve')) {
         idp += '_parent_eleve';
     }
 
     const jar = new jsdom.CookieJar();
     let dom = await getDOM({
-        url: `https://${casUrl}/login?selection=${idp}&service=${encodeURIComponent(url)}`,
+        url: `https://${casUrl}/login?${idp ? `selection=${idp}&` : ''}service=${encodeURIComponent(url)}`,
         jar
     });
 

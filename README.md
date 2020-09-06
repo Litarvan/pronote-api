@@ -59,6 +59,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - ENT "Toutatice" (Rennes) (CAS : `toutatice`)
 - ENT "Haute-Garonne" (CAS : `haute-garonne`)
 - ENT "Somme" (CAS : `somme`)
+- ENT "Agora 06" (Nice) (CAS : `agora06`)
 
 ## Utilisation
 
