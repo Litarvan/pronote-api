@@ -1,12 +1,12 @@
 extend type Query {
-    timetable(student: String!, from: Date, to: Date): [Lesson!]!
-    marks(student: String!, period: String): Marks!
-    evaluations(student: String!, period: String): [EvaluationSubject!]!
-    absences(student: String!, period: String, from: Date, to: Date): Absences!
-    infos(student: String!): [Info!]!
-    contents(student: String!, from: Date, to: Date): [LessonContent!]!
-    homeworks(student: String!, from: Date, to: Date): [Homework!]!
-    menu(student: String!, from: Date, to: Date): [MenuDay!]!
+    timetable(student: String!, from: Date, to: Date): [Lesson!]
+    marks(student: String!, period: String): Marks
+    evaluations(student: String!, period: String): [EvaluationSubject!]
+    absences(student: String!, period: String, from: Date, to: Date): Absences
+    infos(student: String!): [Info!]
+    contents(student: String!, from: Date, to: Date): [LessonContent!]
+    homeworks(student: String!, from: Date, to: Date): [Homework!]
+    menu(student: String!, from: Date, to: Date): [MenuDay!]
 }
 
 extend type PronoteUser {
