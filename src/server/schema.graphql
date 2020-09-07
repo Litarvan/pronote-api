@@ -4,14 +4,14 @@ type Query {
     params: PronoteParams!
     user: PronoteUser!
 
-    timetable(from: Date, to: Date): [Lesson!]!
-    marks(period: String): Marks!
-    evaluations(period: String): [EvaluationSubject!]!
-    absences(period: String, from: Date, to: Date): Absences!
-    infos: [Info!]!
-    contents(from: Date, to: Date): [LessonContent!]!
-    homeworks(from: Date, to: Date): [Homework!]!
-    menu(from: Date, to: Date): [MenuDay!]!
+    timetable(from: Date, to: Date): [Lesson!]
+    marks(period: String): Marks
+    evaluations(period: String): [EvaluationSubject!]
+    absences(period: String, from: Date, to: Date): Absences
+    infos: [Info!]
+    contents(from: Date, to: Date): [LessonContent!]
+    homeworks(from: Date, to: Date): [Homework!]
+    menu(from: Date, to: Date): [MenuDay!]
 }
 
 type Mutation {

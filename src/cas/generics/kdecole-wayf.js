@@ -9,9 +9,11 @@ async function login({ url, username, password, casUrl, idp, atenURL })
         idp += '_parent_eleve';
     }
 
+    casUrl = `https://${casUrl}/`;
+
     const jar = new jsdom.CookieJar();
     let dom = await getDOM({
-        url: `https://${casUrl}/login?${idp ? `selection=${idp}&` : ''}service=${encodeURIComponent(url)}`,
+        url: `${casUrl}login?${idp ? `selection=${idp}&` : ''}service=${encodeURIComponent(url)}`,
         jar
     });
 
