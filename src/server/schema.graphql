@@ -31,6 +31,7 @@ type Lesson {
     subject: String
     teacher: String
     room: String
+    status: String
     isAway: Boolean
     isCancelled: Boolean
     color: String

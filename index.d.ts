@@ -407,6 +407,13 @@ export interface Lesson
     room?: string,
 
     /**
+     * Information supplémentaire sur le cours donnée par Pronote. Exemple de valeurs : "Prof absent",
+     * "Cours annulé", etc.
+     * Determine les valeurs 'isAway' et 'isCancelled'.
+     */
+    status?: string,
+
+    /**
      * Indique si le professeur est absent. Ne peut pas être à `true` en même temps que `isCancelled`.  Est à `null`
      * dans le cas d'une retenue.
      */
