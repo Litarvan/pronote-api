@@ -1,7 +1,5 @@
-const fs = require('fs').promises;
-const path = require('path');
-
 const errors = require('./errors');
+const cas = require('./cas');
 const { decipher, getLoginKey } = require('./cipher');
 const getAccountType = require('./accounts');
 const PronoteSession = require('./session');
@@ -56,23 +54,14 @@ function getServer(url)
     return url;
 }
 
-async function getStart(url, username, password, cas, type)
+async function getStart(url, username, password, casName, type)
 {
-    if (cas.match(/api|\.|\\|\/|generics/giu)) {
-        throw errors.UNKNOWN_CAS.drop(cas);
-    }
-
-    const casPath = `./cas/${cas}.js`;
-    try {
-        await fs.access(path.join(__dirname, casPath));
-    } catch (_) {
-        throw errors.UNKNOWN_CAS.drop(cas);
+    if (casName === 'names' || casName === 'getCAS') {
+        throw errors.UNKNOWN_CAS.drop(casName);
     }
 
     const account = typeof type === 'string' ? getAccountType(type) : type;
-
-    // eslint-disable-next-line node/global-require
-    return await require(casPath)(url, account, username, password);
+    return await cas[casName](url, account, username, password);
 }
 
 async function auth(session, username, password, fromCas)
