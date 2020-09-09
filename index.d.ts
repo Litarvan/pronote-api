@@ -271,6 +271,18 @@ export interface PronoteAccountType
 export function login(url: string, username: string, password: string, cas?: string, account?: PronoteAccountTypeName): Promise<PronoteSession>;
 
 /**
+ * La liste des CAS disponibles, et donc des valeurs acceptées pour le champ 'cas' de la fonction {@link login}.
+ */
+export const casList: Array<string>;
+
+/**
+ * Tente de trouver le nom de CAS associé à l'URL de l'instance Pronote donnée. Renvoie `null` si introuvable.
+ *
+ * @param url L'URL de l'instance Pronote dont laquelle trouver le CAS par lequel il faut passer pour s'y connecter.
+ */
+export function getCAS(url: string): Promise<string | null>;
+
+/**
  * Liste des erreurs pouvant être renvoyées par l'API.
  */
 export namespace errors {
