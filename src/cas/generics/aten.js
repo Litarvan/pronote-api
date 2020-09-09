@@ -16,7 +16,7 @@ async function login({ url, account, username, password, startURL, atenURL, post
             startURL = startURL.substring(1);
         }
 
-        startURL = `https://${atenURL}${startURL}`;
+        startURL = `https://${atenURL}/${startURL}`;
     }
 
     const jar = new jsdom.CookieJar();

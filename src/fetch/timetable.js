@@ -49,6 +49,7 @@ function getTimetableWeek(session, table) {
             from,
             to,
             isDetention: lesson.isDetention,
+            status: lesson.status,
             hasDuplicate: !!table.lessons.find(l => l.date.getTime() === from.getTime() && l !== lesson)
         };
 
