@@ -50,6 +50,10 @@ async function http({ url, body, data, method = 'GET', binary, jar = null, follo
             location = getOrigin(url) + location;
         }
 
+        if (followRedirects === 'get') {
+            return location;
+        }
+
         return await http({
             url: location,
             jar
