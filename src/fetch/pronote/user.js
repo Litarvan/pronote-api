@@ -22,7 +22,7 @@ async function getUser(session)
     return {
         id: res.N,
         name: res.L,
-        establishment: fromPronote(establishment),
+        establishment,
         ...avatar,
         studentClass: fromPronote(res.classeDEleve),
         classHistory: parse(res.listeClassesHistoriques, ({ AvecNote, AvecFiliere }) => ({
