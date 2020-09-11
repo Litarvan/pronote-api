@@ -12,7 +12,7 @@ const CAS = [
 
     'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme',
 
-    'toutatice',
+    'toutatice', 'laclasse',
 
     'none'
 ];
