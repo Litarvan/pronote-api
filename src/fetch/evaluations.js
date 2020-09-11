@@ -6,6 +6,10 @@ async function evaluations(session, period = null)
     const evaluations = await getEvaluations(session, getPeriodBy(session, period));
     const result = [];
 
+    if (!evaluations) {
+        return null;
+    }
+
     for (const evaluation of evaluations) {
         let subject = result.find(s => s.name === evaluation.subject.name);
         if (!subject) {

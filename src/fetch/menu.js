@@ -14,6 +14,10 @@ async function menu(session, from = new Date(), to = null)
     // eslint-disable-next-line no-unmodified-loop-condition
     while (date < to) {
         const menus = await getMenu(session, date);
+        if (!menus) {
+            return null;
+        }
+
         for (const menu of menus.menus) {
             if (menu.date < from || menu.date > to) {
                 continue;
