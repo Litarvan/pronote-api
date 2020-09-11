@@ -10,7 +10,7 @@ const CAS = [
 
     'agora06', 'arsene76',
 
-    'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme',
+    'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme', 'lyceeconnecte',
 
     'toutatice', 'laclasse',
 
