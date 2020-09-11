@@ -10,6 +10,10 @@ async function evaluations(session, user, period = null)
 
     const result = [];
 
+    if (!evaluations) {
+        return null;
+    }
+
     for (const evaluation of evaluations) {
         let subject = result.find(s => s.name === evaluation.subject.name);
         if (!subject) {
