@@ -3,7 +3,7 @@ const jsdom = require('jsdom');
 const http = require('../../http');
 const { getDOM, extractStart } = require('../api');
 
-async function login({ url, username, password, target })
+async function login({ url, account, username, password, target })
 {
     const location = await http({ url, followRedirects: 'get' });
 
@@ -11,9 +11,9 @@ async function login({ url, username, password, target })
     if (location.startsWith('http') && location.includes('service=')) {
         service = location.substring(location.indexOf('=') + 1);
     }
-    
+
     const jar = new jsdom.CookieJar();
-    
+
     await getDOM({
         url: `https://${target}/auth/login`,
         jar,
