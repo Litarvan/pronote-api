@@ -6,5 +6,5 @@ module.exports = (url, account, username, password) => openent({
     username,
     password,
 
-    target: 'enthdf.fr'
+    target: 'mon.lyceeconnecte.fr'
 });
