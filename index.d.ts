@@ -222,6 +222,12 @@ export class PronoteSession
     keepAlive(): Promise<void>
 
     /**
+     * Déconnecte la session de Pronote. Après l'appel de cette fonction, toute requête à Pronote sera
+     * refusée par ce dernier.
+     */
+    logout(): Promise<void>
+
+    /**
      * Active le maintien en vie de la session. Dès que ce paramètre est défini à `true`, l'API enverra
      * des requêtes de présence à Pronote à l'intervalle défini. Tant que ce paramètre n'est pas défini à `false`
      * le programme fermé, ou une erreur renvoyée, les requêtes continueront d'être envoyées et la session
