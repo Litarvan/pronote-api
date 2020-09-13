@@ -21,6 +21,10 @@ type Mutation {
     # This is in a mutation, because this is a request that send a keep alive to Pronote, not a value
     # It will always returns True
     keepAlive: Boolean!
+
+    # This is in a mutation, because this is a request that send a keep alive to Pronote, not a value
+    # It will always returns True
+    logout: Boolean!
 }
 
 type Lesson {
