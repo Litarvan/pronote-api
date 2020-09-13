@@ -3,7 +3,7 @@ const jsdom = require('jsdom');
 const { getDOM, submitForm, extractStart } = require('../api');
 const aten = require('./aten');
 
-async function login({ url, username, password, casUrl, idp, atenURL })
+async function login({ url, account, username, password, casUrl, idp, atenURL })
 {
     if (idp && !idp.includes('parent_eleve')) {
         idp += '_parent_eleve';
@@ -26,12 +26,12 @@ async function login({ url, username, password, casUrl, idp, atenURL })
             actionRoot: casUrl
         });
 
-        dom = await aten.submit({ dom, jar, username, password, atenURL });
+        await aten.submit({ dom, jar, username, password, atenURL });
     } else {
         dom.window.document.getElementById('username').value = username;
         dom.window.document.getElementById('password').value = password;
 
-        dom = await submitForm({
+        await submitForm({
             actionRoot: casUrl,
             dom,
             jar,
@@ -39,7 +39,7 @@ async function login({ url, username, password, casUrl, idp, atenURL })
         });
     }
 
-    return extractStart(dom);
+    return extractStart(await getDOM({ url: url + account.value + '.html', jar, asIs: true }));
 }
 
 module.exports = login;
