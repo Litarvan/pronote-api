@@ -7,6 +7,10 @@ function common(session) {
             await session.keepAlive();
             return true;
         },
+        logout: async () => {
+            await session.logout();
+            return true;
+        },
 
         setKeepAlive: async ({ enabled }) => {
             await session.setKeepAlive(enabled);

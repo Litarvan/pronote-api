@@ -3,7 +3,7 @@ const jsdom = require('jsdom');
 const http = require('../../http');
 const { getDOM, extractStart } = require('../api');
 
-async function login({ url, username, password, target })
+async function login({ url, account, username, password, target })
 {
     const location = await http({ url, followRedirects: 'get' });
 
@@ -12,17 +12,20 @@ async function login({ url, username, password, target })
         service = location.substring(location.indexOf('=') + 1);
     }
 
-    return extractStart(await getDOM({
+    const jar = new jsdom.CookieJar();
+
+    await getDOM({
         url: `https://${target}/auth/login`,
-        jar: new jsdom.CookieJar(),
+        jar,
         method: 'POST',
         data: {
             email: username,
             password,
             callback: `/cas/login?service=${service}`
-        },
-        asIs: true
-    }));
+        }
+    });
+
+    return extractStart(await getDOM({ url: url + account.value + '.html', jar, asIs: true }));
 }
 
 module.exports = login;

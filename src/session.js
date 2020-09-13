@@ -11,11 +11,15 @@ const homeworks = require('./fetch/homeworks');
 const menu = require('./fetch/menu');
 
 const keepAlive = require('./fetch/pronote/keepAlive');
+const logout = require('./fetch/pronote/logout');
 
 const DEFAULT_KEEP_ALIVE_RATE = 120; // In seconds. 120 is the Pronote default 'Presence' request rate.
+const GENERAL_REQUESTS = {
+    keepAlive, logout
+};
 const REQUESTS = {
     timetable, marks, evaluations, absences, contents,
-    infos, homeworks, menu, keepAlive
+    infos, homeworks, menu
 };
 
 class PronoteSession
@@ -34,6 +38,9 @@ class PronoteSession
         this.request = -1;
         this.isKeptAlive = false;
 
+        for (const [req, method] of Object.entries(GENERAL_REQUESTS)) {
+            this[req] = () => method(this);
+        }
         for (const [req, method] of Object.entries(REQUESTS)) {
             this[req] = (...args) => callRequest(method, this, args);
         }
