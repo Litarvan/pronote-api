@@ -13,7 +13,7 @@ async function login({ url, username, password, startURL, wayfURL, atenURL, extr
     });
 
     dom = await getDOM({
-        url: `${wayfURL}/WAYF`,
+        url: `${wayfURL}WAYF`,
         jar,
         data: { ...getParams(dom), ...extraParams },
         runScripts: true,
