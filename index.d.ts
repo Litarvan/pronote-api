@@ -288,6 +288,38 @@ export const casList: Array<string>;
  */
 export function getCAS(url: string): Promise<string | null>;
 
+// Données géographiques concernant un établissement.
+export interface EtablissementGeoData {
+    /**
+     * URL Pronote de l'établissement
+     */
+    url: string;
+    /**
+     * Nom de l'établissement
+     */
+    nomEtab: string;
+    /**
+     * Latitude de l'établissement
+     */
+    lat: string;
+    /**
+     * Longitude de l'établissement
+     */
+    long: string;
+    /**
+     * Code postal de l'établissement
+     */
+    cp: string;
+}
+
+/**
+ * Trouve les établissements à proximité des coordonnées géographiques données.
+ * 
+ * @param lat Latitude de la localisation
+ * @param long Longitude de la localisation
+ */
+export function geo(lat: number|string, long: number|string): Promise<EtablissementGeoData>;
+
 /**
  * Liste des erreurs pouvant être renvoyées par l'API.
  */
