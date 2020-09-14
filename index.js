@@ -1,5 +1,6 @@
 const { login } = require('./src/auth');
 const { list: casList, getCAS } = require('./src/cas');
+const geo = require('./src/geo');
 const errors = require('./src/errors');
 
 // -----------------------------------------------------------
@@ -34,6 +35,7 @@ module.exports = {
     login,
     casList,
     getCAS,
+    geo,
     errors,
 
     // Low-level API (you can use this if you need, but it may mean I've forgotten a use case, please open an issue!)
