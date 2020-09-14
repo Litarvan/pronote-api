@@ -1,4 +1,4 @@
-const https = require('https')
+const https = require('https');
 
 function geo(lat, long) {
     return new Promise((resolve, reject) => {
