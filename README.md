@@ -62,6 +62,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 - ENT "Somme" (CAS : somme)
 - ENT "Toutatice" (Rennes) (CAS : toutatice)
 - ENT "Île de France" (CAS : iledefrance)
+- ENT "Lycee Jean Renoir Munich" (CAS : ljr-munich)
 
 ## Utilisation
 
