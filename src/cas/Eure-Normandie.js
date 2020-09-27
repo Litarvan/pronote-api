@@ -7,5 +7,5 @@ module.exports = (url, account, username, password) => wayf({
     password,
 
     casUrl: 'cas.ent27.fr',
-    idp: 'idp-ATS'
+    idp: 'ATS'
 });
