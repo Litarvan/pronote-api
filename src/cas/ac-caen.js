@@ -6,7 +6,7 @@ module.exports = (url, account, username, password) => wayf({
     password,
 
     startURL: 'https://fip.itslearning.com/SP/bn/',
-    wayfURL: 'https://cas.itslearning.com/ds-bn/',
+    wayfURL: 'https://fip.itslearning.com/ds-bn/',
     atenURL: 'teleservices.ac-caen.fr',
 
     extraParams: {
