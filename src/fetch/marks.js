@@ -54,7 +54,12 @@ async function marks(session, user, period = null)
             res.average = mark.average;
         }
 
+        let idMarks = `${mark.date.valueOf()}_${subject.name}_${mark.title}`;
+        // eslint-disable-next-line require-unicode-regexp
+        idMarks = idMarks.replace(/[^a-z0-9_ \\s]/gi, '').replace(/[ \\s]/g, '-');
+
         subject.marks.push({
+            id: idMarks,
             title: mark.title,
             ...res,
             scale: mark.scale,

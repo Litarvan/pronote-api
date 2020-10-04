@@ -29,7 +29,13 @@ async function evaluations(session, user, period = null)
             result.push(subject);
         }
 
+        let idEvals = `${evaluation.date.valueOf()}_${subject.name}_${evaluation.name}`;
+        // eslint-disable-next-line require-unicode-regexp
+        idEvals = idEvals.replace(/[^a-z0-9_ \\s]/gi, '').replace(/[ \\s]/g, '-');
+
+
         subject.evaluations.push({
+            id: idEvals,
             name: evaluation.name,
             date: evaluation.date,
             coefficient: evaluation.coefficient,

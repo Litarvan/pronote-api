@@ -482,7 +482,7 @@ export interface EtablissementGeoData {
 
 /**
  * Trouve les établissements à proximité des coordonnées géographiques données.
- * 
+ *
  * @param lat Latitude de la localisation
  * @param long Longitude de la localisation
  */
@@ -740,6 +740,12 @@ export interface MarksSubjectAverages
  */
 export interface Mark
 {
+
+    /**
+     * ID de la note
+     */
+    id: string,
+
     /**
      * Description de la note
      */
@@ -817,6 +823,11 @@ export interface EvaluationsSubject
  */
 export interface Evaluation
 {
+    /**
+     * ID de l'évaluation
+     */
+    id: string,
+
     /**
      * Nom de l'évaluation
      */
@@ -1744,6 +1755,7 @@ export interface PronoteMarksSubject extends PronoteObject
 export interface PronoteMark extends PronoteObject
 {
     subject: PronoteObject, // service
+    id: string, //Id Notes
     title: string, // commentaire
     value: number, // note
     average: number, // moyenne
@@ -1759,6 +1771,7 @@ export interface PronoteMark extends PronoteObject
 
 export interface PronoteEvaluation extends PronoteObject
 {
+    id: string,
     title: string, // descriptif
     acquisitionLevels: Array<PronoteEvaluationAcquisitionLevel>, // listeNiveauxDAcquisitions
     levels: Array<PronoteObject>, // listePaliers
