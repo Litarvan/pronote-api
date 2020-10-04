@@ -66,6 +66,7 @@ type MarksSubjectAverages {
 }
 
 type Mark {
+    id: String!,
     title: String!,
     value: Float,
     scale: Float!,
@@ -85,6 +86,7 @@ type EvaluationSubject {
 }
 
 type Evaluation {
+    id: String!
     name: String!
     date: Date!
     coefficient: Float!
