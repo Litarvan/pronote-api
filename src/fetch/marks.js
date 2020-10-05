@@ -14,10 +14,10 @@ async function marks(session, period = null)
     }
 
     if (marks.studentAverage) {
-        result.averages.student = marks.studentAverage / marks.studentAverageScale * 20;
+        result.averages.student = Number((marks.studentAverage / marks.studentAverageScale * 20).toFixed(2));
     }
     if (marks.studentClassAverage) {
-        result.averages.studentClass = marks.studentClassAverage;
+        result.averages.studentClass = Number(marks.studentClassAverage.toFixed(2));
     }
 
     for (const subject of marks.subjects.sort((a, b) => a.order - b.order)) {
