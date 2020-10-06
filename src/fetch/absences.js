@@ -11,7 +11,7 @@ async function absences(session, user, period = null, from = null, to = null)
         totals: []
     };
 
-    const p = getPeriodBy(session, !period && from && to ? 'Trimestre 1' : period);
+    const p = getPeriodBy(session, !period && !type && from && to ? 'Trimestre 1' : period, type);
     const absences = await getAbsences(session, user, p, from || p.from, to || p.to);
     if (!absences) {
         return null;
