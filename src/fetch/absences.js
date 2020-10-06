@@ -1,7 +1,7 @@
 const { getPeriodBy } = require('../data/periods');
 const getAbsences = require('./pronote/absences');
 
-async function absences(session, user, period = null, from = null, to = null, type = null)
+async function absences(session, user, period = null, from = null, to = null)
 {
     const result = {
         absences: [],
@@ -11,7 +11,7 @@ async function absences(session, user, period = null, from = null, to = null, ty
         totals: []
     };
 
-    const p = getPeriodBy(session, !period && !type && from && to ? 'Trimestre 1' : period, type);
+    const p = getPeriodBy(session, !period && from && to ? 'Trimestre 1' : period);
     const absences = await getAbsences(session, user, p, from || p.from, to || p.to);
     if (!absences) {
         return null;

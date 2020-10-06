@@ -1,9 +1,9 @@
 const { getPeriodBy } = require('../data/periods');
 const getMarks = require('./pronote/marks');
 
-async function marks(session, user, period = null, type = null)
+async function marks(session, user, period = null)
 {
-    const marks = await getMarks(session, user, getPeriodBy(session, period, type));
+    const marks = await getMarks(session, user, getPeriodBy(session, period));
     if (!marks) {
         return null;
     }
@@ -14,10 +14,10 @@ async function marks(session, user, period = null, type = null)
     };
 
     if (marks.studentAverage) {
-        result.averages.student = Number((marks.studentAverage / marks.studentAverageScale * 20).toFixed(2));
+        result.averages.student = marks.studentAverage / marks.studentAverageScale * 20;
     }
     if (marks.studentClassAverage) {
-        result.averages.studentClass = Number(marks.studentClassAverage.toFixed(2));
+        result.averages.studentClass = marks.studentClassAverage;
     }
 
     for (const subject of marks.subjects.sort((a, b) => a.order - b.order)) {
