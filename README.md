@@ -94,8 +94,8 @@ async function main()
     console.log(`L'élève a ${timetable.length} cours aujourd'hui`); 
     console.log(`et a pour l'instant une moyenne de ${marks.averages.student} ce trimestre.`);
     
-    // etc. les fonctions utilisables sont 'timetable', 'marks', 'contents', 'evaluations', 'absences',
-    // 'infos', et 'menu', sans oublier les champs 'user' et 'params' qui regorgent d'informations.
+    // etc. les fonctions utilisables sont 'timetable', 'marks', 'contents', 'evaluations', 'absences', 
+    // 'homeworks', 'infos', et 'menu', sans oublier les champs 'user' et 'params' qui regorgent d'informations.
 }
 
 main().catch(err => {
