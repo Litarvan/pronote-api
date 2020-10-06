@@ -1,9 +1,9 @@
 const { getPeriodBy } = require('../data/periods');
 const getMarks = require('./pronote/marks');
 
-async function marks(session, period = null)
+async function marks(session, period = null, type = null)
 {
-    const marks = await getMarks(session, getPeriodBy(session, period));
+    const marks = await getMarks(session, getPeriodBy(session, period, type));
     const result = {
         subjects: [],
         averages: {}
