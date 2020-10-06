@@ -1,9 +1,9 @@
 const { getPeriodBy } = require('../data/periods');
 const getEvaluations = require('./pronote/evaluations');
 
-async function evaluations(session, user, period = null, type = null)
+async function evaluations(session, user, period = null)
 {
-    const evaluations = await getEvaluations(session, user, getPeriodBy(session, period, type));
+    const evaluations = await getEvaluations(session, user, getPeriodBy(session, period));
     if (!evaluations) {
         return null;
     }
