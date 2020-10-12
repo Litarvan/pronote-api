@@ -7,6 +7,7 @@ const CAS = [
     'ac-grenoble', 'ac-lille', 'ac-limoges', 'ac-lyon', 'ac-montpellier',
     'ac-nancy-metz', 'ac-nantes', 'ac-orleans-tours', 'ac-poitiers',
     'ac-reims', 'ac-rouen', 'ac-strasbourg', 'ac-toulouse', 'Eure-Normandie',
+    'portail-famille',
 
     'agora06', 'arsene76',
 
