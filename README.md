@@ -36,7 +36,8 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
 
 - Académie d'Orleans-Tours (CAS : ac-orleans-tours)
 - Académie de Besançon (CAS : ac-besancon)
-- Académie de Bordeaux (CAS : ac-bordeaux)
+- Académie de Bordeaux (CAS : ac-bordeaux) (bv.ac-bordeaux.fr)
+- Académie de Bordeaux 2 (CAS : ac-bordeaux2) (idp-fim-ts.ac-bordeaux.fr)
 - Académie de Caen (CAS : ac-caen)
 - Académie de Clermont-Ferrand (CAS : ac-clermont)
 - Académie de Dijon (CAS : ac-dijon)
