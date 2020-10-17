@@ -1,7 +1,7 @@
 const { getPeriodBy } = require('../data/periods');
 const getAbsences = require('./pronote/absences');
 
-async function absences(session, user, period = null, from = null, to = null)
+async function absences(session, user, period = null, from = null, to = null, type = null)
 {
     const result = {
         absences: [],
