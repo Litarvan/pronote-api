@@ -9,6 +9,15 @@ async function getUser(session)
     const { donnees: user } = await request(session, 'ParametresUtilisateur');
     const { data, authorizations } = getSpecificData(session, user);
 
+    /** Correct avatar path for parent mode **/
+    if (data.students) {
+      data.students.forEach(student => {
+        if (student.avatar) {
+            student.avatar = getFileURL(session, { id: student.id, name: 'photo.jpg' });
+        }
+      })
+    }
+
     const res = user.ressource;
     const aut = user.autorisations;
 
@@ -105,7 +114,7 @@ function getStudent(session, res)
 {
     const avatar = {};
     if (res.avecPhoto) {
-        // TODO: Currently broken for everything but students accounts, investigate why
+        // only for student mode
         avatar.avatar = getFileURL(session, {
             id: res.N,
             name: 'photo.jpg'
