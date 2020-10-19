@@ -5,15 +5,15 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'PageCahierDeTexte';
 const TAB_ID = 89;
-const ACCOUNTS = ['student'];
+const ACCOUNTS = ['student', 'parent'];
 
-async function getContents(session, fromWeek = 1, toWeek = null)
+async function getContents(session, user, fromWeek = 1, toWeek = null)
 {
     if (!toWeek || toWeek < fromWeek) {
         toWeek = fromWeek;
     }
 
-    const contents = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const contents = await navigate(session, user, PAGE_NAME, TAB_ID, ACCOUNTS, {
         domaine: {
             _T: 8,
             V: `[${fromWeek}..${toWeek}]`

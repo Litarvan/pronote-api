@@ -4,7 +4,7 @@ const fromHTML = require('../data/html');
 
 const getContents = require('./pronote/contents');
 
-async function contents(session, from = new Date(), to = null)
+async function contents(session, user, from = new Date(), to = null)
 {
     if (!to || to < from) {
         to = new Date(from.getTime());
@@ -14,7 +14,7 @@ async function contents(session, from = new Date(), to = null)
     const fromWeek = toPronoteWeek(session, from);
     const toWeek = toPronoteWeek(session, to);
 
-    const contents = await getContents(session, fromWeek, toWeek);
+    const contents = await getContents(session, user, fromWeek, toWeek);
     if (!contents) {
         return null;
     }

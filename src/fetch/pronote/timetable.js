@@ -5,12 +5,12 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'PageEmploiDuTemps';
 const TAB_ID = 16;
-const ACCOUNTS = ['student'];
+const ACCOUNTS = ['student', 'parent'];
 
-async function getTimetable(session, week)
+async function getTimetable(session, user, week)
 {
     const student = toPronote(session.user);
-    const timetable = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const timetable = await navigate(session, user, PAGE_NAME, TAB_ID, ACCOUNTS, {
         avecAbsencesEleve: false, // TODO: Test what those parameters do
         avecAbsencesRessource: true,
         avecConseilDeClasse: true,
@@ -57,9 +57,9 @@ async function getTimetable(session, week)
     };
 }
 
-async function getFilledDaysAndWeeks(session)
+async function getFilledDaysAndWeeks(session, user)
 {
-    const daysData = await navigate(session, PAGE_NAME + '_DomainePresence', TAB_ID, ACCOUNTS, {
+    const daysData = await navigate(session, user, PAGE_NAME + '_DomainePresence', TAB_ID, ACCOUNTS, {
         Ressource: toPronote(session.user)
     });
 

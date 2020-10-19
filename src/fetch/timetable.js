@@ -1,16 +1,16 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFilledDaysAndWeeks, getTimetable } = require('./pronote/timetable');
 
-async function timetable(session, from = new Date(), to = null)
+async function timetable(session, user, from = new Date(), to = null)
 {
     if (!to || to < from) {
         to = new Date(from.getTime());
         to.setDate(to.getDate() + 1);
     }
 
-    const filled = await getFilledDaysAndWeeks(session);
+    const filled = await getFilledDaysAndWeeks(session, user);
     if (!filled) {
-        return [];
+        return null;
     }
 
     const fromWeek = toPronoteWeek(session, from);
@@ -23,7 +23,7 @@ async function timetable(session, from = new Date(), to = null)
 
     const result = [];
     for (const week of weeks) {
-        const timetable = await getTimetable(session, week);
+        const timetable = await getTimetable(session, user, week);
         const lessons = getTimetableWeek(session, timetable);
 
         lessons.filter(l => l.from >= from && l.from <= to).forEach(lesson => {

@@ -14,16 +14,28 @@ const [,, url, username, password, cas = 'none', accountType] = process.argv;
 
 async function fetch()
 {
-    const session = await pronote.login(url, username, password, cas, accountType);
-    console.log(`Logged as '${session.user.name}' (${session.user.studentClass.name})`);
-
-    let from = new Date();
-    if (from < session.params.firstDay) {
-        from = session.params.firstDay;
+    let result;
+    switch (accountType)
+    {
+    case 'parent':
+        result = await parent();
+        break;
+    default:
+        result = await student();
+        break;
     }
 
-    const to = new Date(from.getTime());
-    to.setDate(to.getDate() + 15);
+    await fs.writeFile('result.json', JSON.stringify(result, null, 4));
+
+    console.log('Wrote \'result.json\'');
+}
+
+async function student()
+{
+    const session = await pronote.login(url, username, password, cas);
+    console.log(`Logged as student '${session.user.name}' (${session.user.studentClass.name})`);
+
+    const { from, to } = getFetchDate(session);
 
     const timetable = await session.timetable(from, to);
     const marks = await session.marks();
@@ -34,7 +46,7 @@ async function fetch()
     const homeworks = await session.homeworks(from, to);
     const menu = await session.menu(from, to);
 
-    const result = {
+    return {
         name: session.user.name,
         studentClass: session.user.studentClass.name,
         avatar: session.user.avatar,
@@ -42,10 +54,55 @@ async function fetch()
         timetable, marks, evaluations, absences,
         infos, contents, homeworks, menu
     };
+}
 
-    await fs.writeFile('result.json', JSON.stringify(result, null, 4));
+async function parent()
+{
+    const session = await pronote.loginParent(url, username, password, cas);
+    console.log(`Logged as parent '${session.user.name}' (${session.user.students.length} students)`);
 
-    console.log('Wrote \'result.json\'');
+    const { from, to } = getFetchDate(session);
+
+    const students = [];
+    for (const student of session.user.students) {
+        console.log(`Fetching data of user '${student.name}' (${student.studentClass.name})`);
+
+        const timetable = await session.timetable(student, from, to);
+        const marks = await session.marks(student);
+        const evaluations = await session.evaluations(student);
+        const absences = await session.absences(student);
+        const infos = await session.infos(student);
+        const contents = await session.contents(student, from, to);
+        const homeworks = await session.homeworks(student, from, to);
+        const menu = await session.menu(student, from, to);
+
+        students.push({
+            name: student.name,
+            studentClass: student.studentClass.name,
+            avatar: student.avatar,
+
+            timetable, marks, evaluations, absences,
+            infos, contents, homeworks, menu
+        });
+    }
+
+    return {
+        name: session.user.name,
+        students
+    };
+}
+
+function getFetchDate(session)
+{
+    let from = new Date();
+    if (from < session.params.firstDay) {
+        from = session.params.firstDay;
+    }
+
+    const to = new Date(from.getTime());
+    to.setDate(to.getDate() + 15);
+
+    return { from, to };
 }
 
 fetch().catch(err => {

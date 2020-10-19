@@ -1,17 +1,17 @@
 const { getPeriodBy } = require('../data/periods');
 const getMarks = require('./pronote/marks');
 
-async function marks(session, period = null, type = null)
+async function marks(session, user, period = null, type = null)
 {
-    const marks = await getMarks(session, getPeriodBy(session, period, type));
+    const marks = await getMarks(session, user, getPeriodBy(session, period, type));
+    if (!marks) {
+        return null;
+    }
+
     const result = {
         subjects: [],
         averages: {}
     };
-
-    if (!marks) {
-        return result;
-    }
 
     if (marks.studentAverage) {
         result.averages.student = Number((marks.studentAverage / marks.studentAverageScale * 20).toFixed(2));

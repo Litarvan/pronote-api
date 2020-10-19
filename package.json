@@ -1,6 +1,6 @@
 {
     "name": "pronote-api",
-    "version": "2.1.4-beta.0",
+    "version": "2.2.0",
     "description": "Pronote 2020/2021 API (Node.JS/TS library, and GraphQL server)",
     "main": "index.js",
     "types": "index.d.ts",
@@ -12,7 +12,7 @@
         "start": "node ./bin/server.js",
         "lint": "eslint src/* bin/* index.js",
         "check": "eslint --fix src/* bin/* index.js",
-        "test": "eslint src/* bin* index.js && node ./bin/fetch.js https://demo.index-education.net/pronote/ demonstration pronotevs"
+        "test": "eslint src/* bin* index.js && node ./bin/test.js"
     },
     "keywords": [
         "pronote",

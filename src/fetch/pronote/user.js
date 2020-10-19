@@ -7,44 +7,14 @@ const { fromPronote } = require('../../data/objects');
 async function getUser(session)
 {
     const { donnees: user } = await request(session, 'ParametresUtilisateur');
+    const { data, authorizations } = getSpecificData(session, user);
 
     const res = user.ressource;
-    const establishment = parse(res.Etablissement);
-
-    const avatar = {};
-    if (res.avecPhoto) {
-        avatar.avatar = getFileURL(session, {
-            id: res.N,
-            name: 'photo.jpg'
-        });
-    }
+    const aut = user.autorisations;
 
     return {
-        id: res.N,
-        name: res.L,
-        establishment,
-        ...avatar,
-        studentClass: fromPronote(res.classeDEleve),
-        classHistory: parse(res.listeClassesHistoriques, ({ AvecNote, AvecFiliere }) => ({
-            hadMarks: AvecNote,
-            hadOptions: AvecFiliere
-        })),
-        groups: parse(res.listeGroupes),
-        tabsPillars: parse(res.listeOngletsPourPiliers, ({ listePaliers }) => ({
-            levels: parse(listePaliers, ({ listePiliers }) => ({
-                pillars: parse(listePiliers, ({ estPilierLVE, estSocleCommun, Service }) => ({
-                    isForeignLanguage: estPilierLVE,
-                    isCoreSkill: estSocleCommun,
-                    subject: Service && parse(Service)
-                }))
-            }))
-        }), 'tab'),
-        tabsPeriods: parse(res.listeOngletsPourPeriodes, ({ listePeriodes, periodeParDefaut }) => ({
-            periods: parse(listePeriodes, ({ GenreNotation }) => ({
-                isCorePeriod: GenreNotation === 1
-            })),
-            defaultPeriod: parse(periodeParDefaut)
-        }), 'tab'),
+        ...fromPronote(res),
+        ...data,
         establishmentsInfo: parse(user.listeInformationsEtablissements, ({ Logo, Coordonnees }) => ({
             logoID: parse(Logo),
             address: [Coordonnees.Adresse1, Coordonnees.Adresse2],
@@ -75,18 +45,18 @@ async function getUser(session)
             twitterManagement: user.autorisationsSession.fonctionnalites.gestionTwitter,
             expandedAttestation: user.autorisationsSession.fonctionnalites.attestationEtendue
         },
-        authorizations: (a => ({
-            discussions: a.AvecDiscussion,
-            teachersDiscussions: a.AvecDiscussionProfesseurs,
-            timetableVisibleWeeks: parse(a.cours.domaineConsultationEDT),
-            canEditLessons: parse(a.cours.domaineModificationCours),
-            hideClassParts: a.cours.masquerPartiesDeClasse,
-            maxEstablishmentFileSize: a.tailleMaxDocJointEtablissement,
-            maxUserWorkFileSize: a.tailleMaxRenduTafEleve,
-            hasPassword: a.compte.avecSaisieMotDePasse,
-            hasPersonalInfo: a.compte.avecInformationsPersonnelles,
-            canPrint: a.autoriserImpression
-        }))(user.autorisations),
+        authorizations: {
+            discussions: aut.AvecDiscussion,
+            teachersDiscussions: aut.AvecDiscussionProfesseurs,
+            timetableVisibleWeeks: parse(aut.cours.domaineConsultationEDT),
+            canEditLessons: parse(aut.cours.domaineModificationCours),
+            hideClassParts: aut.cours.masquerPartiesDeClasse,
+            maxEstablishmentFileSize: aut.tailleMaxDocJointEtablissement,
+            editPassword: aut.compte.avecSaisieMotDePasse,
+            editPersonalInfo: aut.compte.avecInformationsPersonnelles,
+            canPrint: aut.autoriserImpression,
+            ...authorizations
+        },
         minPasswordSize: user.reglesSaisieMDP.min,
         maxPasswordSize: user.reglesSaisieMDP.max,
         passwordRules: parse(user.reglesSaisieMDP.regles),
@@ -100,6 +70,114 @@ async function getUser(session)
 function parseTab({ G: id, Onglet: subs })
 {
     return { id, subs: (subs || []).map(parseTab) };
+}
+
+function getSpecificData(session, data)
+{
+    switch (session.type.name)
+    {
+    case 'student':
+        return getStudentData(session, data);
+    case 'parent':
+        return getParentData(session, data);
+    case 'teacher':
+
+        break;
+    case 'administration':
+
+        break;
+    default:
+        return {};
+    }
+}
+
+function getStudentData(session, data)
+{
+    return {
+        data: getStudent(session, data.ressource),
+        authorizations: {
+            maxUserWorkFileSize: data.autorisations.tailleMaxRenduTafEleve
+        }
+    };
+}
+
+function getStudent(session, res)
+{
+    const avatar = {};
+    if (res.avecPhoto) {
+        avatar.avatar = getFileURL(session, {
+            id: res.N,
+            name: 'photo.jpg'
+        });
+    }
+
+    return {
+        ...fromPronote(res),
+        establishment: parse(res.Etablissement),
+        ...avatar,
+        studentClass: fromPronote(res.classeDEleve),
+        classHistory: parse(res.listeClassesHistoriques, ({ AvecNote, AvecFiliere }) => ({
+            hadMarks: AvecNote,
+            hadOptions: AvecFiliere
+        })),
+        groups: parse(res.listeGroupes),
+        tabsPillars: parse(res.listeOngletsPourPiliers, ({ listePaliers }) => ({
+            levels: parse(listePaliers, ({ listePiliers }) => ({
+                pillars: parse(listePiliers, ({ estPilierLVE, estSocleCommun, Service }) => ({
+                    isForeignLanguage: estPilierLVE,
+                    isCoreSkill: estSocleCommun,
+                    subject: Service && parse(Service)
+                }))
+            }))
+        }), 'tab'),
+        tabsPeriods: parse(res.listeOngletsPourPeriodes, ({ listePeriodes, periodeParDefaut }) => ({
+            periods: parse(listePeriodes, ({ GenreNotation }) => ({
+                isCorePeriod: GenreNotation === 1
+            })),
+            defaultPeriod: parse(periodeParDefaut)
+        }), 'tab')
+    };
+}
+
+function getParentData(session, data)
+{
+    const res = data.ressource;
+    const aut = data.autorisations;
+
+    return {
+        data: {
+            isDelegate: res.estDelegue,
+            isBDMember: res.estMembreCA,
+            canDiscussWithManagers: res.avecDiscussionResponsables,
+            absencesReasons: parse(data.listeMotifsAbsences),
+            delaysReasons: parse(data.listeMotifsRetards),
+            classDelegates: parse(res.listeClassesDelegue),
+            students: res.listeRessources.map(r => fromPronote(r, ({ listeSessions }) => ({
+                ...getStudent(session, r),
+                sessions: parse(listeSessions, ({ date, strHeureDebut, strHeureFin }) => ({
+                    from: getDateWithHours(parse(date), strHeureDebut),
+                    to: getDateWithHours(parse(date), strHeureFin)
+                }))
+            })))
+        },
+        authorizations: {
+            staffDiscussion: aut.AvecDiscussionPersonnels,
+            parentsDiscussion: aut.AvecDiscussionParents,
+            editStudentPassword: aut.compte.avecSaisieMotDePasseEleve,
+            editCoordinates: aut.compte.avecSaisieInfosPersoCoordonnees,
+            editAuthorizations: aut.compte.avecSaisieInfosPersoAutorisations
+        }
+    };
+}
+
+function getDateWithHours(date, hours)
+{
+    const h = hours.indexOf('h');
+
+    date.setHours(date.getHours() + ~~hours.substring(0, h));
+    date.setMinutes(date.getMinutes() + ~~hours.substring(h));
+
+    return date;
 }
 
 module.exports = getUser;

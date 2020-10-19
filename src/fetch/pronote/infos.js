@@ -3,11 +3,11 @@ const navigate = require('./navigate');
 
 const PAGE_NAME = 'PageActualites';
 const TAB_ID = 8;
-const ACCOUNTS = ['student'];
+const ACCOUNTS = ['student', 'parent'];
 
-async function getInfos(session)
+async function getInfos(session, user)
 {
-    const infos = await navigate(session, PAGE_NAME, TAB_ID, ACCOUNTS, {
+    const infos = await navigate(session, user, PAGE_NAME, TAB_ID, ACCOUNTS, {
         estAuteur: false
     });
 

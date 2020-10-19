@@ -6,15 +6,14 @@ const CAS = [
     'ac-besancon', 'ac-bordeaux', 'ac-bordeaux2', 'ac-caen', 'ac-clermont', 'ac-dijon',
     'ac-grenoble', 'ac-lille', 'ac-limoges', 'ac-lyon', 'ac-montpellier',
     'ac-nancy-metz', 'ac-nantes', 'ac-orleans-tours', 'ac-poitiers',
-    'ac-reims', 'ac-rouen', 'ac-strasbourg', 'ac-toulouse', 'Eure-Normandie',
-    'portail-famille',
+    'ac-reims', 'ac-rouen', 'ac-strasbourg', 'ac-toulouse',
 
     'agora06', 'arsene76',
 
-    'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme', 'lyceeconnecte', 'ljr-munich',
-    'parisclassenumerique',
+    'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme', 'eure-normandie',
+    'parisclassenumerique', 'ljr-munich',
 
-    'toutatice', 'laclasse',
+    'toutatice', 'laclasse', 'lyceeconnecte', 'portail-famille',
 
     'none'
 ];

@@ -1,6 +1,6 @@
 const getMenu = require('./pronote/menu');
 
-async function menu(session, from = new Date(), to = null)
+async function menu(session, user, from = new Date(), to = null)
 {
     if (!to || to < from) {
         to = new Date(from.getTime());
@@ -13,7 +13,7 @@ async function menu(session, from = new Date(), to = null)
 
     // eslint-disable-next-line no-unmodified-loop-condition
     while (date < to) {
-        const menus = await getMenu(session, date);
+        const menus = await getMenu(session, user, date);
         if (!menus) {
             return null;
         }

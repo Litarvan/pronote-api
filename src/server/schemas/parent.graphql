@@ -1,0 +1,39 @@
+extend type Query {
+    timetable(student: String!, from: Date, to: Date): [Lesson!]
+    marks(student: String!, period: String): Marks
+    evaluations(student: String!, period: String): [EvaluationSubject!]
+    absences(student: String!, period: String, from: Date, to: Date): Absences
+    infos(student: String!): [Info!]
+    contents(student: String!, from: Date, to: Date): [LessonContent!]
+    homeworks(student: String!, from: Date, to: Date): [Homework!]
+    menu(student: String!, from: Date, to: Date): [MenuDay!]
+}
+
+extend type PronoteUser {
+    isDelegate: Boolean!
+    isBDMember: Boolean!
+    canDiscussWithManagers: Boolean!
+    absencesReasons: [PronoteNamedObject!]!
+    delaysReasons: [PronoteNamedObject!]!
+    classDelegates: [PronoteNamedObject!]!
+    students: [PronoteStudent!]!
+}
+
+extend type PronoteUserAuthorizations {
+    staffDiscussion: Boolean!
+    parentsDiscussion: Boolean!
+    editStudentPassword: Boolean!
+    editCoordinates: Boolean!
+    editAuthorizations: Boolean!
+}
+
+type PronoteStudent {
+    name: String!
+    establishment: PronoteNamedObject!
+    avatar: String
+    studentClass: PronoteNamedObject!
+    classHistory: [PronoteClassHistoryElement!]!
+    groups: [PronoteNamedObject!]!
+    tabsPillars: [PronoteTabPillars!]!
+    tabsPeriods: [PronoteTabPeriods!]!
+}

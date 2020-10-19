@@ -1,29 +1,22 @@
-const path = require('path');
-
-const fs = require('fs').promises;
-const { graphql, buildSchema } = require('graphql');
+const { graphql } = require('graphql');
 
 const http = require('./http');
 const context = require('./context');
-const date = require('./date');
+const getSchemas = require('./schemas');
 const { login, logout, getSession } = require('./auth');
 
 async function start(host, port)
 {
-    const file = path.join(__dirname, 'schema.graphql');
-    const content = await fs.readFile(file);
-    const schema = buildSchema(content.toString());
-
-    Object.assign(schema._typeMap.Date, date);
+    const schemas = await getSchemas();
 
     await http(host, port, {
-        graphql: ({ query, variables }, token) => handle(token, schema, query, context, variables),
+        graphql: ({ query, variables }, token) => handle(token, schemas, query, context, variables),
         login: params => login(params),
         logout: (_, token) => logout(token)
     });
 }
 
-async function handle(token, schema, query, context, variables)
+async function handle(token, schemas, query, context, variables)
 {
     if (!token) {
         throw {
@@ -40,15 +33,15 @@ async function handle(token, schema, query, context, variables)
     }
 
     const session = getSession(token);
-
-    if (session) {
-        return await graphql(schema, query, context(session), null, variables);
+    if (!session) {
+        throw {
+            http: 401,
+            message: 'Unknown session token'
+        };
     }
 
-    throw {
-        http: 401,
-        message: 'Unknown session token'
-    };
+    const schema = schemas[session.type.name];
+    return await graphql(schema, query, context(session), null, variables);
 }
 
 module.exports = start;

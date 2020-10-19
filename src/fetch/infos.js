@@ -3,14 +3,14 @@ const fromHTML = require('../data/html');
 
 const getInfos = require('./pronote/infos');
 
-async function infos(session)
+async function infos(session, user)
 {
-    const infos = await getInfos(session);
-    const result = [];
-
+    const infos = await getInfos(session, user);
     if (!infos) {
-        return result;
+        return null;
     }
+
+    const result = [];
 
     for (const info of infos.infos)
     {
