@@ -56,7 +56,7 @@ function getServer(url)
 
 async function getStart(url, username, password, casName, type)
 {
-    if (casName === 'names' || casName === 'getCAS') {
+    if (casName === 'names' || casName === 'getCAS' || !cas[casName]) {
         throw errors.UNKNOWN_CAS.drop(casName);
     }
 
