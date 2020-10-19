@@ -24,7 +24,7 @@ async function getTimetable(session, user, week)
         Ressource: student
     });
 
-    if (!timetable) {
+    if (!timetable || !timetable.ListeCours) {
         return null;
     }
 

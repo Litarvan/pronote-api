@@ -453,8 +453,10 @@ export const casList: Array<string>;
  * Tente de trouver le nom de CAS associé à l'URL de l'instance Pronote donnée. Renvoie `null` si introuvable.
  *
  * @param url L'URL de l'instance Pronote dont laquelle trouver le CAS par lequel il faut passer pour s'y connecter.
+ *
+ * @return Le nom du CAS à mettre, ou une liste des noms des CAS possibles, ou `null` si introuvable.
  */
-export function getCAS(url: string): Promise<string | null>;
+export function getCAS(url: string): Promise<string | string[] | null>;
 
 // Données géographiques concernant un établissement.
 export interface EtablissementGeoData {
