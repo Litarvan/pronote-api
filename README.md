@@ -24,7 +24,7 @@ Disponible en tant que :
 - Informations
 - Menu de la cantine
 
-À chaque fois, il est possible de choisir quelle période voire quel intervalle de jours récupérer précisément.
+À chaque fois, il est possible de choisir quelle période voire quelle intervalle de jours récupérer précisément.
 
 ## Comptes région supportés
 
@@ -68,7 +68,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
     - ENT "Île de France" (CAS : iledefrance)
     - ENT "Paris Classe Numerique" (CAS : parisclassenumerique)
     - ENT "Lycee Jean Renoir Munich" (CAS : ljr-munich)
-    - ENT "L'eure en Normandie" (CAS : Eure-Normandie)
+    - ENT "L'Eure en Normandie" (CAS : eure-normandie)
 </details>
 
 
