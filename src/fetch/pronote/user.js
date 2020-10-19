@@ -9,15 +9,6 @@ async function getUser(session)
     const { donnees: user } = await request(session, 'ParametresUtilisateur');
     const { data, authorizations } = getSpecificData(session, user);
 
-    /** Correct avatar path for parent mode **/
-    if (data.students) {
-      data.students.forEach(student => {
-        if (student.avatar) {
-            student.avatar = getFileURL(session, { id: student.id, name: 'photo.jpg' });
-        }
-      })
-    }
-
     const res = user.ressource;
     const aut = user.autorisations;
 
@@ -114,7 +105,6 @@ function getStudent(session, res)
 {
     const avatar = {};
     if (res.avecPhoto) {
-        // only for student mode
         avatar.avatar = getFileURL(session, {
             id: res.N,
             name: 'photo.jpg'
@@ -162,8 +152,8 @@ function getParentData(session, data)
             absencesReasons: parse(data.listeMotifsAbsences),
             delaysReasons: parse(data.listeMotifsRetards),
             classDelegates: parse(res.listeClassesDelegue),
-            students: res.listeRessources.map(r => fromPronote(r, ({ listeSessions, ...user }) => ({
-                ...getStudent(session, user),
+            students: res.listeRessources.map(r => fromPronote(r, ({ listeSessions }) => ({
+                ...getStudent(session, r),
                 sessions: parse(listeSessions, ({ date, strHeureDebut, strHeureFin }) => ({
                     from: getDateWithHours(parse(date), strHeureDebut),
                     to: getDateWithHours(parse(date), strHeureFin)
