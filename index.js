@@ -20,6 +20,7 @@ const getInfos = require('./src/fetch/pronote/infos');
 const getContents = require('./src/fetch/pronote/contents');
 const getHomeworks = require('./src/fetch/pronote/homeworks');
 const getMenu = require('./src/fetch/pronote/menu');
+const getFiles = require('./src/fetch/pronote/files')
 
 const navigate = require('./src/fetch/pronote/navigate');
 const keepAlive = require('./src/fetch/pronote/keepAlive');
@@ -57,6 +58,7 @@ module.exports = {
     fetchContents: getContents,
     fetchHomeworks: getHomeworks,
     fetchMenu: getMenu,
+    fetchFiles: getFiles,
 
     navigate,
     keepAlive,

@@ -9,6 +9,7 @@ const infos = require('./fetch/infos');
 const contents = require('./fetch/contents');
 const homeworks = require('./fetch/homeworks');
 const menu = require('./fetch/menu');
+const files = require('./fetch/files');
 
 const keepAlive = require('./fetch/pronote/keepAlive');
 const logout = require('./fetch/pronote/logout');
@@ -19,7 +20,7 @@ const GENERAL_REQUESTS = {
 };
 const REQUESTS = {
     timetable, marks, evaluations, absences, contents,
-    infos, homeworks, menu
+    infos, homeworks, menu, files
 };
 
 class PronoteSession

@@ -207,7 +207,7 @@ export class PronoteStudentSession extends PronoteSession
      * @param from La date à partir de laquelle récupérer le contenu des cours. Par défaut la Date actuelle
      * @param to La date jusqu'à laquelle récupérer le contenu des cours. Par défaut 'from' + 1 jour
      *
-     * @return La liste des devoirs situés entre les deux dates données. Si l'onglet du contenu des cours n'est
+     * @return La liste des leçons situés entre les deux dates données. Si l'onglet du contenu des cours n'est
      * pas disponible, `null` sera renvoyé.
      */
     contents(from?: Date, to?: Date): Promise<Array<LessonContent> | null>
@@ -246,6 +246,15 @@ export class PronoteStudentSession extends PronoteSession
      * disponible, `null` sera renvoyé.
      */
     menu(from?: Date, to?: Date): Promise<Array<MenuDay> | null>
+
+    /**
+     * Récupère les fichier publiés sur votre pronote depuis le début de l'années
+     * du plus récent au ancien.
+     * 
+     * @return La liste des fichier publiés depuis le début de l'année. Si l'onglet des fichiers n'est pas
+     * disponible, `null` sera renvoyé.
+     */
+    files(): Promise<Array<File> | null>
 }
 
 /**
@@ -1254,6 +1263,14 @@ export interface Homework
 export interface File
 {
     /**
+     * Date à laquelle le fichier a été mis en ligne
+     */
+    time: Date,
+    /**
+     * Nom de la matière
+     */
+    subject: string,
+    /**
      * Nom du fichier avec son extension
      */
     name: string,
@@ -1333,6 +1350,7 @@ export function fetchInfos(session: PronoteSession): Promise<PronoteInfos>;
 export function fetchContents(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<PronoteLessonsContents>;
 export function fetchHomeworks(session: PronoteSession, fromWeek?: number, toWeek?: number): Promise<Array<PronoteHomework>>;
 export function fetchMenu(session: PronoteSession, date?: Date): Promise<PronoteMenu>;
+export function fetchFiles(session: PronoteSession);
 
 export function navigate(session: PronoteSession, page: string, tab: number, data?: any): Promise<any>;
 export function keepAlive(session: PronoteSession): Promise<void>;
