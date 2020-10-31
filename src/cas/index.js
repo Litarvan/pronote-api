@@ -8,7 +8,7 @@ const CAS = [
     'ac-nancy-metz', 'ac-nantes', 'ac-orleans-tours', 'ac-poitiers',
     'ac-reims', 'ac-rouen', 'ac-strasbourg', 'ac-toulouse',
 
-    'agora06', 'arsene76',"atrium-sud",
+    'agora06', 'arsene76', 'atrium-sud',
 
     'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme', 'eure-normandie',
     'parisclassenumerique', 'ljr-munich',

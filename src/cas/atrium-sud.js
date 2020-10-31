@@ -1,11 +1,11 @@
 const jsdom = require('jsdom');
-const { getDOM, extractStart } = require('./api');;
+const { getDOM, extractStart } = require('./api');
 
 async function login(url, account, username, password)
 {
     const jar = new jsdom.CookieJar();
     let dom = await getDOM({
-        url: "https://www.atrium-sud.fr/connexion/login?service=" + url,
+        url: 'https://www.atrium-sud.fr/connexion/login?service=' + url,
         jar
     });
 
@@ -15,14 +15,14 @@ async function login(url, account, username, password)
     execution = execution[0].value;
 
     dom = await getDOM({
-        url: "https://www.atrium-sud.fr/connexion/login?service=" + url,
+        url: 'https://www.atrium-sud.fr/connexion/login?service=' + url,
         jar,
         method: 'POST',
         data: {
-            username: username,
-            password: password,
-            lt: lt,
-            execution: execution,
+            username,
+            password,
+            lt,
+            execution,
             _eventId: 'submit',
             submit: ''
         },
@@ -30,7 +30,7 @@ async function login(url, account, username, password)
     })
 
     dom = await getDOM({
-        url: url,
+        url,
         jar,
         method: 'GET',
         asIs: true,
