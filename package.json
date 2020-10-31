@@ -31,7 +31,7 @@
         "pronote-fetch": "./bin/fetch.js"
     },
     "dependencies": {
-        "axios": "^0.19",
+        "axios": "^0.21",
         "body-parser": "^1.19.0",
         "graphql": "^15.3.0",
         "jsdom": "^16.4.0",
