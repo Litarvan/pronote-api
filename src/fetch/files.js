@@ -1,10 +1,10 @@
-const getFiles = require("./pronote/files");
-const { parseDate } = require("../data/dates")
-const { getFileURL } = require("../data/files");
+const getFiles = require('./pronote/files');
+const { parseDate } = require('../data/dates');
+const { getFileURL } = require('../data/files');
 
 async function files(session) {
     const files = await getFiles(session);
-    let result = [];
+    const result = [];
 
     const subjects = {};
     for (const subject of files.listeMatieres.V) {

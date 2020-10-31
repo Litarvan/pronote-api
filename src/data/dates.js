@@ -42,17 +42,17 @@ function fromPronoteHours(hours)
 
 function parseDate(string)
 {
-    let date = new Date();
-    let split = string.split(' ');
+    const date = new Date();
+    const split = string.split(' ');
 
-    let day = split[0].split('/');
+    const day = split[0].split('/');
 
     date.setFullYear(~~day[2], (~~day[1]) - 1, ~~day[0]);
     date.setMilliseconds(0);
 
     if (split.length > 1)
     {
-        let time = split[1].split(':');
+        const time = split[1].split(':');
 
         date.setHours(~~time[0]);
         date.setMinutes(~~time[1]);
