@@ -21,6 +21,7 @@ const URLS = {
     'ac-toulouse': 'cas.mon-ent-occitanie.fr',
     'agora06': 'cas.agora06.fr',
     'arsene76': 'cas.arsene76.fr',
+    'atrium-sud': 'atrium-sud.fr',
     'eure-normandie': 'cas.ent27.fr',
     'haute-garonne': 'cas.ecollege.haute-garonne.fr',
     'hdf': 'enthdf.fr',
