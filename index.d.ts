@@ -396,6 +396,17 @@ export class PronoteParentSession extends PronoteSession
      * disponible, `null` sera renvoyé.
      */
     menu(student: PronoteStudent, from?: Date, to?: Date): Promise<Array<MenuDay> | null>
+
+    /**
+     * Récupère les fichier publiés sur votre pronote depuis le début de l'années
+     * du plus récent au ancien.
+     * 
+     * @param student L'élève dont il faut récupérer les menus
+     * 
+     * @return La liste des fichier publiés depuis le début de l'année. Si l'onglet des fichiers n'est pas
+     * disponible, `null` sera renvoyé.
+     */
+    files(student: PronoteStudent): Promise<Array<File> | null>
 }
 
 /**

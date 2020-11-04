@@ -2,8 +2,12 @@ const getFiles = require('./pronote/files');
 const { parseDate } = require('../data/dates');
 const { getFileURL } = require('../data/files');
 
-async function files(session) {
-    const files = await getFiles(session);
+async function files(session, user) {
+    const files = await getFiles(session, user);
+    if (!files) {
+        return null;
+    }
+
     const result = [];
 
     const subjects = {};

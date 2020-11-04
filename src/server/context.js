@@ -28,7 +28,8 @@ function student(session) {
         infos: () => session.infos(),
         contents: ({ from, to }) => session.contents(from, to),
         homeworks: ({ from, to }) => session.homeworks(from, to),
-        menu: ({ from, to }) => session.menu(from, to)
+        menu: ({ from, to }) => session.menu(from, to),
+        files: () => session.files()
     };
 }
 
@@ -51,7 +52,8 @@ function parent(session) {
         infos: ({ student }) => session.infos(getStudent(student)),
         contents: ({ student, from, to }) => session.contents(getStudent(student), from, to),
         homeworks: ({ student, from, to }) => session.homeworks(getStudent(student), from, to),
-        menu: ({ student, from, to }) => session.menu(getStudent(student), from, to)
+        menu: ({ student, from, to }) => session.menu(getStudent(student), from, to),
+        files: ({ student }) => session.files(getStudent(student))
     };
 }
 
