@@ -45,6 +45,7 @@ async function student()
     const contents = await session.contents(from, to);
     const homeworks = await session.homeworks(from, to);
     const menu = await session.menu(from, to);
+    const files = await session.files();
 
     return {
         name: session.user.name,
@@ -52,7 +53,7 @@ async function student()
         avatar: session.user.avatar,
 
         timetable, marks, evaluations, absences,
-        infos, contents, homeworks, menu
+        infos, contents, homeworks, menu, files
     };
 }
 
@@ -75,6 +76,7 @@ async function parent()
         const contents = await session.contents(student, from, to);
         const homeworks = await session.homeworks(student, from, to);
         const menu = await session.menu(student, from, to);
+        const files = await session.files(student);
 
         students.push({
             name: student.name,
@@ -82,7 +84,7 @@ async function parent()
             avatar: student.avatar,
 
             timetable, marks, evaluations, absences,
-            infos, contents, homeworks, menu
+            infos, contents, homeworks, menu, files
         });
     }
 

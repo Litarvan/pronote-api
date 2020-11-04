@@ -7,6 +7,7 @@ extend type Query {
     contents(from: Date, to: Date): [LessonContent!]
     homeworks(from: Date, to: Date): [Homework!]
     menu(from: Date, to: Date): [MenuDay!]
+    files: [File!]
 }
 
 extend type PronoteUser {

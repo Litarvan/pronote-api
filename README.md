@@ -23,6 +23,7 @@ Disponible en tant que :
 - Absences/punitions/retenues
 - Informations
 - Menu de la cantine
+- Fichiers
 
 À chaque fois, il est possible de choisir quelle période voire quelle intervalle de jours récupérer précisément.
 
