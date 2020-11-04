@@ -250,7 +250,7 @@ export class PronoteStudentSession extends PronoteSession
     /**
      * Récupère les fichier publiés sur votre pronote depuis le début de l'années
      * du plus récent au ancien.
-     * 
+     *
      * @return La liste des fichier publiés depuis le début de l'année. Si l'onglet des fichiers n'est pas
      * disponible, `null` sera renvoyé.
      */
@@ -400,9 +400,9 @@ export class PronoteParentSession extends PronoteSession
     /**
      * Récupère les fichier publiés sur votre pronote depuis le début de l'années
      * du plus récent au ancien.
-     * 
+     *
      * @param student L'élève dont il faut récupérer les menus
-     * 
+     *
      * @return La liste des fichier publiés depuis le début de l'année. Si l'onglet des fichiers n'est pas
      * disponible, `null` sera renvoyé.
      */
@@ -633,16 +633,19 @@ export interface Lesson
 
     /**
      * Matière du cours si disponible (pas le cas pour une retenue)
+     * Peut avoir comme valeur 'Non défini' si l'api reçoit un null
      */
     subject?: string,
 
     /**
      * Professeur assigné au cours si disponible (ou surveillant de la retenue)
+     * Peut avoir comme valeur 'Non défini' si l'api reçoit un null
      */
     teacher?: string,
 
     /**
      * Salle du cours si disponible
+     * Peut avoir comme valeur 'Non défini' si l'api reçoit un null
      */
     room?: string,
 

@@ -59,9 +59,15 @@ function getTimetableWeek(session, table) {
             teacher = lesson.content[1];
             room = lesson.content[2];
         } else {
-            subject = lesson.content.find(o => o.type === 16);
-            teacher = lesson.content.find(o => o.type === 3);
-            room = lesson.content.find(o => o.type === 17);
+            if (lesson.content) {
+                subject = lesson.content.find(o => o.type === 16);
+                teacher = lesson.content.find(o => o.type === 3);
+                room = lesson.content.find(o => o.type === 17);
+            } else {
+                subject = 'Non défini';
+                room = 'Non défini';
+                teacher = 'Non défini';
+            }
 
             res.isAway = (lesson.status || false) && !!lesson.status.match(/(.+)?prof(.+)?absent(.+)?/giu);
             res.isCancelled = !res.isAway && lesson.isCancelled;
