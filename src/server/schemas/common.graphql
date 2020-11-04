@@ -186,6 +186,8 @@ type Homework {
 }
 
 type File {
+    time: String!
+    subject: String!
     name: String!
     url: String!
 }

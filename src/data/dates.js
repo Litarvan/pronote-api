@@ -40,6 +40,34 @@ function fromPronoteHours(hours)
     return ~~hours[0] + ~~hours.substring(2) / 60;
 }
 
+function parseDate(string)
+{
+    const date = new Date();
+    const split = string.split(' ');
+
+    const day = split[0].split('/');
+
+    date.setFullYear(~~day[2], (~~day[1]) - 1, ~~day[0]);
+    date.setMilliseconds(0);
+
+    if (split.length > 1)
+    {
+        const time = split[1].split(':');
+
+        date.setHours(~~time[0]);
+        date.setMinutes(~~time[1]);
+        date.setSeconds(~~time[2]);
+    }
+    else
+    {
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+    }
+
+    return date;
+}
+
 module.exports = {
     toPronoteWeek,
     toUTCWeek,
@@ -48,6 +76,7 @@ module.exports = {
     fromPronoteDay,
 
     toPronoteDate,
+    parseDate,
 
     fromPronoteHours
 };
