@@ -13,7 +13,7 @@ const CAS = [
     'haute-garonne', 'hdf', 'iledefrance', 'seine-et-marne', 'somme', 'eure-normandie',
     'parisclassenumerique', 'ljr-munich',
 
-    'toutatice', 'laclasse', 'lyceeconnecte', 'portail-famille',
+    'toutatice', 'laclasse', 'lyceeconnecte', 'portail-famille', 'cybercolleges42',
 
     'none'
 ];
