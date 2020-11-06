@@ -1,6 +1,7 @@
 const { getPeriodBy } = require('../data/periods');
 const getAbsences = require('./pronote/absences');
 
+// eslint-disable-next-line complexity
 async function absences(session, user, period = null, from = null, to = null, type = null)
 {
     const result = {
@@ -80,17 +81,19 @@ async function absences(session, user, period = null, from = null, to = null, ty
         }
     }
 
-    for (const subject of absences.subjects) {
-        if (subject.inGroup) {
-            continue;
-        }
+    if (absences.subjects) {
+        for (const subject of absences.subjects) {
+            if (subject.inGroup) {
+                continue;
+            }
 
-        const res = parseSubject(subject);
-        if (subject.group) {
-            res.subs = absences.subjects.filter(s => s.inGroup === subject.group).map(s => parseSubject(s));
-        }
+            const res = parseSubject(subject);
+            if (subject.group) {
+                res.subs = absences.subjects.filter(s => s.inGroup === subject.group).map(s => parseSubject(s));
+            }
 
-        result.totals.push(res);
+            result.totals.push(res);
+        }
     }
 
     return result;
