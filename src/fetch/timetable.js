@@ -26,13 +26,15 @@ async function timetable(session, user, from = new Date(), to = null)
         const timetable = await getTimetable(session, user, week);
         const lessons = getTimetableWeek(session, timetable);
 
-        lessons.filter(l => l.from >= from && l.from <= to).forEach(lesson => {
-            if (!filled.filledWeeks.includes(week)) {
-                lesson.isCancelled = true;
-            }
+        if (lessons) {
+            lessons.filter(l => l.from >= from && l.from <= to).forEach(lesson => {
+                if (!filled.filledWeeks.includes(week)) {
+                    lesson.isCancelled = true;
+                }
 
-            result.push(lesson);
-        });
+                result.push(lesson);
+            });
+        }
     }
 
     return result.sort((a, b) => a.from - b.from);
@@ -40,6 +42,9 @@ async function timetable(session, user, from = new Date(), to = null)
 
 function getTimetableWeek(session, table) {
     const result = [];
+    if (!table || !table.lessons) {
+        return
+    }
 
     for (const lesson of table.lessons) {
         const from = lesson.date;
