@@ -1,6 +1,7 @@
 const { getPeriodBy } = require('../data/periods');
 const getAbsences = require('./pronote/absences');
 
+// eslint-disable-next-line complexity
 async function absences(session, user, period = null, from = null, to = null, type = null)
 {
     const result = {
