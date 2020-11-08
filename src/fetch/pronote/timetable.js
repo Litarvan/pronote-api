@@ -38,7 +38,8 @@ async function getTimetable(session, user, week)
         hasCancelledLessons: timetable.avecCoursAnnule,
         iCalURL,
         lessons: timetable.ListeCours.map(o => fromPronote(o, ({
-            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue
+            place, duree, DateDuCours, CouleurFond, ListeContenus, AvecTafPublie, Statut, estAnnule, estRetenue,
+            dispenseEleve
         }) => ({
             position: place,
             duration: duree,
@@ -48,7 +49,8 @@ async function getTimetable(session, user, week)
             content: parse(ListeContenus),
             hasHomework: AvecTafPublie,
             isCancelled: !!estAnnule,
-            isDetention: !!estRetenue
+            isDetention: !!estRetenue,
+            remoteLesson: !!dispenseEleve && dispenseEleve.V.maison
         }))),
         // I was unable to witness a filled "absences.joursCycle", so didn't include it
         breaks: parse(timetable.recreations, ({ place }) => ({
