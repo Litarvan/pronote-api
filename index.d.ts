@@ -632,6 +632,11 @@ export interface Lesson
     hasDuplicate: boolean,
 
     /**
+     * Si c'est un cours qui se déroulera en distanciel, à la maison.
+     */
+    remoteLesson: boolean;
+
+    /**
      * Matière du cours si disponible (pas le cas pour une retenue)
      * Peut avoir comme valeur 'Non défini' si l'api reçoit un null
      */
@@ -1755,6 +1760,7 @@ export interface PronoteLesson extends PronoteObject
     hasHomework: boolean, // AvecTafPublie
     isCancelled: boolean, // estAnnule
     isDetention: boolean // estRetenue
+    remoteLesson: boolean; // dispenseEleve.maison
 }
 
 export interface PronoteTimetableDaysAndWeeks
