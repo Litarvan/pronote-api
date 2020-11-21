@@ -3,7 +3,7 @@ const { JSDOM } = require('jsdom');
 const errors = require('../errors');
 const http = require('../http');
 
-function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot, extraParams })
+function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot, extraParams,followRedirects = true })
 {
     let url = dom.window.document.getElementsByTagName('form')[0].action;
 
@@ -23,7 +23,7 @@ function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionR
         url,
         jar,
         asIs,
-        followRedirects: true,
+        followRedirects: followRedirects,
         runScripts,
         hook,
         data: params,
