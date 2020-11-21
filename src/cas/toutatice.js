@@ -24,30 +24,33 @@ async function login(url, account, username, password) {
     });
     dom = await educonnect({ dom, jar, url, account, username, password });
 
-    let redirectURL = dom.window.document.getElementsByTagName("a")[0].href //https://www.toutatice.fr/idp/Authn/RemoteUser/Shibboleth.sso/SAML2/POST
+    let redirectURL = dom.window.document.getElementsByTagName('a')[0].href
 
     let response = await axioRequest({
         url: redirectURL,
-        jar,
+        jar
     })
 
-    redirectURL = getOrigin(redirectURL) + response.headers.location //https://www.toutatice.fr/idp/Authn/RemoteUser?conversation=e1s1
+    redirectURL = getOrigin(redirectURL) + response.headers.location
 
-    const parsed = querystring.parse(redirectURL.split("?")[1])
+    const parsed = querystring.parse(redirectURL.split('?')[1])
     const conversation = parsed.conversation
     const sessionid = parsed.sessionid
 
+    // eslint-disable-next-line max-len
     redirectURL = `${getOrigin(redirectURL)}/idp/Authn/RemoteUser?conversation=${conversation}&redirectToLoaderRemoteUser=0&sessionid=${sessionid}`
 
     response = await axioRequest({
         url: redirectURL,
         jar
     })
-    let remoteUserParsed = response.data.match(/<conversation>(.+)<\/conversation><uidInSession>(.+)<\/uidInSession>/)
+    // eslint-disable-next-line max-len
+    const remoteUserParsed = response.data.match(/<conversation>(.+)<\/conversation><uidInSession>(.+)<\/uidInSession>/u)
 
     const remoteUserConversation = remoteUserParsed[1]
     const uidInSession = remoteUserParsed[2]
 
+    // eslint-disable-next-line max-len
     redirectURL = `${getOrigin(redirectURL)}/idp/Authn/RemoteUser?conversation=${remoteUserConversation}&uidInSession=${uidInSession}&sessionid=${sessionid}`
 
     response = await http({

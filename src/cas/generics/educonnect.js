@@ -1,8 +1,7 @@
 const errors = require('../../errors');
-const { getDOM, submitForm, extractStart } = require('../api');
-const http = require('../../http');
+const { submitForm } = require('../api');
 
-async function login({ dom, jar, url, account, username, password }) {
+async function login({ dom, jar, username, password }) {
     dom.window.document.getElementById('username').value = username;
     dom.window.document.getElementById('password').value = password;
 

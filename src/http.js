@@ -1,4 +1,4 @@
-const axioRequest = require("./axioRequest")
+const axioRequest = require('./axioRequest')
 
 async function http({ url, body, data, method = 'GET', binary, jar = null, followRedirects = true }) {
     const response = await axioRequest({
