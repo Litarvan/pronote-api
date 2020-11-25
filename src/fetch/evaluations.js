@@ -1,4 +1,6 @@
 const { getPeriodBy } = require('../data/periods');
+const { withId, checkDuplicates } = require('../data/id');
+
 const getEvaluations = require('./pronote/evaluations');
 
 async function evaluations(session, user, period = null, type = null)
@@ -29,13 +31,7 @@ async function evaluations(session, user, period = null, type = null)
             result.push(subject);
         }
 
-        let idEvals = `${evaluation.date.valueOf()}_${subject.name}_${evaluation.name}`;
-        // eslint-disable-next-line require-unicode-regexp
-        idEvals = idEvals.replace(/[^a-z0-9_ \\s]/gi, '').replace(/[ \\s]/g, '-');
-
-
-        subject.evaluations.push({
-            id: idEvals,
+        subject.evaluations.push(withId({
             name: evaluation.name,
             date: evaluation.date,
             coefficient: evaluation.coefficient,
@@ -48,8 +44,10 @@ async function evaluations(session, user, period = null, type = null)
                 },
                 prefixes: !pillar.prefixes[0] ? [] : pillar.prefixes
             }))
-        });
+        }, ['name', 'date'], subject.name));
     }
+
+    result.forEach(s => checkDuplicates(s.evaluations));
 
     result.sort((a, b) => a.position - b.position);
     result.forEach(s => {

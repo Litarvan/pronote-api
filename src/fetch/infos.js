@@ -1,5 +1,6 @@
 const { getFileURL } = require('../data/files');
 const fromHTML = require('../data/html');
+const { withId, checkDuplicates } = require('../data/id');
 
 const getInfos = require('./pronote/infos');
 
@@ -14,17 +15,17 @@ async function infos(session, user)
 
     for (const info of infos.infos)
     {
-        result.push({
+        result.push(withId({
             date: info.date,
             title: info.name,
             author: info.author.name,
             content: fromHTML(info.content[0].text),
             htmlContent: info.content[0].text,
-            files: info.content[0].files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
-        });
+            files: info.content[0].files.map(f => withId({ name: f.name, url: getFileURL(session, f) }, ['name']))
+        }, ['date', 'title']));
     }
 
-    result.sort((a, b) => a.date - b.date);
+    checkDuplicates(result).sort((a, b) => a.date - b.date);
 
     return result;
 }
