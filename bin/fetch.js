@@ -2,7 +2,7 @@
 
 /* eslint no-console: off */
 
-const fs = require('fs').promises;
+const fs = require('fs');
 const pronote = require('..');
 
 if (process.argv.length < 5) {
@@ -25,9 +25,11 @@ async function fetch()
         break;
     }
 
-    await fs.writeFile('result.json', JSON.stringify(result, null, 4));
+    // eslint-disable-next-line node/prefer-promises/fs
+    fs.writeFile('result.json', JSON.stringify(result, null, 4), () => {
+        console.log('Wrote \'result.json\'');
+    });
 
-    console.log('Wrote \'result.json\'');
 }
 
 async function student()

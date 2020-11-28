@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs').promises;
+const fs = require('fs');
 
 const { buildSchema } = require('graphql');
 
@@ -7,12 +7,15 @@ const date = require('../date');
 
 const SCHEMAS = ['student', 'parent'];
 
-async function readFile(name)
+function readFile(name)
 {
-    const file = path.join(__dirname, name);
-    const content = await fs.readFile(file);
-
-    return content.toString();
+    return new Promise(resolve => {
+        const file = path.join(__dirname, name);
+        // eslint-disable-next-line node/prefer-promises/fs
+        fs.readFile(file, (_err, content) => {
+            resolve(content.toString());
+        });
+    })
 }
 
 async function readSchema(common, name)
