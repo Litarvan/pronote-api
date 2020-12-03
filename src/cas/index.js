@@ -14,7 +14,7 @@ const CAS = [
     'parisclassenumerique', 'ljr-munich',
 
     'toutatice', 'laclasse', 'lyceeconnecte', 'portail-famille', 'cybercolleges42',
-    'ac-valdoise',
+    'ac-valdoise', 'ac-lille2',
 
     'none'
 ];

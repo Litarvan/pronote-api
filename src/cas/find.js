@@ -9,6 +9,7 @@ const URLS = {
     'ac-dijon': 'cas.eclat-bfc.fr',
     'ac-grenoble': 'cas.ent.auvergnerhonealpes.fr',
     'ac-lille': 'cas.savoirsnumeriques62.fr',
+    'ac-lille2': 'teleservices.ac-lille.fr',
     'ac-limoges': 'mon.lyceeconnecte.fr',
     'ac-lyon': 'cas.ent.auvergnerhonealpes.fr',
     'ac-montpellier': 'cas.mon-ent-occitanie.fr',
