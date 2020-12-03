@@ -48,6 +48,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
     - Académie de Grenoble (CAS : ac-grenoble, URL : "cas.ent.auvergnerhonealpes.fr")
     - Académie de la Loire (CAS : cybercolleges42, URL : "cas.cybercolleges42.fr")
     - Académie de Lille (CAS : ac-lille, URL : "cas.savoirsnumeriques62.fr")
+    - Académie de Lille (CAS : ac-lille2, URL : "teleservices.ac-lille.fr")
     - Académie de Limoges (CAS : ac-limoges, URL : "mon.lyceeconnecte.fr")
     - Académie de Lyon (CAS : ac-lyon, URL : "cas.ent.auvergnerhonealpes.fr)
     - Académie de Marseille (CAS : atrium-sud, URL : "atrium-sud.fr")
