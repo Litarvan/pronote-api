@@ -36,15 +36,16 @@
         "graphql": "^15.3.0",
         "jsdom": "^16.4.0",
         "node-forge": "0.6.33",
-        "pako": "^1.0",
+        "pako": "^1.0.11",
         "polka": "^0.5.2",
-        "string-strip-html": "^6.2.0",
-        "uuid": "^8.3.0"
+        "string-strip-html": "^7.0.2",
+        "uuid": "^8.3.0",
+        "xxhashjs": "^0.2.2"
     },
     "devDependencies": {
         "@types/node-forge": "^0.6",
         "@types/pako": "^1.0",
-        "eslint": "^7.6.0",
+        "eslint": "^7.14.0",
         "eslint-plugin-node": "^11.1.0"
     }
 }

@@ -3,8 +3,8 @@ const { JSDOM } = require('jsdom');
 const errors = require('../errors');
 const http = require('../http');
 
-function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot, extraParams })
-{
+// eslint-disable-next-line max-len
+function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionRoot, extraParams, followRedirects = true }) {
     let url = dom.window.document.getElementsByTagName('form')[0].action;
 
     if (url.startsWith('/'))
@@ -23,7 +23,7 @@ function submitForm({ dom, jar, asIs, runScripts, hook, method = 'POST', actionR
         url,
         jar,
         asIs,
-        followRedirects: true,
+        followRedirects,
         runScripts,
         hook,
         data: params,
@@ -79,8 +79,7 @@ async function getDOM({ url, jar, method = 'GET', data = '', runScripts, hook, f
 }
 
 
-function extractStart(html)
-{
+function extractStart(html) {
     if (html.includes('Votre adresse IP est provisoirement suspendue')) { // Top 10 anime betrayals
         throw errors.BANNED.drop();
     }
