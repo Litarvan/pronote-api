@@ -1,6 +1,8 @@
-const getFiles = require('./pronote/files');
 const { parseDate } = require('../data/dates');
 const { getFileURL } = require('../data/files');
+const { withId, checkDuplicates } = require('../data/id');
+
+const getFiles = require('./pronote/files');
 
 async function files(session, user) {
     const files = await getFiles(session, user);
@@ -16,14 +18,15 @@ async function files(session, user) {
     }
 
     for (const file of files.listeRessources.V) {
-        result.push({
+        result.push(withId({
             time: parseDate(file.date.V),
             subject: subjects[file.matiere.V.N],
             name: file.ressource.V.L,
             url: getFileURL(session, { id: file.ressource.V.N, name: file.ressource.V.L, type: file.ressource.V.G })
-        });
+        }, 'subject', 'name'));
     }
-    return result;
+
+    return checkDuplicates(result);
 }
 
 module.exports = files;

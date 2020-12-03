@@ -478,7 +478,9 @@ export const casList: Array<string>;
  */
 export function getCAS(url: string): Promise<string | string[] | null>;
 
-// Données géographiques concernant un établissement.
+/*
+ * Données géographiques concernant un établissement.
+ */
 export interface EtablissementGeoData {
     /**
      * URL Pronote de l'établissement
@@ -605,9 +607,28 @@ export interface PronoteError
 }
 
 /**
+ * Dénote la présence d'un identifiant unique 'id' dans un objet.
+ */
+export interface Identifiable
+{
+    /**
+     * Identifiant unique de l'objet généré à partir du hash des informations considérées comme "propre" à l'objet
+     * (voir la documentation de chaque objet Identifiable pour savoir lesquelles).
+     *
+     * Il est sensé pouvoir identifier chaque objet entre les requêtes : il restera toujours le même après chaque essai.
+     * Cette fonctionnalité ayant été ajoutée récemment, cette affirmation est tout de même à prendre avec précaution.
+     *
+     * Dans le cas où deux objets distincts auraient le même identifiant, ce dernier est modifié en fonction de l'ordre
+     * dans lequel Pronote a renvoyé les objets, pour assurer l'absence d'identifiant en doublon, et sa conservation entre
+     * les requêtes (on considère que l'ordre renvoyé par Pronote est constant).
+     */
+    id: string
+}
+
+/**
  * Leçon de l'emploi du temps.
  */
-export interface Lesson
+export interface Lesson extends Identifiable
 {
     /**
      * Date et horaire précis auquel commence le cours
@@ -768,7 +789,7 @@ export interface MarksSubjectAverages
 /**
  * Note obtenue par l'élève
  */
-export interface Mark
+export interface Mark extends Identifiable
 {
 
     /**
@@ -851,7 +872,7 @@ export interface EvaluationsSubject
 /**
  * Évaluation
  */
-export interface Evaluation
+export interface Evaluation extends Identifiable
 {
     /**
      * ID de l'évaluation
@@ -950,7 +971,7 @@ export interface Absences
 /**
  * Absence à un cours
  */
-export interface Absence
+export interface Absence extends Identifiable
 {
     /**
      * Début du premier cours manqué ou lorsque le cours a été quitté
@@ -986,7 +1007,7 @@ export interface Absence
 /**
  * Retard à un cours
  */
-export interface Delay
+export interface Delay extends Identifiable
 {
     /**
      * Date et horaire du cours où le retard a eu lieu
@@ -1022,7 +1043,7 @@ export interface Delay
 /**
  * Punition donnée à l'élève
  */
-export interface Punishment
+export interface Punishment extends Identifiable
 {
     /**
      * Date et moment auquel la punition a été donnée
@@ -1068,7 +1089,7 @@ export interface Punishment
 /**
  * Une retenue donnée suite à une punition
  */
-export interface Detention
+export interface Detention extends Identifiable
 {
     /**
      * Date et horaire précis de début de la retenue
@@ -1084,7 +1105,7 @@ export interface Detention
 /**
  * Autre évènement de vie scolaire
  */
-export interface OtherEvent
+export interface OtherEvent extends Identifiable
 {
     /**
      * Type d'évènement (exemple : 'Leçon non apprise')
@@ -1141,7 +1162,7 @@ export interface SubjectAbsences
 /**
  * Information
  */
-export interface Info
+export interface Info extends Identifiable
 {
     /**
      * Date à laquelle l'information a été annoncée
@@ -1177,7 +1198,7 @@ export interface Info
 /**
  * Contenu d'un cours
  */
-export interface LessonContent
+export interface LessonContent extends Identifiable
 {
     /**
      * Matière du cours
@@ -1233,7 +1254,7 @@ export interface LessonContent
 /**
  * Contenu d'un devoir
  */
-export interface Homework
+export interface Homework extends Identifiable
 {
     /**
      * Description du devoir
@@ -1279,7 +1300,7 @@ export interface Homework
 /**
  * Un fichier attaché par exemple à une information, un devoir, ou au contenu d'un cours
  */
-export interface File
+export interface File extends Identifiable
 {
     /**
      * Date à laquelle le fichier a été mis en ligne
