@@ -170,7 +170,9 @@ Exemple, pour récupérer les salles des cours du Mercredi 2 Septembre :
 }
 ```
 Le schéma parent des requêtes et mutations se trouve [à cet endroit](https://github.com/Litarvan/pronote-api/blob/master/src/server/schemas/parent.graphql)
+
 Le schéma élèves des requêtes et mutations se trouve [à cet endroit](https://github.com/Litarvan/pronote-api/blob/master/src/server/schemas/student.graphql)
+
 Le schéma commun des requêtes et mutations se trouve [à cet endroit](https://github.com/Litarvan/pronote-api/blob/master/src/server/schemas/common.graphql) 
 
 ### Au secours je n'arrive pas à m'y connecter
