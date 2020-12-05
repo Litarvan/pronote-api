@@ -1,6 +1,7 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
 const fromHTML = require('../data/html');
+const { withId, checkDuplicates } = require('../data/id');
 
 const getContents = require('./pronote/contents');
 
@@ -27,7 +28,7 @@ async function contents(session, user, from = new Date(), to = null)
         }
 
         const content = lesson.content[0]; // Maybe on some instances there will be multiple entries ? Check this
-        result.push({
+        result.push(withId({
             subject: lesson.subject.name,
             teachers: lesson.teachers.map(t => t.name),
             from: lesson.from,
@@ -36,12 +37,12 @@ async function contents(session, user, from = new Date(), to = null)
             title: content.name,
             description: fromHTML(content.description),
             htmlDescription: content.htmlDescription,
-            files: content.files.map(f => ({ name: f.name, url: getFileURL(session, f) })),
+            files: content.files.map(f => withId({ name: f.name, url: getFileURL(session, f) }, ['name'])),
             category: content.category.name
-        });
+        }, ['subject', 'from', 'to']));
     }
 
-    return result.sort((a, b) => a.from - b.from);
+    return checkDuplicates(result).sort((a, b) => a.from - b.from);
 }
 
 module.exports = contents;

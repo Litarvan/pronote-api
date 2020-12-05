@@ -19,6 +19,7 @@ type Mutation {
 }
 
 type Lesson {
+    id: String!
     from: Date!
     to: Date!
     isDetention: Boolean!
@@ -105,6 +106,7 @@ type Absences {
 }
 
 type Absence {
+    id: String!
     from: Date!
     to: Date!
     justified: Boolean!
@@ -114,6 +116,7 @@ type Absence {
 }
 
 type Delay {
+    id: String!
     date: Date!
     justified: Boolean!
     solved: Boolean!
@@ -123,6 +126,7 @@ type Delay {
 }
 
 type Punishment {
+    id: String!
     date: Date!
     isExclusion: Boolean!
     isDuringLesson: Boolean!
@@ -134,11 +138,13 @@ type Punishment {
 }
 
 type Detention {
+    id: String!
     from: Date!
     to: Date!
 }
 
 type OtherEvent {
+    id: String!
     kind: String!
     date: Date!
     giver: String!
@@ -154,6 +160,7 @@ type SubjectAbsences {
 }
 
 type Info {
+    id: String!
     date: Date!
     title: String!
     author: String!
@@ -163,6 +170,7 @@ type Info {
 }
 
 type LessonContent {
+    id: String!
     subject: String!
     teachers: [String!]!
     from: Date!
@@ -176,6 +184,7 @@ type LessonContent {
 }
 
 type Homework {
+    id: String!
     description: String!
     htmlDescription: String!
     subject: String!
@@ -187,6 +196,7 @@ type Homework {
 }
 
 type File {
+    id: String!
     time: String!
     subject: String!
     name: String!

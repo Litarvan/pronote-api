@@ -1,4 +1,6 @@
 const { getPeriodBy } = require('../data/periods');
+const { withId, checkDuplicates } = require('../data/id');
+
 const getMarks = require('./pronote/marks');
 
 async function marks(session, user, period = null, type = null)
@@ -54,19 +56,16 @@ async function marks(session, user, period = null, type = null)
             res.average = mark.average;
         }
 
-        let idMarks = `${mark.date.valueOf()}_${subject.name}_${mark.title}`;
-        // eslint-disable-next-line require-unicode-regexp
-        idMarks = idMarks.replace(/[^a-z0-9_ \\s]/gi, '').replace(/[ \\s]/g, '-');
-
-        subject.marks.push({
-            id: idMarks,
+        subject.marks.push(withId({
             title: mark.title,
             ...res,
             scale: mark.scale,
             coefficient: mark.coefficient,
             date: mark.date
-        });
+        }, ['title', 'date'], subject.name));
     }
+
+    result.subjects.forEach(s => checkDuplicates(s.marks));
 
     return result;
 }

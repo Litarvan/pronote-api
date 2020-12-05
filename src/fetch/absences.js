@@ -1,4 +1,6 @@
 const { getPeriodBy } = require('../data/periods');
+const { withId, checkDuplicates } = require('../data/id');
+
 const getAbsences = require('./pronote/absences');
 
 // eslint-disable-next-line complexity
@@ -22,24 +24,24 @@ async function absences(session, user, period = null, from = null, to = null, ty
         // eslint-disable-next-line default-case
         switch (event.type) {
         case 'absence':
-            result.absences.push({
+            result.absences.push(withId({
                 from: event.from,
                 to: event.to,
                 justified: event.justified,
                 solved: event.solved,
                 hours: event.hours,
                 reason: event.reasons.length && event.reasons[0].name || ''
-            });
+            }, ['from', 'to']));
             break;
         case 'delay':
-            result.delays.push({
+            result.delays.push(withId({
                 date: event.date,
                 justified: event.justified,
                 solved: event.solved,
                 justification: event.justification,
                 minutesMissed: event.duration,
                 reason: event.reasons.length && event.reasons[0].name || ''
-            });
+            }, ['data', 'minutesMissed']));
             break;
         case 'punishment':
             // eslint-disable-next-line no-case-declarations
@@ -58,7 +60,7 @@ async function absences(session, user, period = null, from = null, to = null, ty
                 detention = { from, to };
             }
 
-            result.punishments.push({
+            result.punishments.push(withId({
                 date: event.date,
                 isExclusion: event.isExclusion,
                 isDuringLesson: !event.isNotDuringLesson,
@@ -67,19 +69,21 @@ async function absences(session, user, period = null, from = null, to = null, ty
                 giver: event.giver.name,
                 reason: event.reasons.length && event.reasons[0].name || '',
                 detention
-            });
+            }, ['data']));
             break;
         case 'other':
-            result.other.push({
+            result.other.push(withId({
                 kind: event.name,
                 date: event.date,
                 giver: event.giver.name,
                 comment: event.comment,
                 subject: event.subject && event.subject.name || null
-            });
+            }, ['kind', 'date']));
             break;
         }
     }
+
+    Object.values(result).forEach(checkDuplicates);
 
     if (absences.subjects) {
         for (const subject of absences.subjects) {

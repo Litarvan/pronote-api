@@ -1,6 +1,7 @@
 const { toPronoteWeek } = require('../data/dates');
 const { getFileURL } = require('../data/files');
 const fromHTML = require('../data/html');
+const { withId, checkDuplicates } = require('../data/id');
 
 const getHomeworks = require('./pronote/homeworks');
 
@@ -26,7 +27,7 @@ async function homeworks(session, user, from = new Date(), to = null)
             continue;
         }
 
-        result.push({
+        result.push(withId({
             description: fromHTML(homework.description),
             htmlDescription: homework.description,
             subject: homework.subject.name,
@@ -34,11 +35,11 @@ async function homeworks(session, user, from = new Date(), to = null)
             for: homework.for,
             done: homework.done,
             color: homework.color,
-            files: homework.files.map(f => ({ name: f.name, url: getFileURL(session, f) }))
-        });
+            files: homework.files.map(f => withId({ name: f.name, url: getFileURL(session, f) }, ['name']))
+        }, 'subject', 'givenAt'));
     }
 
-    return result.sort((a, b) => a.for - b.for);
+    return checkDuplicates(result).sort((a, b) => a.for - b.for);
 }
 
 module.exports = homeworks;
