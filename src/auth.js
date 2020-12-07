@@ -31,6 +31,9 @@ async function login(url, username, password, cas, account)
     })
 
     session.params = await getParams(session);
+    if (!session.params) {
+        throw errors.WRONG_CREDENTIALS.drop();
+    }
     if (cas === 'none') {
         await auth(session, username, password, false);
     } else {
