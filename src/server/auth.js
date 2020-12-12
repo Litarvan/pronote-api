@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-const { loginStudent, loginParent } = require('../auth');
+const { loginStudent, loginParent, loginAdministration } = require('../auth');
 
 const sessions = {};
 
@@ -20,6 +20,9 @@ async function login({ url, username, password, cas, account = 'student' })
         break;
     case 'parent':
         func = loginParent;
+        break;
+    case 'administration':
+        func = loginAdministration;
         break;
     default:
         throw {

@@ -90,6 +90,7 @@ async function auth(session, username, password, fromCas)
 module.exports = {
     loginStudent: loginFor('student'),
     loginParent: loginFor('parent'),
+    loginAdministration: loginFor('administration'),
 
     getStart,
     auth

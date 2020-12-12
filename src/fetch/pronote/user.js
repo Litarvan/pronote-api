@@ -84,7 +84,7 @@ function getSpecificData(session, data)
 
         break;
     case 'administration':
-
+        return getAdministrationData(session, data);
         break;
     default:
         return {};
@@ -159,6 +159,30 @@ function getParentData(session, data)
                     to: getDateWithHours(parse(date), strHeureFin)
                 }))
             })))
+        },
+        authorizations: {
+            staffDiscussion: aut.AvecDiscussionPersonnels,
+            parentsDiscussion: aut.AvecDiscussionParents,
+            editStudentPassword: aut.compte.avecSaisieMotDePasseEleve,
+            editCoordinates: aut.compte.avecSaisieInfosPersoCoordonnees,
+            editAuthorizations: aut.compte.avecSaisieInfosPersoAutorisations
+        }
+    };
+}
+
+function getAdministrationData(session, data)
+{
+    const res = data.ressource;
+    const aut = data.autorisations;
+
+    return {
+        data: {
+            isDelegate: res.estDelegue,
+            isBDMember: res.estMembreCA,
+            canDiscussWithManagers: res.avecDiscussionResponsables,
+            absencesReasons: parse(data.listeMotifsAbsences),
+            delaysReasons: parse(data.listeMotifsRetards),
+            classDelegates: parse(res.listeClassesDelegue),
         },
         authorizations: {
             staffDiscussion: aut.AvecDiscussionPersonnels,

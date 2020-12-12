@@ -1,4 +1,4 @@
-const { loginStudent, loginParent } = require('./src/auth');
+const { loginStudent, loginParent, loginAdministration } = require('./src/auth');
 const { list: casList, getCAS } = require('./src/cas');
 const geo = require('./src/geo');
 const errors = require('./src/errors');
@@ -35,6 +35,7 @@ module.exports = {
     // High-level API
     login: loginStudent,
     loginParent,
+    loginAdministration,
     casList,
     getCAS,
     geo,
