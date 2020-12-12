@@ -5,7 +5,7 @@ const { buildSchema } = require('graphql');
 
 const date = require('../date');
 
-const SCHEMAS = ['student', 'parent', "administration"];
+const SCHEMAS = ['student', 'parent', 'administration'];
 
 async function readFile(name)
 {
