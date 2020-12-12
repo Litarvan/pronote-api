@@ -409,6 +409,18 @@ export class PronoteParentSession extends PronoteSession
     files(student: PronoteStudent): Promise<Array<File> | null>
 }
 
+export class PronoteAdministrationSession extends PronoteSession
+{
+    /**
+     * Informations de l'utilisateur connecté via la session, correspond au résultat de la requête
+     * 'ParametresUtilisateur' envoyée après une authentification réussie.
+     */
+    user?: PronoteAdministrationUser
+
+
+}
+
+
 /**
  * Valeurs acceptées pour désigner un des types de comptes disponibles. Pour l'instant seul 'student' est supporté.
  */
@@ -1642,6 +1654,24 @@ export interface PronoteStudent extends PronoteObject
     tabsPeriods: Array<PronoteTabPeriods>, // ressource.listeOngletsPourPeriodes
 }
 
+export interface PronoteListeProfesseurs
+{
+    /**
+     * Liste Professeurs
+     */
+    name: String, // ressource.classeDEleve
+    type: number
+}
+
+export interface PronoteListeClasses
+{
+    /**
+     * Liste Classe
+     */
+    name: String, // ressource.classeDEleve
+    type: number
+}
+
 export interface PronoteStudentAuthorizations extends PronoteUserAuthorizations
 {
     maxUserWorkFileSize: number // tailleMaxRenduTafEleve
@@ -1657,6 +1687,88 @@ export interface PronoteParentUser extends PronoteUser<PronoteParentAuthorizatio
     classDelegates: Array<PronoteObject>, // listeClassesDelegue
     students: Array<PronoteStudent>
 }
+
+export interface PronoteAdministrationUser extends PronoteUser<PronoteAdministrationAuthorizations>
+{
+    listeProfesseurs: Array<PronoteListeProfesseurs>
+    listeClasses: Array<PronoteListeClasses>
+}
+
+export interface PronoteAdministrationAuthorizations extends PronoteUserAuthorizations
+{
+    consulterIdentiteEleve: boolean,
+    consulterFichesResponsables: boolean,
+    consulterPhotosEleves: boolean,
+    avecDiscussionParents: boolean,
+    estDestinataireChat: boolean,
+    avecContactVS: boolean,
+    lancerAlertesPPMS: boolean,
+    avecDiscussionAvancee: boolean,
+    avecSaisieParcoursPedagogique: boolean,
+    avecSaisieAppelEtVS: boolean,
+    avecSaisieCours: boolean,
+    avecSaisieAbsenceRepas: boolean,
+    avecSaisieHorsCours: boolean,
+    avecSaisieSurGrille: boolean,
+    avecSaisieSurGrilleAppelProf: boolean,
+    avecSaisieAbsence: boolean,
+    avecSaisieRetard: boolean,
+    avecSaisieMotifRetard: boolean,
+    avecSaisiePassageInfirmerie: boolean,
+    avecSaisieExclusion: boolean,
+    avecSaisiePunition: boolean,
+    avecAccesAuxEvenementsAutresCours: boolean,
+    avecSaisieAbsencesToutesPermanences: boolean,
+    avecSaisieAbsencesGrilleAbsencesRepas: boolean,
+    avecSaisieAbsencesGrilleAbsencesInternat: boolean,
+    avecSuiviAbsenceRetard: boolean,
+    avecSaisieEvaluations: boolean,
+    autoriserCommunicationsToutesClasses: boolean,
+    avecSaisieAgenda: boolean,
+    avecSaisieActualite: boolean,
+    avecPublicationListeDiffusion: boolean,
+    publierDossiersVS: boolean,
+    consulterMemosEleve: boolean,
+    saisirMemos: boolean,
+    avecSaisieDispense: boolean,
+    incidents: Array<PronoteAuthIncidents>,
+    avecPublicationPunitions: boolean,
+    avecAccesPunitions: boolean,
+    avecSaisiePunitions: boolean,
+    avecCreerMotifIncidentPunitionSanction: boolean,
+    intendance: Array<PronoteAuthIntendance>,
+    autoriseAConsulterPhotosDeTousLesEleves: boolean,
+    cours: Array<PronoteAuthCours>,
+    compte: Array<PronoteAuthCompte>
+}
+
+export interface PronoteAuthIncidents
+{
+    acces: boolean,
+    saisie: boolean,
+    publier: boolean,
+}
+
+export interface PronoteAuthIntendance
+{
+    avecDemandeTravauxIntendance: boolean,
+    avecExecutionTravauxIntendance: boolean,
+}
+
+export interface PronoteAuthCours {
+    avecReservationCreneauxLibres: boolean,
+    modificationNonLimiteAuxSemaine: boolean,
+    avecMateriel: boolean,
+    avecFicheCoursConseil: boolean,
+    afficherElevesDetachesDansCours: boolean,
+}
+
+export interface PronoteAuthCompte
+{
+    avecSaisieInfosPersoCoordonnees: boolean,
+    avecSaisieInfosPersoAutorisations: boolean,
+}
+
 
 export interface PronoteParentAuthorizations extends PronoteUserAuthorizations
 {

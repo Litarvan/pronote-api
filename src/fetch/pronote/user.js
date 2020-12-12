@@ -177,19 +177,70 @@ function getAdministrationData(session, data)
 
     return {
         data: {
-            isDelegate: res.estDelegue,
-            isBDMember: res.estMembreCA,
-            canDiscussWithManagers: res.avecDiscussionResponsables,
-            absencesReasons: parse(data.listeMotifsAbsences),
-            delaysReasons: parse(data.listeMotifsRetards),
-            classDelegates: parse(res.listeClassesDelegue),
+            listeProfesseurs: parse(res.listeProfesseurs),
+            listeClasses: parse(data.listeClasses)
         },
         authorizations: {
-            staffDiscussion: aut.AvecDiscussionPersonnels,
-            parentsDiscussion: aut.AvecDiscussionParents,
-            editStudentPassword: aut.compte.avecSaisieMotDePasseEleve,
-            editCoordinates: aut.compte.avecSaisieInfosPersoCoordonnees,
-            editAuthorizations: aut.compte.avecSaisieInfosPersoAutorisations
+            consulterIdentiteEleve: aut.ConsulterIdentiteEleve,
+            consulterFichesResponsables: aut.ConsulterFichesResponsables,
+            consulterPhotosEleves: aut.ConsulterPhotosEleves,
+            avecDiscussionParents: aut.AvecDiscussionParents,
+            avecMessageInstantane: aut.avecMessageInstantane,
+            estDestinataireChat: aut.estDestinataireChat,
+            avecContactVS: aut.AvecContactVS,
+            lancerAlertesPPMS: aut.lancerAlertesPPMS,
+            avecDiscussionAvancee: aut.AvecDiscussionAvancee,
+            avecSaisieParcoursPedagogique: aut.avecSaisieParcoursPedagogique,
+            avecSaisieAppelEtVS: aut.AvecSaisieAppelEtVS,
+            avecSaisieCours: aut.AvecSaisieCours,
+            avecSaisieAbsenceRepas: aut.AvecSaisieAbsenceRepas,
+            avecSaisieHorsCours: aut.AvecSaisieHorsCours,
+            avecSaisieSurGrille: aut.AvecSaisieSurGrille,
+            avecSaisieSurGrilleAppelProf: aut.AvecSaisieSurGrilleAppelProf,
+            avecSaisieAbsence: aut.AvecSaisieAbsence,
+            avecSaisieRetard: aut.AvecSaisieRetard,
+            avecSaisieMotifRetard: aut.AvecSaisieMotifRetard,
+            avecSaisiePassageInfirmerie: aut.AvecSaisiePassageInfirmerie,
+            avecSaisieExclusion: aut.AvecSaisieExclusion,
+            avecSaisiePunition: aut.AvecSaisiePunition,
+            avecAccesAuxEvenementsAutresCours: aut.AvecAccesAuxEvenementsAutresCours,
+            avecSaisieAbsencesToutesPermanences: aut.AvecSaisieAbsencesToutesPermanences,
+            avecSaisieAbsencesGrilleAbsencesRepas: aut.AvecSaisieAbsencesGrilleAbsencesRepas,
+            avecSaisieAbsencesGrilleAbsencesInternat: aut.AvecSaisieAbsencesGrilleAbsencesInternat,
+            avecSuiviAbsenceRetard: aut.AvecSuiviAbsenceRetard,
+            dateSaisieAbsence: aut.DateSaisieAbsence,
+            avecSaisieEvaluations: aut.AvecSaisieEvaluations,
+            autoriserCommunicationsToutesClasses: aut.AutoriserCommunicationsToutesClasses,
+            avecSaisieAgenda: aut.AvecSaisieAgenda,
+            avecSaisieActualite: aut.AvecSaisieActualite,
+            avecPublicationListeDiffusion: aut.avecPublicationListeDiffusion,
+            publierDossiersVS: aut.PublierDossiersVS,
+            consulterMemosEleve: aut.ConsulterMemosEleve,
+            saisirMemos: aut.SaisirMemos,
+            avecSaisieDispense: aut.avecSaisieDispense,
+            incidents: aut.incidents,
+            avecPublicationPunitions: aut.AvecPublicationPunitions,
+            avecAccesPunitions: aut.avecAccesPunitions,
+            avecSaisiePunitions: aut.avecSaisiePunitions,
+            avecCreerMotifIncidentPunitionSanction: aut.avecCreerMotifIncidentPunitionSanction,
+            intendance: {
+                avecDemandeTravauxIntendance: aut.intendance.avecDemandeTravauxIntendance,
+                avecExecutionTravauxIntendance: aut.intendance.avecExecutionTravauxIntendance
+            },
+            services: aut.services,
+            autoriseAConsulterPhotosDeTousLesEleves: aut.autoriseAConsulterPhotosDeTousLesEleves,
+            cours: {
+                avecReservationCreneauxLibres: aut.cours.avecReservationCreneauxLibres,
+                modificationNonLimiteAuxSemaine: aut.cours.modificationNonLimiteAuxSemaine,
+                avecMateriel: aut.cours.avecMateriel,
+                avecFicheCoursConseil: aut.cours.avecFicheCoursConseil,
+                afficherElevesDetachesDansCours: aut.cours.afficherElevesDetachesDansCours
+            },
+            avecSaisieDocumentsCasiers: aut.avecSaisieDocumentsCasiers,
+            compte: {
+                avecSaisieInfosPersoCoordonnees: aut.compte.avecSaisieInfosPersoCoordonnees,
+                avecSaisieInfosPersoAutorisations: aut.compte.avecSaisieInfosPersoAutorisations
+            }
         }
     };
 }

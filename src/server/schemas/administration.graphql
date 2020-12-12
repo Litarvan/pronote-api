@@ -1,0 +1,108 @@
+extend type Query {
+    timetable(student: String!, from: Date, to: Date): [Lesson!]
+    marks(student: String!, period: String): Marks
+    evaluations(student: String!, period: String): [EvaluationSubject!]
+    absences(student: String!, period: String, from: Date, to: Date): Absences
+    infos(student: String!): [Info!]
+    contents(student: String!, from: Date, to: Date): [LessonContent!]
+    homeworks(student: String!, from: Date, to: Date): [Homework!]
+    menu(student: String!, from: Date, to: Date): [MenuDay!]
+    files(student: String!): [File!]
+}
+
+extend type PronoteUser {
+    listeProfesseurs: [PronoteListeProfesseurs!]!
+    listeClasses: [PronoteListeClasses!]!
+}
+
+extend type PronoteUserAuthorizations {
+    consulterIdentiteEleve: Boolean!
+    consulterFichesResponsables: Boolean!
+    consulterPhotosEleves: Boolean!
+    avecDiscussionParents: Boolean!
+    estDestinataireChat: Boolean!
+    avecContactVS: Boolean!
+    lancerAlertesPPMS: Boolean!
+    avecDiscussionAvancee: Boolean!
+    avecSaisieParcoursPedagogique: Boolean!
+    avecSaisieAppelEtVS: Boolean!
+    avecSaisieCours: Boolean!
+    avecSaisieAbsenceRepas: Boolean!
+    avecSaisieHorsCours: Boolean!
+    avecSaisieSurGrille: Boolean!
+    avecSaisieSurGrilleAppelProf: Boolean!
+    avecSaisieAbsence: Boolean!
+    avecSaisieRetard: Boolean!
+    avecSaisieMotifRetard: Boolean!
+    avecSaisiePassageInfirmerie: Boolean!
+    avecSaisieExclusion: Boolean!
+    avecSaisiePunition: Boolean!
+    avecAccesAuxEvenementsAutresCours: Boolean!
+    avecSaisieAbsencesToutesPermanences: Boolean!
+    avecSaisieAbsencesGrilleAbsencesRepas: Boolean!
+    avecSaisieAbsencesGrilleAbsencesInternat: Boolean!
+    avecSuiviAbsenceRetard: Boolean!
+    avecSaisieEvaluations: Boolean!
+    autoriserCommunicationsToutesClasses: Boolean!
+    avecSaisieAgenda: Boolean!
+    avecSaisieActualite: Boolean!
+    avecPublicationListeDiffusion: Boolean!
+    publierDossiersVS: Boolean!
+    consulterMemosEleve: Boolean!
+    saisirMemos: Boolean!
+    avecSaisieDispense: Boolean!
+    incidents: [PronoteAuthIncidents!]!
+    avecPublicationPunitions: Boolean!
+    avecAccesPunitions: Boolean!
+    avecSaisiePunitions: Boolean!
+    avecCreerMotifIncidentPunitionSanction: Boolean!
+    intendance: [PronoteAuthIntendance!]!
+    autoriseAConsulterPhotosDeTousLesEleves: Boolean!
+    cours: [PronoteAuthCours!]!
+    compte: [PronoteAuthCompte!]!
+}
+
+type PronoteAuthIncidents {
+    acces: Boolean!
+    saisie: Boolean!
+    publier: Boolean!
+}
+
+type PronoteAuthIntendance {
+    avecDemandeTravauxIntendance: Boolean!
+    avecExecutionTravauxIntendance: Boolean!
+}
+
+type PronoteAuthCompte {
+    avecSaisieInfosPersoCoordonnees: Boolean!
+    avecSaisieInfosPersoAutorisations: Boolean!
+}
+
+type PronoteAuthCours {
+    avecReservationCreneauxLibres: Boolean!
+    modificationNonLimiteAuxSemaine: Boolean!
+    avecMateriel: Boolean!
+    avecFicheCoursConseil: Boolean!
+    afficherElevesDetachesDansCours: Boolean!
+}
+
+type PronoteStudent {
+    name: String!
+    establishment: PronoteNamedObject!
+    avatar: String
+    studentClass: PronoteNamedObject!
+    classHistory: [PronoteClassHistoryElement!]!
+    groups: [PronoteNamedObject!]!
+    tabsPillars: [PronoteTabPillars!]!
+    tabsPeriods: [PronoteTabPeriods!]!
+}
+
+type PronoteListeProfesseurs {
+   name: String!
+   type: Float!
+}
+
+type PronoteListeClasses {
+    name: String!
+    type: Float!
+}
