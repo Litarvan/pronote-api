@@ -16,6 +16,7 @@ const { getFilledDaysAndWeeks, getTimetable } = require('./src/fetch/pronote/tim
 const getMarks = require('./src/fetch/pronote/marks');
 const getEvaluations = require('./src/fetch/pronote/evaluations');
 const getAbsences = require('./src/fetch/pronote/absences');
+const getListeProfs = require('./src/fetch/pronote/listeprofs');
 const getInfos = require('./src/fetch/pronote/infos');
 const getContents = require('./src/fetch/pronote/contents');
 const getHomeworks = require('./src/fetch/pronote/homeworks');
@@ -55,6 +56,7 @@ module.exports = {
     fetchMarks: getMarks,
     fetchEvaluations: getEvaluations,
     fetchAbsences: getAbsences,
+    fetchListeProfs: getListeProfs,
     fetchInfos: getInfos,
     fetchContents: getContents,
     fetchHomeworks: getHomeworks,

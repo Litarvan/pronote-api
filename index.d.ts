@@ -5,7 +5,7 @@ import * as forge from 'node-forge';
 /**
  * Une session Pronote
  *
- * Peut être ouverte via les fonctions {@link login}, ou {@link loginParent}.
+ * Peut être ouverte via les fonctions {@link login}, ou {@link loginParent}, ou {@link loginAdministration}.
  * Ouverte par l'une de ces fonctions, le champ {@link params} est garanti d'être rempli.
  *
  * La session dure quelques dizaines de minutes, sauf si {@link setKeepAlive}(true) est appelé,
@@ -417,7 +417,23 @@ export class PronoteAdministrationSession extends PronoteSession
      */
     user?: PronoteAdministrationUser
 
-
+    /**
+     * Récupère les cours d'un élève situé dans l'intervalle de temps donnée.
+     *
+     * Attention : Par défaut, une Date en JavaScript est initialisée à minuit si l'heure n'est pas donnée,
+     * mettre par exemple en 'to' le Mercredi 2 Septembre, ne renverra donc aucun des cours de ce jour.
+     *
+     * Rappelez-vous aussi que le champ du mois dans les dates est décalé de 1 en arrière, et seulement
+     * ce champ. Pour initialiser une Date au Mercredi 2 Septembre, il faut donc faire `new Date(2020, 8, 2);`.
+     *
+     * @param student L'élève dont il faut récupérer les cours
+     * @param from La date à partir de laquelle récupérer les cours. Par défaut la Date actuelle
+     * @param to La date jusqu'à laquelle récupérer les cours. Par défaut 'from' + 1 jour
+     *
+     * @return La liste des cours situés entre les deux dates données. Si l'onglet de l'emploi du temps n'est pas
+     * disponible, `null` sera renvoyé.
+     */
+    listeprofs(): Promise<listeprofs | null>
 }
 
 
@@ -475,6 +491,24 @@ export function login(url: string, username: string, password: string, cas?: str
  */
 export function loginParent(url: string, username: string, password: string, cas?: string): Promise<PronoteParentSession>;
 
+/**
+ * Ouvre une nouvelle session parent à l'instance Pronote donnée, et s'y connecte.
+ *
+ * Par défaut, ouvrir une session à l'aide de cette fonction ne maintien pas la session en vie. Pour la maintenir
+ * plus longtemps que le temps par défaut (quelques dizaines de minutes), utilisez {@link PronoteSession.setKeepAlive}.
+ *
+ * @param url URL de l'instance Pronote à laquelle se connecter, exemple : https://demo.index-education.net/pronote/
+ * @param username Nom d'utilisateur
+ * @param password Mot de passe de l'utilisateur
+ * @param cas Nom du CAS à utiliser si besoin. Si vous vous connectez usuellement à Pronote directement par leur
+ * interface, vous pouvez laisser ce champ vide (ou mettre 'none'). En revanche, si lors de la connexion à Pronote
+ * vous êtes redirigé vers une interface de votre académie, vous devez alors choisir le CAS qui correspond. La valeur
+ * de ce champ correspond au nom d'un fichier de src/cas/ sans le .js. Par exemple 'ac-montpellier'. Si votre
+ * académie n'est pas supportée, vous pouvez ouvrir une issue sur le dépôt GitHub du projet.
+ *
+ * @return La session créée et authentifiée. Ses champs 'params' et 'user' sont donc forcément non-vides.
+ */
+export function loginAdministration(url: string, username: string, password: string, cas?: string): Promise<PronoteAdministrationSession>;
 
 /**
  * La liste des CAS disponibles, et donc des valeurs acceptées pour le champ 'cas' de la fonction {@link login}.
@@ -978,6 +1012,23 @@ export interface Absences
      * Total des absences pour chaque matière
      */
     totals: Array<SubjectAbsences>
+}
+
+
+export interface listeprofs
+{
+    /**
+     * Nom du Prof
+     */
+    name: String,
+    /**
+     * Civilité du Prof
+     */
+    civilite: String,
+    /**
+     * Prénom du Prof
+     */
+    prenom: String
 }
 
 /**

@@ -57,6 +57,13 @@ function parent(session) {
     };
 }
 
+function administration(session) {
+    return {
+        listeprofs: () => session.listeprofs()
+    };
+}
+
+
 function getContext(session) {
     const result = common(session);
 
@@ -65,6 +72,8 @@ function getContext(session) {
         return { ...result, ...student(session) };
     case 'parent':
         return { ...result, ...parent(session) };
+    case 'administration':
+        return { ...result, ...administration(session) };
     default:
         return result;
     }

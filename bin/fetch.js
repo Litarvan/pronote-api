@@ -20,6 +20,9 @@ async function fetch()
     case 'parent':
         result = await parent();
         break;
+    case 'administration':
+        result = await administration();
+        break;
     default:
         result = await student();
         break;
@@ -91,6 +94,21 @@ async function parent()
     return {
         name: session.user.name,
         students
+    };
+}
+
+async function administration()
+{
+    const session = await pronote.loginAdministration(url, username, password, cas);
+    console.log(`Logged as Vie Scolaire '${session.user.name}'`);
+
+    const { from, to } = getFetchDate(session);
+
+    const listeprofs = await session.listeprofs(from, to);
+
+    return {
+        name: session.user.name,
+        listeprofs
     };
 }
 
