@@ -85,7 +85,6 @@ function getSpecificData(session, data)
         break;
     case 'administration':
         return getAdministrationData(session, data);
-        break;
     default:
         return {};
     }
