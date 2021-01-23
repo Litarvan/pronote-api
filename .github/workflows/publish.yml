@@ -9,9 +9,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: npm install
-      - run: npm publish --access public
+      - run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --registry=https://npm.pkg.github.com/@Litarvan
+      - run: npm publish --access public
+      - run: npm config set '//npm.pkg.github.com/:_authToken' "${GITHUB_TOKEN}"
         env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm publish --registry=https://npm.pkg.github.com/@Litarvan
