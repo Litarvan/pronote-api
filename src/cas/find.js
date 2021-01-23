@@ -24,7 +24,7 @@ const URLS = {
     'ac-valdoise': 'cas.moncollege.valdoise.fr',
     'agora06': 'cas.agora06.fr',
     'arsene76': 'cas.arsene76.fr',
-    'atrium-sud': 'atrium-sud.fr',
+    'atrium-sud': 'www.atrium-sud.fr',
     'cybercolleges42': 'cas.cybercolleges42.fr',
     'eure-normandie': 'cas.ent27.fr',
     'haute-garonne': 'cas.ecollege.haute-garonne.fr',
