@@ -30,6 +30,7 @@ const URLS = {
     'haute-garonne': 'cas.ecollege.haute-garonne.fr',
     'hdf': 'enthdf.fr',
     'iledefrance': 'ent.iledefrance.fr',
+    'moncollege-essonne': 'www.moncollege-ent.essonne.fr',
     'laclasse': 'www.laclasse.com',
     'ljr-munich': 'cas.kosmoseducation.com',
     'lyceeconnecte': 'mon.lyceeconnecte.fr',
