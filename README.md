@@ -72,6 +72,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
     - ENT "Portail Famille" (Orleans Tours) (CAS : portail-famille, URL : "seshat.ac-orleans-tours.fr:8443")
     - ENT "Toutatice" (Rennes) (CAS : toutatice, URL : "www.toutatice.fr")
     - ENT "Île de France" (CAS : iledefrance, URL : "ent.iledefrance.fr")
+    - ENT "Mon collège Essonne" (CAS : moncollege-essonne, URL : "www.moncollege-ent.essonne.fr")
     - ENT "Paris Classe Numerique" (CAS : parisclassenumerique, URL : "ent.parisclassenumerique.fr")
     - ENT "Lycee Jean Renoir Munich" (CAS : ljr-munich, URL : "cas.kosmoseducation.com")
     - ENT "L'Eure en Normandie" (CAS : eure-normandie, URL : "cas.ent27.fr")  
