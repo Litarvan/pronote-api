@@ -24,7 +24,8 @@ function geo(lat, long) {
                 incomingData += data;
             });
             res.on('end', () => {
-                resolve(JSON.parse(incomingData));
+                const data = JSON.parse(incomingData);
+                resolve(Array.isArray(data) ? data : []);
             });
         });
 
