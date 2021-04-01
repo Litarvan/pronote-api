@@ -1,6 +1,6 @@
 {
     "name": "pronote-api",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "description": "Pronote 2020/2021 API (Node.JS/TS library, and GraphQL server)",
     "main": "index.js",
     "types": "index.d.ts",
