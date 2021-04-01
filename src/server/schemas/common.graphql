@@ -162,7 +162,7 @@ type SubjectAbsences {
 type Info {
     id: String!
     date: Date!
-    title: String!
+    title: String
     author: String!
     content: String!
     htmlContent: String!

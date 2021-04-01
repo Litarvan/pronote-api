@@ -34,18 +34,18 @@
         "axios": "^0.21.1",
         "body-parser": "^1.19.0",
         "graphql": "^15.3.0",
-        "jsdom": "^16.4.0",
+        "jsdom": "^16.5.2",
         "node-forge": "0.6.33",
         "pako": "^1.0.11",
         "polka": "^0.5.2",
-        "string-strip-html": "^8.0.0",
+        "string-strip-html": "^8.2.9",
         "uuid": "^8.3.0",
         "xxhashjs": "^0.2.2"
     },
     "devDependencies": {
         "@types/node-forge": "^0.6",
         "@types/pako": "^1.0",
-        "eslint": "^7.14.0",
+        "eslint": "^7.22.0",
         "eslint-plugin-node": "^11.1.0"
     }
 }
