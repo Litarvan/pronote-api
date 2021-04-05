@@ -38,7 +38,8 @@ const URLS = {
     'portail-famille': 'seshat.ac-orleans-tours.fr:8443',
     'seine-et-marne': 'ent77.seine-et-marne.fr',
     'somme': 'college.entsomme.fr',
-    'toutatice': 'www.toutatice.fr'
+    'toutatice': 'www.toutatice.fr',
+    'monbureaunumerique-educonnect': 'cas.monbureaunumerique.fr'
 };
 
 async function find(url)
