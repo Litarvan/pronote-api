@@ -7,5 +7,5 @@ module.exports = (url, account, username, password) => educonnect({
     password,
 
     casUrl: 'cas.monbureaunumerique.fr',
-    idp: 'EDU',
+    idp: 'EDU'
 });
