@@ -76,6 +76,7 @@ Sinon, l'API propose de se connecter à Pronote avec des comptes des académies 
     - ENT "Paris Classe Numerique" (CAS : parisclassenumerique, URL : "ent.parisclassenumerique.fr")
     - ENT "Lycee Jean Renoir Munich" (CAS : ljr-munich, URL : "cas.kosmoseducation.com")
     - ENT "L'Eure en Normandie" (CAS : eure-normandie, URL : "cas.ent27.fr")  
+    - ENT "Mon Bureau Numérique" via EduConnect (CAS: monbureaunumerique-educonnect, URL: "cas.monbureaunumerique.fr")
 </details>
 
 
