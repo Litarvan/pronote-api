@@ -28,6 +28,9 @@ async function contents(session, user, from = new Date(), to = null)
         }
 
         const content = lesson.content[0]; // Maybe on some instances there will be multiple entries ? Check this
+        if (typeof content == 'undefined') {
+            continue;
+        }
         result.push(withId({
             subject: lesson.subject.name,
             teachers: lesson.teachers.map(t => t.name),
